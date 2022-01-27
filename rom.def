@@ -1,0 +1,34 @@
+; fox32 rom routine definitions
+
+; system jump table entries
+system_vsync_handler:                     jmp [0xF1000000]
+get_mouse_position:                       jmp [0xF1000004]
+push_event:                               jmp [0xF1000008]
+wait_for_event:                           jmp [0xF100000C]
+
+; background jump table entries
+draw_str_to_background:                   jmp [0xF1001000]
+draw_font_tile_to_background:             jmp [0xF1001004]
+fill_background:                          jmp [0xF1001008]
+
+; overlay jump table entries
+draw_str_to_overlay:                      jmp [0xF1002000]
+draw_font_tile_to_overlay:                jmp [0xF1002004]
+fill_overlay:                             jmp [0xF1002008]
+find_overlay_covering_position:           jmp [0xF100200C]
+check_if_overlay_covers_position:         jmp [0xF1002010]
+check_if_enabled_overlay_covers_position: jmp [0xF1002014]
+
+; menu bar jump table entries
+menu_bar_click_event:                     jmp [0xF1003000]
+clear_menu_bar:                           jmp [0xF1003004]
+draw_menu_bar_root_items:                 jmp [0xF1003008]
+draw_submenu_items:                       jmp [0xF100300C]
+close_submenu:                            jmp [0xF1003010]
+
+; event types
+const mouse_click_event_type:    0x00000000
+const menu_bar_click_event_type: 0x00000001
+const submenu_update_event_type: 0x00000002
+const submenu_click_event_type:  0x00000003
+const empty_event_type:          0xFFFFFFFF
