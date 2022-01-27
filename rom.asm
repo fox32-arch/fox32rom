@@ -192,7 +192,7 @@ submenu_click_event:
 
     org.pad 0xF1F00000
 font:
-    #include "../font/unifont-thin.inc"
+    #include_bin "../font/unifont-thin.raw"
 
 mouse_cursor:
     #include_bin "../font/cursor2.raw"
