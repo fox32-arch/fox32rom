@@ -202,23 +202,23 @@ overlay_31_width:           data.16 8
 overlay_31_height:          data.16 12
 overlay_31_position_x:      data.16 0
 overlay_31_position_y:      data.16 0
-overlay_31_framebuffer_ptr: data.32 0x0212D000
+overlay_31_framebuffer_ptr: data.32 0x8012D000
 
 ; menu bar overlay struct:
 overlay_30_width:           data.16 640
 overlay_30_height:          data.16 16
 overlay_30_position_x:      data.16 0
 overlay_30_position_y:      data.16 0
-overlay_30_framebuffer_ptr: data.32 0x0212D180
+overlay_30_framebuffer_ptr: data.32 0x8012D180
 
 ; submenu overlay struct:
 ; this struct must be writable, so these are hard-coded addresses in shared memory
-const overlay_29_width:           0x02137180 ; 2 bytes
-const overlay_29_height:          0x02137182 ; 2 bytes
-const overlay_29_position_x:      0x02137184 ; 2 bytes
-const overlay_29_position_y:      0x02137186 ; 2 bytes
-const overlay_29_framebuffer_ptr: 0x0213718A ; 4 bytes
-const overlay_29_framebuffer:     0x0213718E
+const overlay_29_width:           0x80137180 ; 2 bytes
+const overlay_29_height:          0x80137182 ; 2 bytes
+const overlay_29_position_x:      0x80137184 ; 2 bytes
+const overlay_29_position_y:      0x80137186 ; 2 bytes
+const overlay_29_framebuffer_ptr: 0x8013718A ; 4 bytes
+const overlay_29_framebuffer:     0x8013718E
 
 startup_str_1: data.str "Welcome to fox32" data.8 0
 startup_str_2: data.str "Insert boot disk" data.8 0
