@@ -162,33 +162,33 @@ submenu_click_event:
 
     ; system jump table
     org.pad 0xF1000000
-    def.32 system_vsync_handler
-    def.32 get_mouse_position
-    def.32 push_event
-    def.32 wait_for_event
+    data.32 system_vsync_handler
+    data.32 get_mouse_position
+    data.32 push_event
+    data.32 wait_for_event
 
     ; background jump table
     org.pad 0xF1001000
-    def.32 draw_str_to_background
-    def.32 draw_font_tile_to_background
-    def.32 fill_background
+    data.32 draw_str_to_background
+    data.32 draw_font_tile_to_background
+    data.32 fill_background
 
     ; overlay jump table
     org.pad 0xF1002000
-    def.32 draw_str_to_overlay
-    def.32 draw_font_tile_to_overlay
-    def.32 fill_overlay
-    def.32 find_overlay_covering_position
-    def.32 check_if_overlay_covers_position
-    def.32 check_if_enabled_overlay_covers_position
+    data.32 draw_str_to_overlay
+    data.32 draw_font_tile_to_overlay
+    data.32 fill_overlay
+    data.32 find_overlay_covering_position
+    data.32 check_if_overlay_covers_position
+    data.32 check_if_enabled_overlay_covers_position
 
     ; menu bar jump table
     org.pad 0xF1003000
-    def.32 menu_bar_click_event
-    def.32 clear_menu_bar
-    def.32 draw_menu_bar_root_items
-    def.32 draw_submenu_items
-    def.32 close_submenu
+    data.32 menu_bar_click_event
+    data.32 clear_menu_bar
+    data.32 draw_menu_bar_root_items
+    data.32 draw_submenu_items
+    data.32 close_submenu
 
     org.pad 0xF1F00000
 font:
@@ -198,18 +198,18 @@ mouse_cursor:
     #include_bin "../font/cursor2.raw"
 
 ; cursor overlay struct:
-overlay_31_width:           def.16 8
-overlay_31_height:          def.16 12
-overlay_31_position_x:      def.16 0
-overlay_31_position_y:      def.16 0
-overlay_31_framebuffer_ptr: def.32 0x0212D000
+overlay_31_width:           data.16 8
+overlay_31_height:          data.16 12
+overlay_31_position_x:      data.16 0
+overlay_31_position_y:      data.16 0
+overlay_31_framebuffer_ptr: data.32 0x0212D000
 
 ; menu bar overlay struct:
-overlay_30_width:           def.16 640
-overlay_30_height:          def.16 16
-overlay_30_position_x:      def.16 0
-overlay_30_position_y:      def.16 0
-overlay_30_framebuffer_ptr: def.32 0x0212D180
+overlay_30_width:           data.16 640
+overlay_30_height:          data.16 16
+overlay_30_position_x:      data.16 0
+overlay_30_position_y:      data.16 0
+overlay_30_framebuffer_ptr: data.32 0x0212D180
 
 ; submenu overlay struct:
 ; this struct must be writable, so these are hard-coded addresses in shared memory
@@ -220,21 +220,21 @@ const overlay_29_position_y:      0x02137186 ; 2 bytes
 const overlay_29_framebuffer_ptr: 0x0213718A ; 4 bytes
 const overlay_29_framebuffer:     0x0213718E
 
-startup_str_1: def.str "Welcome to fox32" def.8 0
-startup_str_2: def.str "Insert boot disk" def.8 0
+startup_str_1: data.str "Welcome to fox32" data.8 0
+startup_str_2: data.str "Insert boot disk" data.8 0
 
 menu_items_root:
-    def.8 1                                                     ; number of submenus
-    def.32 menu_items_system_list def.32 menu_items_system_name ; pointer to submenu list, pointer to submenu name
+    data.8 1                                                      ; number of submenus
+    data.32 menu_items_system_list data.32 menu_items_system_name ; pointer to submenu list, pointer to submenu name
 menu_items_system_name:
-    def.8 6 def.str "System" def.8 0x00                ; text length, text, null-terminator
+    data.8 6 data.str "System" data.8 0x00                ; text length, text, null-terminator
 menu_items_system_list:
-    def.8 4                                            ; number of items
-    def.8 22                                           ; submenu width (usually longest item + 2)
-    def.8 5  def.str "About"                def.8 0x00 ; text length, text, null-terminator
-    def.8 20 def.str "Mount Floppy Disk..." def.8 0x00 ; text length, text, null-terminator
-    def.8 18 def.str "Mount Hard Disk..."   def.8 0x00 ; text length, text, null-terminator
-    def.8 4  def.str "Halt"                 def.8 0x00 ; text length, text, null-terminator
+    data.8 4                                              ; number of items
+    data.8 22                                             ; submenu width (usually longest item + 2)
+    data.8 5  data.str "About"                data.8 0x00 ; text length, text, null-terminator
+    data.8 20 data.str "Mount Floppy Disk..." data.8 0x00 ; text length, text, null-terminator
+    data.8 18 data.str "Mount Hard Disk..."   data.8 0x00 ; text length, text, null-terminator
+    data.8 4  data.str "Halt"                 data.8 0x00 ; text length, text, null-terminator
 
     ; pad out to 32 MiB
     org.pad 0xF2000000

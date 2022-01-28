@@ -198,30 +198,30 @@ menu_bar_click_event_found_item:
     ret
 
 ;menu_items_root:
-;    def.8 3                                                     ; number of submenus
-;    def.32 menu_items_file_list   def.32 menu_items_file_name   ; pointer to submenu list, pointer to submenu name
-;    def.32 menu_items_edit_list   def.32 menu_items_edit_name   ; pointer to submenu list, pointer to submenu name
-;    def.32 menu_items_system_list def.32 menu_items_system_name ; pointer to submenu list, pointer to submenu name
+;    data.8 3                                                      ; number of submenus
+;    data.32 menu_items_file_list   data.32 menu_items_file_name   ; pointer to submenu list, pointer to submenu name
+;    data.32 menu_items_edit_list   data.32 menu_items_edit_name   ; pointer to submenu list, pointer to submenu name
+;    data.32 menu_items_system_list data.32 menu_items_system_name ; pointer to submenu list, pointer to submenu name
 ;menu_items_file_name:
-;    def.8 4 def.str "File" def.8 0x00   ; text length, text, null-terminator
+;    data.8 4 data.str "File" data.8 0x00   ; text length, text, null-terminator
 ;menu_items_file_list:
-;    def.8 2                             ; number of items
-;    def.8 6                             ; submenu width (in number of characters)
-;    def.8 6 def.str "Test 1" def.8 0x00 ; text length, text, null-terminator
-;    def.8 6 def.str "Test 2" def.8 0x00 ; text length, text, null-terminator
+;    data.8 2                               ; number of items
+;    data.8 6                               ; submenu width (in number of characters)
+;    data.8 6 data.str "Test 1" data.8 0x00 ; text length, text, null-terminator
+;    data.8 6 data.str "Test 2" data.8 0x00 ; text length, text, null-terminator
 ;menu_items_edit_name:
-;    def.8 4 def.str "Edit" def.8 0x00   ; text length, text, null-terminator
+;    data.8 4 data.str "Edit" data.8 0x00   ; text length, text, null-terminator
 ;menu_items_edit_list:
-;    def.8 2                             ; number of items
-;    def.8 6                             ; submenu width (in number of characters)
-;    def.8 6 def.str "Test 3" def.8 0x00 ; text length, text, null-terminator
-;    def.8 6 def.str "Test 4" def.8 0x00 ; text length, text, null-terminator
+;    data.8 2                               ; number of items
+;    data.8 6                               ; submenu width (in number of characters)
+;    data.8 6 data.str "Test 3" data.8 0x00 ; text length, text, null-terminator
+;    data.8 6 data.str "Test 4" data.8 0x00 ; text length, text, null-terminator
 ;menu_items_system_name:
-;    def.8 6 def.str "System" def.8 0x00 ; text length, text, null-terminator
+;    data.8 6 data.str "System" data.8 0x00 ; text length, text, null-terminator
 ;menu_items_system_list:
-;    def.8 4                             ; number of items
-;    def.8 6                             ; submenu width (in number of characters)
-;    def.8 6 def.str "Test 5" def.8 0x00 ; text length, text, null-terminator
-;    def.8 6 def.str "Test 6" def.8 0x00 ; text length, text, null-terminator
-;    def.8 6 def.str "Test 7" def.8 0x00 ; text length, text, null-terminator
-;    def.8 6 def.str "Test 8" def.8 0x00 ; text length, text, null-terminator
+;    data.8 4                               ; number of items
+;    data.8 6                               ; submenu width (in number of characters)
+;    data.8 6 data.str "Test 5" data.8 0x00 ; text length, text, null-terminator
+;    data.8 6 data.str "Test 6" data.8 0x00 ; text length, text, null-terminator
+;    data.8 6 data.str "Test 7" data.8 0x00 ; text length, text, null-terminator
+;    data.8 6 data.str "Test 8" data.8 0x00 ; text length, text, null-terminator
