@@ -192,10 +192,10 @@ submenu_click_event:
 
     org.pad 0xF1F00000
 font:
-    #include_bin "../font/unifont-thin.raw"
+    #include_bin "font/unifont-thin.raw"
 
 mouse_cursor:
-    #include_bin "../font/cursor2.raw"
+    #include_bin "font/cursor2.raw"
 
 ; cursor overlay struct:
 overlay_31_width:           data.16 8
