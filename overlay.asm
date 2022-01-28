@@ -13,8 +13,8 @@ fill_overlay:
     push r31
 
     mov r2, r1
-    or r2, 0x02000100        ; bitwise or the overlay number with the command to get the overlay size
-    or r1, 0x02000200        ; bitwise or the overlay number with the command to get the framebuffer pointer
+    or r2, 0x80000100        ; bitwise or the overlay number with the command to get the overlay size
+    or r1, 0x80000200        ; bitwise or the overlay number with the command to get the framebuffer pointer
     in r1, r1                ; r1: overlay framebuffer poiner
     in r2, r2
     mov r3, r2
@@ -55,14 +55,14 @@ draw_filled_rectangle_to_overlay:
 
     ; calculate pointer to the framebuffer
     mov r6, r5               ; r6: overlay number
-    or r6, 0x02000100        ; bitwise or the overlay number with the command to get the overlay size
+    or r6, 0x80000100        ; bitwise or the overlay number with the command to get the overlay size
     in r7, r6
     and r7, 0x0000FFFF       ; mask off the height, we only need the width
     mul r7, 4                ; r7: overlay width in bytes (width * 4)
     mul r1, r7               ; y * width * 4
     mul r0, 4                ; x * 4
     add r0, r1               ; y * width * 4 + (x * 4)
-    or r5, 0x02000200        ; bitwise or the overlay number with the command to get the framebuffer pointer
+    or r5, 0x80000200        ; bitwise or the overlay number with the command to get the framebuffer pointer
     in r5, r5
     add r0, r5               ; r0: pointer to framebuffer
 
@@ -126,7 +126,7 @@ draw_font_tile_to_overlay:
 
     ; calculate pointer to the framebuffer
     mov r7, r5               ; r7: overlay number
-    or r7, 0x02000100        ; bitwise or the overlay number with the command to get the overlay size
+    or r7, 0x80000100        ; bitwise or the overlay number with the command to get the overlay size
     in r6, r7
     and r6, 0x0000FFFF       ; mask off the height, we only need the width
     mul r6, 4                ; 4 bytes per pixel
@@ -134,7 +134,7 @@ draw_font_tile_to_overlay:
     mul r2, r7               ; y * width * 4
     mul r1, 4                ; x * 4
     add r1, r2               ; y * width * 4 + (x * 4)
-    or r5, 0x02000200        ; bitwise or the overlay number with the command to get the framebuffer pointer
+    or r5, 0x80000200        ; bitwise or the overlay number with the command to get the framebuffer pointer
     in r6, r5
     add r1, r6               ; r1: pointer to framebuffer
 
@@ -233,14 +233,14 @@ check_if_overlay_covers_position:
     push r7
 
     mov r3, r2
-    or r3, 0x02000000        ; bitwise or the overlay number with the command to get the overlay position
+    or r3, 0x80000000        ; bitwise or the overlay number with the command to get the overlay position
     in r4, r3
     mov r5, r4
     and r4, 0x0000FFFF       ; r4: X position
     sra r5, 16               ; r5: Y position
 
     mov r3, r2
-    or r3, 0x02000100        ; bitwise or the overlay number with the command to get the overlay size
+    or r3, 0x80000100        ; bitwise or the overlay number with the command to get the overlay size
     in r6, r3
     mov r7, r6
     and r6, 0x0000FFFF       ; r6: width
@@ -313,7 +313,7 @@ check_if_enabled_overlay_covers_position:
     push r4
 
     mov r3, r2
-    or r3, 0x02000300        ; bitwise or the overlay number with the command to get the overlay enable status
+    or r3, 0x80000300        ; bitwise or the overlay number with the command to get the overlay enable status
     in r4, r3
 
     cmp r4, 0
@@ -343,7 +343,7 @@ make_coordinates_relative_to_overlay:
     push r2
     push r3
 
-    or r2, 0x02000000        ; bitwise or the overlay number with the command to get the overlay position
+    or r2, 0x80000000        ; bitwise or the overlay number with the command to get the overlay position
     in r2, r2
     mov r3, r2
     and r2, 0x0000FFFF       ; r2: overlay X position

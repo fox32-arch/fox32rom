@@ -8,7 +8,7 @@
 ; r0: X coordinate
 ; r1: Y coordinate
 get_mouse_position:
-    in r0, 0x0200001F             ; overlay 31: position
+    in r0, 0x8000001F             ; overlay 31: position
     mov r1, r0
     and r0, 0x0000FFFF            ; r0: overlay X position
     sra r1, 16                    ; r1: overlay Y position
@@ -21,7 +21,7 @@ get_mouse_position:
 ; outputs:
 ; r0: button state
 get_mouse_button:
-    in r0, 0x02000400             ; mouse button states
+    in r0, 0x80000400             ; mouse button states
 
     ret
 
@@ -35,15 +35,15 @@ mouse_update:
     push r4
     push r5
 
-    mov r0, 0x0200001F            ; overlay 31: position
-    in r2, 0x02000401             ; mouse position
+    mov r0, 0x8000001F            ; overlay 31: position
+    in r2, 0x80000401             ; mouse position
     out r0, r2
 
     movz.16 r0, r2                ; r0: X position
     mov r1, r2
     sra r1, 16                    ; r1: Y position
 
-    mov r2, 0x02000400            ; mouse button states
+    mov r2, 0x80000400            ; mouse button states
     in r3, r2
 
     ; check click bit
@@ -64,7 +64,7 @@ mouse_update:
 
     ; if a submenu is open, don't push a click event
     ; this is hacky as fuck
-    in r3, 0x0200031D             ; overlay 29: enable status
+    in r3, 0x8000031D             ; overlay 29: enable status
     cmp r3, 0
     ifnz jmp mouse_update_end
 

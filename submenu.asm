@@ -69,20 +69,20 @@ draw_submenu_items_calculate_x_skip:
     ; set properties of overlay 29
     mov.16 [overlay_29_position_y], 16
     mov [overlay_29_framebuffer_ptr], overlay_29_framebuffer
-    mov r0, 0x0200001D ; overlay 29: position
+    mov r0, 0x8000001D ; overlay 29: position
     mov.16 r1, [overlay_29_position_y]
     sla r1, 16
     mov.16 r1, [overlay_29_position_x]
     out r0, r1
-    mov r0, 0x0200011D ; overlay 29: size
+    mov r0, 0x8000011D ; overlay 29: size
     mov.16 r1, [overlay_29_height]
     sla r1, 16
     mov.16 r1, [overlay_29_width]
     out r0, r1
-    mov r0, 0x0200021D ; overlay 29: framebuffer pointer
+    mov r0, 0x8000021D ; overlay 29: framebuffer pointer
     mov r1, [overlay_29_framebuffer_ptr]
     out r0, r1
-    mov r0, 0x0200031D
+    mov r0, 0x8000031D
     out r0, 1
 
     ; draw empty submenu
@@ -159,7 +159,7 @@ close_submenu:
     push r1
 
     ; disable overlay 29
-    mov r1, 0x0200031D
+    mov r1, 0x8000031D
     out r1, 0
 
     mov r1, 0xFFFFFFFF

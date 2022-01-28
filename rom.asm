@@ -14,7 +14,7 @@ entry:
 
     ; disable all overlays
     mov r31, 0x1F
-    mov r0, 0x02000300
+    mov r0, 0x80000300
 disable_all_overlays_loop:
     out r0, 0
     inc r0
@@ -32,17 +32,17 @@ cursor_overlay_loop:
 
 cursor_enable:
     ; set properties of overlay 31
-    mov r0, 0x0200011F ; overlay 31: size
+    mov r0, 0x8000011F ; overlay 31: size
     mov.16 r1, [overlay_31_height]
     sla r1, 16
     mov.16 r1, [overlay_31_width]
     out r0, r1
-    mov r0, 0x0200021F ; overlay 31: framebuffer pointer
+    mov r0, 0x8000021F ; overlay 31: framebuffer pointer
     mov r1, [overlay_31_framebuffer_ptr]
     out r0, r1
 
     ; enable overlay 31 (cursor)
-    mov r0, 0x0200031F
+    mov r0, 0x8000031F
     out r0, 1
 
     mov r0, background_color
@@ -50,22 +50,22 @@ cursor_enable:
 
 menu_bar_enable:
     ; set properties of overlay 30
-    mov r0, 0x0200001E ; overlay 30: position
+    mov r0, 0x8000001E ; overlay 30: position
     mov.16 r1, [overlay_30_position_y]
     sla r1, 16
     mov.16 r1, [overlay_30_position_x]
     out r0, r1
-    mov r0, 0x0200011E ; overlay 30: size
+    mov r0, 0x8000011E ; overlay 30: size
     mov.16 r1, [overlay_30_height]
     sla r1, 16
     mov.16 r1, [overlay_30_width]
     out r0, r1
-    mov r0, 0x0200021E ; overlay 30: framebuffer pointer
+    mov r0, 0x8000021E ; overlay 30: framebuffer pointer
     mov r1, [overlay_30_framebuffer_ptr]
     out r0, r1
 
     ; enable overlay 30 (menu bar)
-    mov r0, 0x0200031E
+    mov r0, 0x8000031E
     out r0, 1
 
     call clear_menu_bar
