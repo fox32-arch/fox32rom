@@ -21,8 +21,8 @@ wait_for_event:
     halt
 
     ; check the event stack pointer
-    ; if equal to 0x01FFFFFC, then the event stack is empty
-    cmp [event_stack_pointer], 0x01FFFFFC
+    ; if equal to its base address, then the event stack is empty
+    cmp [event_stack_pointer], event_stack_pointer
     ifz jmp wait_for_event
 
     ; an event is available in the event stack, pop it from the stack and return it
@@ -62,8 +62,8 @@ push_event:
 ; r1-r5: event parameters
 pop_event:
     ; check the event stack pointer
-    ; if equal to 0x01FFFFFC, then the event stack is empty
-    cmp [event_stack_pointer], 0x01FFFFFC
+    ; if equal to its base address, then the event stack is empty
+    cmp [event_stack_pointer], event_stack_pointer
     ifz jmp pop_event_empty
 
     icl
