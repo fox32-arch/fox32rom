@@ -110,7 +110,8 @@ draw_startup_text:
 
     ise
 event_loop:
-    call wait_for_event
+    halt
+    call pop_event
 
     ; was the mouse clicked?
     cmp r0, mouse_click_event_type
@@ -129,6 +130,12 @@ event_loop:
     cmp r0, submenu_click_event_type
     ifz call submenu_click_event
 
+    ; check if a disk is mounted as disk 0
+    ; if port 0x8000100n returns a non-zero value, then a disk is mounted as disk n
+    in r0, 0x80001000
+    cmp r0, 0
+    ifnz call load_boot_disk
+
     jmp event_loop
 
 submenu_click_event:
@@ -138,12 +145,55 @@ submenu_click_event:
     cmp r3, 0
     ;
 
+    ; mount disk
+    cmp r3, 1
+    ifz jmp mount_boot_disk
+
     ; halt
-    cmp r3, 3
+    cmp r3, 2
     ifz icl
     ifz halt
 
     ret
+
+mount_boot_disk:
+    mov r0, 0x80001000
+    out r0, 0
+    ret
+
+load_boot_disk:
+    ; in the future, this will check the header for various different types of disk types
+    ; but for now, just assume the user mounted a raw binary
+    ; load it to 0x00000800 (immediately after the interrupt vectors) and jump
+
+    ; r0 contains the size of the disk in bytes
+    ; divide the size by 512 and add 1 to get the size in sectors
+    div r0, 512
+    inc r0
+
+    mov r31, r0
+    mov r0, 0          ; sector counter
+    mov r2, 0x00000800 ; destination pointer
+    mov r3, 0x80003000 ; command to read a sector from disk 0 into the sector buffer
+    mov r4, 0x80002000 ; command to read a byte from the sector buffer
+load_boot_disk_sector_loop:
+    out r3, r0         ; read the current sector into the sector buffer
+    mov r1, 0          ; byte counter
+load_boot_disk_byte_loop:
+    mov r5, r4
+    or r5, r1          ; or the byte read command with the current byte counter
+    in r5, r5          ; read the current byte into r5
+    mov.8 [r2], r5     ; write the byte
+    inc r2             ; increment the destination pointer
+    inc r1             ; increment the byte counter
+    cmp r1, 512
+    ifnz jmp load_boot_disk_byte_loop
+    loop load_boot_disk_sector_loop
+
+    ; done loading !!!
+    ; now jump to the loaded binary
+    ; TODO: clear the background, disable the menu bar, etc
+    jmp 0x00000800
 
     ; code
     #include "background.asm"
@@ -227,14 +277,13 @@ menu_items_root:
     data.8 1                                                      ; number of submenus
     data.32 menu_items_system_list data.32 menu_items_system_name ; pointer to submenu list, pointer to submenu name
 menu_items_system_name:
-    data.8 6 data.str "System" data.8 0x00                ; text length, text, null-terminator
+    data.8 6 data.str "System" data.8 0x00      ; text length, text, null-terminator
 menu_items_system_list:
-    data.8 4                                              ; number of items
-    data.8 22                                             ; submenu width (usually longest item + 2)
-    data.8 5  data.str "About"                data.8 0x00 ; text length, text, null-terminator
-    data.8 20 data.str "Mount Floppy Disk..." data.8 0x00 ; text length, text, null-terminator
-    data.8 18 data.str "Mount Hard Disk..."   data.8 0x00 ; text length, text, null-terminator
-    data.8 4  data.str "Halt"                 data.8 0x00 ; text length, text, null-terminator
+    data.8 3                                    ; number of items
+    data.8 12                                   ; submenu width (usually longest item + 2)
+    data.8 5  data.str "About"      data.8 0x00 ; text length, text, null-terminator
+    data.8 10 data.str "Mount Disk" data.8 0x00 ; text length, text, null-terminator
+    data.8 4  data.str "Halt"       data.8 0x00 ; text length, text, null-terminator
 
     ; pad out to 32 MiB
     org.pad 0xF2000000
