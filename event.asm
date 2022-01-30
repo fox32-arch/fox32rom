@@ -37,21 +37,38 @@ wait_for_event:
 ; outputs:
 ; none
 push_event:
-    icl
     push r6
-    mov r6, rsp
-    mov rsp, [event_stack_pointer]
-    push r0
-    push r1
-    push r2
-    push r3
-    push r4
-    push r5
-    mov [event_stack_pointer], rsp
-    mov rsp, r6
-    pop r6
-    ise
 
+    mov r6, [event_stack_pointer]
+    ; TODO: check to make sure we don't accidentally clobber the system stack by pushing too many events
+
+    ; push r0
+    sub r6, 4
+    mov [r6], r0
+
+    ; push r1
+    sub r6, 4
+    mov [r6], r1
+
+    ; push r2
+    sub r6, 4
+    mov [r6], r2
+
+    ; push r3
+    sub r6, 4
+    mov [r6], r3
+
+    ; push r4
+    sub r6, 4
+    mov [r6], r4
+
+    ; push r5
+    sub r6, 4
+    mov [r6], r5
+
+    mov [event_stack_pointer], r6
+
+    pop r6
     ret
 
 ; pop an event from the event stack
@@ -66,21 +83,37 @@ pop_event:
     cmp [event_stack_pointer], event_stack_pointer
     ifz jmp pop_event_empty
 
-    icl
     push r6
-    mov r6, rsp
-    mov rsp, [event_stack_pointer]
-    pop r5
-    pop r4
-    pop r3
-    pop r2
-    pop r1
-    pop r0
-    mov [event_stack_pointer], rsp
-    mov rsp, r6
-    pop r6
-    ise
 
+    mov r6, [event_stack_pointer]
+
+    ; pop r5
+    mov r5, [r6]
+    add r6, 4
+
+    ; pop r4
+    mov r4, [r6]
+    add r6, 4
+
+    ; pop r3
+    mov r3, [r6]
+    add r6, 4
+
+    ; pop r2
+    mov r2, [r6]
+    add r6, 4
+
+    ; pop r1
+    mov r1, [r6]
+    add r6, 4
+
+    ; pop r0
+    mov r0, [r6]
+    add r6, 4
+
+    mov [event_stack_pointer], r6
+
+    pop r6
     ret
 pop_event_empty:
     mov r0, empty_event_type
