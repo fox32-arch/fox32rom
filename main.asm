@@ -134,7 +134,7 @@ event_loop:
     ; if port 0x8000100n returns a non-zero value, then a disk is mounted as disk n
     in r0, 0x80001000
     cmp r0, 0
-    ifnz call load_boot_disk
+    ifnz call start_boot_process
 
     jmp event_loop
 
@@ -161,41 +161,8 @@ mount_boot_disk:
     out r0, 0
     ret
 
-load_boot_disk:
-    ; in the future, this will check the header for various different types of disk types
-    ; but for now, just assume the user mounted a raw binary
-    ; load it to 0x00000800 (immediately after the interrupt vectors) and jump
-
-    ; r0 contains the size of the disk in bytes
-    ; divide the size by 512 and add 1 to get the size in sectors
-    div r0, 512
-    inc r0
-
-    mov r31, r0
-    mov r0, 0          ; sector counter
-    mov r2, 0x00000800 ; destination pointer
-    mov r3, 0x80003000 ; command to read a sector from disk 0 into the sector buffer
-    mov r4, 0x80002000 ; command to read a byte from the sector buffer
-load_boot_disk_sector_loop:
-    out r3, r0         ; read the current sector into the sector buffer
-    mov r1, 0          ; byte counter
-load_boot_disk_byte_loop:
-    mov r5, r4
-    or r5, r1          ; or the byte read command with the current byte counter
-    in r5, r5          ; read the current byte into r5
-    mov.8 [r2], r5     ; write the byte
-    inc r2             ; increment the destination pointer
-    inc r1             ; increment the byte counter
-    cmp r1, 512
-    ifnz jmp load_boot_disk_byte_loop
-    loop load_boot_disk_sector_loop
-
-    ; done loading !!!
-    ; now jump to the loaded binary
-    ; TODO: clear the background, disable the menu bar, etc
-    jmp 0x00000800
-
     ; code
+    #include "boot.asm"
     #include "background.asm"
     #include "overlay.asm"
     #include "menu.asm"
