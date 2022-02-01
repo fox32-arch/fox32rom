@@ -49,8 +49,9 @@ mouse_update:
     ; check click bit
     bts r3, 0
     ifz jmp mouse_update_end
-    ; mouse was clicked
-    out r2, 0                     ; clear all button state bits
+    ; mouse was clicked, clear the click bit
+    bcl r3, 0
+    out r2, r3
 
     ; check if the mouse was clicked in the menu bar
     ;mov r2, 30
