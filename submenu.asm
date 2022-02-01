@@ -193,6 +193,12 @@ submenu_update_event:
     mov r9, r2                    ; r9: selected root menu item
     mov r10, r3                   ; r10: hovering submenu item (or 0xFFFFFFFF for none)
 
+    ; check if the submenu overlay is enabled
+    ; if the submenu was closed then exit without repushing the update event to the event stack
+    in r0, 0x8000031D
+    cmp r0, 0
+    ifz jmp submenu_update_event_end_no_push
+
     ; get the current mouse position and check if the submenu overlay covers that position
     ; if the mouse is not in the submenu, then there is nothing to do
     call get_mouse_position
