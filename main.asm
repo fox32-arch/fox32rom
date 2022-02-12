@@ -2,6 +2,10 @@
     ; fox32 starts here on reset
     org 0xF0000000
 
+const FOX32ROM_VERSION_MAJOR: 0
+const FOX32ROM_VERSION_MINOR: 1
+const FOX32ROM_VERSION_PATCH: 0
+
 const SYSTEM_STACK:     0x01FFF800
 const BACKGROUND_COLOR: 0xFF414C50
 
@@ -159,6 +163,12 @@ mount_boot_disk:
     out r0, 0
     ret
 
+get_rom_version:
+    mov r0, FOX32ROM_VERSION_MAJOR
+    mov r1, FOX32ROM_VERSION_MINOR
+    mov r2, FOX32ROM_VERSION_PATCH
+    ret
+
     ; code
     #include "boot.asm"
     #include "background.asm"
@@ -179,6 +189,7 @@ mount_boot_disk:
 
     ; system jump table
     org.pad 0xF0040000
+    data.32 get_rom_version
     data.32 system_vsync_handler
     data.32 get_mouse_position
     data.32 new_event
