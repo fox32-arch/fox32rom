@@ -178,7 +178,7 @@ mount_boot_disk:
     ; data
 
     ; system jump table
-    org.pad 0xF1000000
+    org.pad 0xF0040000
     data.32 system_vsync_handler
     data.32 get_mouse_position
     data.32 new_event
@@ -186,13 +186,13 @@ mount_boot_disk:
     data.32 get_next_event
 
     ; background jump table
-    org.pad 0xF1001000
+    org.pad 0xF0041000
     data.32 draw_str_to_background
     data.32 draw_font_tile_to_background
     data.32 fill_background
 
     ; overlay jump table
-    org.pad 0xF1002000
+    org.pad 0xF0042000
     data.32 draw_str_to_overlay
     data.32 draw_font_tile_to_overlay
     data.32 fill_overlay
@@ -201,14 +201,14 @@ mount_boot_disk:
     data.32 check_if_enabled_overlay_covers_position
 
     ; menu bar jump table
-    org.pad 0xF1003000
+    org.pad 0xF0043000
     data.32 menu_bar_click_event
     data.32 clear_menu_bar
     data.32 draw_menu_bar_root_items
     data.32 draw_submenu_items
     data.32 close_submenu
 
-    org.pad 0xF1F00000
+    org.pad 0xF004F000
 font:
     #include_bin "font/unifont-thin.raw"
 
@@ -253,5 +253,5 @@ menu_items_system_list:
     data.8 10 data.str "Mount Disk" data.8 0x00 ; text length, text, null-terminator
     data.8 4  data.str "Halt"       data.8 0x00 ; text length, text, null-terminator
 
-    ; pad out to 32 MiB
-    org.pad 0xF2000000
+    ; pad out to 512 KiB
+    org.pad 0xF0080000

@@ -1,31 +1,31 @@
 ; fox32 rom routine definitions
 
 ; system jump table entries
-system_vsync_handler:                     jmp [0xF1000000]
-get_mouse_position:                       jmp [0xF1000004]
-new_event:                                jmp [0xF1000008]
-wait_for_event:                           jmp [0xF100000C]
-get_next_event:                           jmp [0xF1000010]
+system_vsync_handler:                     jmp [0xF0040000]
+get_mouse_position:                       jmp [0xF0040004]
+new_event:                                jmp [0xF0040008]
+wait_for_event:                           jmp [0xF004000C]
+get_next_event:                           jmp [0xF0040010]
 
 ; background jump table entries
-draw_str_to_background:                   jmp [0xF1001000]
-draw_font_tile_to_background:             jmp [0xF1001004]
-fill_background:                          jmp [0xF1001008]
+draw_str_to_background:                   jmp [0xF0041000]
+draw_font_tile_to_background:             jmp [0xF0041004]
+fill_background:                          jmp [0xF0041008]
 
 ; overlay jump table entries
-draw_str_to_overlay:                      jmp [0xF1002000]
-draw_font_tile_to_overlay:                jmp [0xF1002004]
-fill_overlay:                             jmp [0xF1002008]
-find_overlay_covering_position:           jmp [0xF100200C]
-check_if_overlay_covers_position:         jmp [0xF1002010]
-check_if_enabled_overlay_covers_position: jmp [0xF1002014]
+draw_str_to_overlay:                      jmp [0xF0042000]
+draw_font_tile_to_overlay:                jmp [0xF0042004]
+fill_overlay:                             jmp [0xF0042008]
+find_overlay_covering_position:           jmp [0xF004200C]
+check_if_overlay_covers_position:         jmp [0xF0042010]
+check_if_enabled_overlay_covers_position: jmp [0xF0042014]
 
 ; menu bar jump table entries
-menu_bar_click_event:                     jmp [0xF1003000]
-clear_menu_bar:                           jmp [0xF1003004]
-draw_menu_bar_root_items:                 jmp [0xF1003008]
-draw_submenu_items:                       jmp [0xF100300C]
-close_submenu:                            jmp [0xF1003010]
+menu_bar_click_event:                     jmp [0xF0043000]
+clear_menu_bar:                           jmp [0xF0043004]
+draw_menu_bar_root_items:                 jmp [0xF0043008]
+draw_submenu_items:                       jmp [0xF004300C]
+close_submenu:                            jmp [0xF0043010]
 
 ; event types
 const MOUSE_CLICK_EVENT_TYPE:    0x00000000
