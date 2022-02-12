@@ -170,15 +170,15 @@ get_rom_version:
     ret
 
     ; code
-    #include "boot.asm"
     #include "background.asm"
+    #include "boot.asm"
     #include "debug.asm"
-    #include "overlay.asm"
+    #include "event.asm"
     #include "memory.asm"
     #include "menu.asm"
-    #include "submenu.asm"
-    #include "event.asm"
     #include "mouse.asm"
+    #include "overlay.asm"
+    #include "submenu.asm"
     #include "vsync.asm"
 
 
