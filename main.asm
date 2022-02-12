@@ -164,6 +164,7 @@ mount_boot_disk:
     ; code
     #include "boot.asm"
     #include "background.asm"
+    #include "debug.asm"
     #include "overlay.asm"
     #include "memory.asm"
     #include "menu.asm"
