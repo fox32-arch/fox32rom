@@ -178,7 +178,7 @@ close_submenu:
 ; r3: hovering submenu item (or 0xFFFFFFFF for none)
 ; outputs:
 ; none
-; the event is pushed back onto the event stack if the submenu is still open
+; the event is added back into the event queue if the submenu is still open
 submenu_update_event:
     push r0
     push r1
@@ -196,17 +196,17 @@ submenu_update_event:
     mov r10, r3                   ; r10: hovering submenu item (or 0xFFFFFFFF for none)
 
     ; check if the submenu overlay is enabled
-    ; if the submenu was closed then exit without repushing the update event to the event stack
+    ; if the submenu was closed then exit without readding the update event to the event queue
     in r0, 0x8000031D
     cmp r0, 0
-    ifz jmp submenu_update_event_end_no_push
+    ifz jmp submenu_update_event_end_no_add
 
     ; get the current mouse position and check if the submenu overlay covers that position
     ; if the mouse is not in the submenu, then there is nothing to do
     call get_mouse_position
     mov r2, 29
     call check_if_enabled_overlay_covers_position
-    ifnz jmp submenu_update_event_end_push
+    ifnz jmp submenu_update_event_end_add
 
     ; make the mouse position relative to the submenu overlay
     mov r2, 29
@@ -229,7 +229,7 @@ submenu_update_event_no_redraw:
     bts r0, 1
     ifnz jmp submenu_update_event_clicked
 
-    jmp submenu_update_event_end_push
+    jmp submenu_update_event_end_add
 submenu_update_event_clicked:
     ;div r2, 16                    ; mouse Y / 16
     mov r1, r8                    ; event parameter 0: pointer to menu bar root struct
@@ -243,9 +243,9 @@ submenu_update_event_clicked:
     call new_event
     mov r0, r1
     call close_submenu
-    jmp submenu_update_event_end_no_push
-submenu_update_event_end_push:
-    ; repush the submenu_update_event_type event to the event stack
+    jmp submenu_update_event_end_no_add
+submenu_update_event_end_add:
+    ; readd the submenu_update_event_type event to the event queue
     mov r1, r8                    ; event parameter 0: pointer to menu bar root struct
     mov r2, r9                    ; event parameter 1: selected root menu item
     mov r3, r10                   ; event parameter 2: hovering submenu item (or 0xFFFFFFFF for none)
@@ -255,7 +255,7 @@ submenu_update_event_end_push:
     mov r7, 0
     mov r0, SUBMENU_UPDATE_EVENT_TYPE
     call new_event
-submenu_update_event_end_no_push:
+submenu_update_event_end_no_add:
     pop r9
     pop r8
     pop r7

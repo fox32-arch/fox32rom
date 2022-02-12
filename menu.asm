@@ -167,7 +167,7 @@ menu_bar_click_event_found_item:
     call draw_menu_bar_root_items
     call draw_submenu_items
 
-    ; push a submenu_update_event_type event to the event stack
+    ; add a submenu_update_event_type event to the event queue
     mov r1, r0                    ; event parameter 0: pointer to menu bar root struct
     mov r2, r30                   ; event parameter 1: selected root menu item
     mov r3, 0xFFFFFFFF            ; event parameter 2: hovering submenu item (or 0xFFFFFFFF for none)

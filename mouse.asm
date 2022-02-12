@@ -25,7 +25,7 @@ get_mouse_button:
 
     ret
 
-; updates the cursor position and pushes a mouse_click_event_type event to the event stack if the mouse button was clicked
+; updates the cursor position and adds a mouse_click_event_type event to the event queue if the mouse button was clicked
 ; this should only be called by system_vsync_handler
 mouse_update:
     push r0
@@ -71,7 +71,7 @@ mouse_update:
     cmp r3, 0
     ifnz jmp mouse_update_end
 
-    ; otherwise, just push a standard mouse click event to the event stack
+    ; otherwise, just add a standard mouse click event to the event queue
     mov r2, r1                    ; copy Y position to event parameter 1
     mov r1, r0                    ; copy X position to event parameter 0
     mov r3, 0
