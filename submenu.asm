@@ -186,6 +186,8 @@ submenu_update_event:
     push r3
     push r4
     push r5
+    push r6
+    push r7
     push r8
     push r9
 
@@ -235,8 +237,10 @@ submenu_update_event_clicked:
     mov r3, r10                   ; event parameter 2: selected submenu item
     mov r4, 0
     mov r5, 0
+    mov r6, 0
+    mov r7, 0
     mov r0, submenu_click_event_type
-    call push_event
+    call new_event
     mov r0, r1
     call close_submenu
     jmp submenu_update_event_end_no_push
@@ -247,11 +251,15 @@ submenu_update_event_end_push:
     mov r3, r10                   ; event parameter 2: hovering submenu item (or 0xFFFFFFFF for none)
     mov r4, 0
     mov r5, 0
+    mov r6, 0
+    mov r7, 0
     mov r0, submenu_update_event_type
-    call push_event
+    call new_event
 submenu_update_event_end_no_push:
     pop r9
     pop r8
+    pop r7
+    pop r6
     pop r5
     pop r4
     pop r3

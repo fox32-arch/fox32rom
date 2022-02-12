@@ -3,8 +3,9 @@
 ; system jump table entries
 system_vsync_handler:                     jmp [0xF1000000]
 get_mouse_position:                       jmp [0xF1000004]
-push_event:                               jmp [0xF1000008]
+new_event:                                jmp [0xF1000008]
 wait_for_event:                           jmp [0xF100000C]
+get_next_event:                           jmp [0xF1000010]
 
 ; background jump table entries
 draw_str_to_background:                   jmp [0xF1001000]

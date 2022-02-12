@@ -34,6 +34,8 @@ mouse_update:
     push r3
     push r4
     push r5
+    push r6
+    push r7
 
     mov r0, 0x8000001F            ; overlay 31: position
     in r2, 0x80000401             ; mouse position
@@ -75,8 +77,10 @@ mouse_update:
     mov r3, 0
     mov r4, 0
     mov r5, 0
+    mov r6, 0
+    mov r7, 0
     mov r0, mouse_click_event_type ; set event type to mouse type
-    call push_event
+    call new_event
     jmp mouse_update_end
 mouse_update_menu_was_clicked:
     mov r2, r1                    ; copy Y position to event parameter 1
@@ -84,9 +88,13 @@ mouse_update_menu_was_clicked:
     mov r3, 0
     mov r4, 0
     mov r5, 0
+    mov r6, 0
+    mov r7, 0
     mov r0, menu_bar_click_event_type ; set event type to menu bar click type
-    call push_event
+    call new_event
 mouse_update_end:
+    pop r7
+    pop r6
     pop r5
     pop r4
     pop r3

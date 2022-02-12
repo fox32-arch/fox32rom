@@ -113,6 +113,8 @@ menu_bar_click_event:
     push r3
     push r4
     push r5
+    push r6
+    push r7
     push r28
     push r29
     push r30
@@ -156,18 +158,7 @@ menu_bar_click_event_loop:
     ;mov r1, 0xFFFFFFFF
     ;call draw_menu_bar_root_items ; close_submenu already calls this
     call close_submenu
-
-    pop r31
-    pop r30
-    pop r29
-    pop r28
-    pop r5
-    pop r4
-    pop r3
-    pop r2
-    pop r1
-    pop r0
-    ret
+    jmp menu_bar_click_event_end
 menu_bar_click_event_found_item:
     ; r30 contains the clicked root menu item (starting at 0)
     pop r0
@@ -182,13 +173,17 @@ menu_bar_click_event_found_item:
     mov r3, 0xFFFFFFFF            ; event parameter 2: hovering submenu item (or 0xFFFFFFFF for none)
     mov r4, 0
     mov r5, 0
+    mov r6, 0
+    mov r7, 0
     mov r0, submenu_update_event_type
-    call push_event
-
+    call new_event
+menu_bar_click_event_end:
     pop r31
     pop r30
     pop r29
     pop r28
+    pop r7
+    pop r6
     pop r5
     pop r4
     pop r3

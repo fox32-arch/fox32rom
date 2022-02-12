@@ -8,7 +8,6 @@ const background_color: 0xFF414C50
     ; initialization code
 entry:
     mov rsp, system_stack
-    mov [event_stack_pointer], event_stack
 
     mov [0x000003FC], system_vsync_handler
 
@@ -110,8 +109,7 @@ draw_startup_text:
 
     ise
 event_loop:
-    halt
-    call pop_event
+    call get_next_event
 
     ; was the mouse clicked?
     cmp r0, mouse_click_event_type
@@ -183,8 +181,9 @@ mount_boot_disk:
     org.pad 0xF1000000
     data.32 system_vsync_handler
     data.32 get_mouse_position
-    data.32 push_event
+    data.32 new_event
     data.32 wait_for_event
+    data.32 get_next_event
 
     ; background jump table
     org.pad 0xF1001000

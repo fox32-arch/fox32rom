@@ -1,7 +1,11 @@
 ; event system routines
 
-const event_stack:         0x01FFFFFC ; pre-decremented
-const event_stack_pointer: 0x01FFFFFC
+const event_queue_top:    0x01FFFFFE
+const event_queue_bottom: 0x01FFFBFE ; top - 0x400 (32 events * (4 bytes * (1 type + 7 parameters)))
+const event_queue_index:  0x01FFFFFF ; byte
+const event_queue_size:   32         ; 32 events
+const event_size_bytes:   32         ; 32 bytes per event
+const event_size_words:   8          ; 8 words per event
 
 ; event types
 const mouse_click_event_type:    0x00000000
@@ -15,112 +19,164 @@ const empty_event_type:          0xFFFFFFFF
 ; none
 ; outputs:
 ; r0: event type
-; r1-r5: event parameters
+; r1-r7: event parameters
 wait_for_event:
     ise
     halt
 
-    ; check the event stack pointer
-    ; if equal to its base address, then the event stack is empty
-    cmp [event_stack_pointer], event_stack_pointer
+    ; if the event queue index doesn't equal zero, then at least one event is available
+    cmp.8 [event_queue_index], 0
     ifz jmp wait_for_event
 
-    ; an event is available in the event stack, pop it from the stack and return it
-    call pop_event
+    ; an event is available in the event queue, remove it from the queue and return it
+    call get_next_event
 
     ret
 
-; push an event to the event stack
+; add an event to the event queue
 ; inputs:
 ; r0: event type
-; r1-r5: event parameters
+; r1-r7: event parameters
 ; outputs:
 ; none
-push_event:
-    push r6
+new_event:
+    ; ensure there is enough space left for another event
+    cmp.8 [event_queue_index], event_queue_size
+    ifz ret
 
-    mov r6, [event_stack_pointer]
-    ; TODO: check to make sure we don't accidentally clobber the system stack by pushing too many events
+    push r8
+    push r9
 
-    ; push r0
-    sub r6, 4
-    mov [r6], r0
+    ; point to the current event queue index
+    mov r8, event_queue_bottom
+    movz.8 r9, [event_queue_index]
+    mul r9, event_size_bytes
+    add r8, r9
 
-    ; push r1
-    sub r6, 4
-    mov [r6], r1
+    ; copy the event type
+    mov [r8], r0
+    add r8, 4
 
-    ; push r2
-    sub r6, 4
-    mov [r6], r2
+    ; copy the event parameters
+    mov [r8], r1
+    add r8, 4
+    mov [r8], r2
+    add r8, 4
+    mov [r8], r3
+    add r8, 4
+    mov [r8], r4
+    add r8, 4
+    mov [r8], r5
+    add r8, 4
+    mov [r8], r6
+    add r8, 4
+    mov [r8], r7
+    add r8, 4
 
-    ; push r3
-    sub r6, 4
-    mov [r6], r3
+    ; increment the index
+    inc.8 [event_queue_index]
 
-    ; push r4
-    sub r6, 4
-    mov [r6], r4
-
-    ; push r5
-    sub r6, 4
-    mov [r6], r5
-
-    mov [event_stack_pointer], r6
-
-    pop r6
+    pop r9
+    pop r8
     ret
 
-; pop an event from the event stack
+; get the next event and remove it from the event queue
 ; inputs:
 ; none
 ; outputs:
 ; r0: event type
-; r1-r5: event parameters
-pop_event:
-    ; check the event stack pointer
-    ; if equal to its base address, then the event stack is empty
-    cmp [event_stack_pointer], event_stack_pointer
-    ifz jmp pop_event_empty
+; r1-r7: event parameters
+get_next_event:
+    ; if the event queue index equals zero, then the queue is empty
+    cmp.8 [event_queue_index], 0
+    ifz jmp get_next_event_empty
 
-    push r6
+    icl
+    push r8
 
-    mov r6, [event_stack_pointer]
+    ; point to the bottom of the event queue
+    mov r8, event_queue_bottom
 
-    ; pop r5
-    mov r5, [r6]
-    add r6, 4
+    ; copy the event type
+    mov r0, [r8]
+    add r8, 4
 
-    ; pop r4
-    mov r4, [r6]
-    add r6, 4
+    ; copy the event parameters
+    mov r1, [r8]
+    add r8, 4
+    mov r2, [r8]
+    add r8, 4
+    mov r3, [r8]
+    add r8, 4
+    mov r4, [r8]
+    add r8, 4
+    mov r5, [r8]
+    add r8, 4
+    mov r6, [r8]
+    add r8, 4
+    mov r7, [r8]
 
-    ; pop r3
-    mov r3, [r6]
-    add r6, 4
+    ; shift all events down by one
+    call shift_events
 
-    ; pop r2
-    mov r2, [r6]
-    add r6, 4
+    ; decrement the index
+    dec.8 [event_queue_index]
 
-    ; pop r1
-    mov r1, [r6]
-    add r6, 4
-
-    ; pop r0
-    mov r0, [r6]
-    add r6, 4
-
-    mov [event_stack_pointer], r6
-
-    pop r6
+    pop r8
+    ise
     ret
-pop_event_empty:
+get_next_event_empty:
     mov r0, empty_event_type
     mov r1, 0
     mov r2, 0
     mov r3, 0
     mov r4, 0
     mov r5, 0
+    mov r6, 0
+    mov r7, 0
 
+    ret
+
+; shift all events down by one, overwriting the zero'th event
+; inputs:
+; none
+; outputs:
+; none
+shift_events:
+    push r0
+    push r1
+    push r2
+    push r3
+    push r4
+
+    ; for (int i = 0; i < (event_queue_index - 1); i++) {
+    ;    event_queue[i] = event_queue[i + 1];
+    ; }
+
+    movz.8 r31, [event_queue_index]
+    mov r3, 0 ; i
+
+    ; source pointer: event_queue[i + 1]
+    mov r0, event_queue_bottom
+    mov r4, r3
+    inc r4
+    mul r4, event_size_words
+    add r0, r4
+
+    ; destination pointer: event_queue[i]
+    mov r1, event_queue_bottom
+    mov r4, r3
+    mul r4, event_size_words
+    add r1, r4
+
+    ; size: event_size_words
+    mov r2, event_size_words
+
+    call copy_memory_words
+
+    pop r4
+    pop r3
+    pop r2
+    pop r1
+    pop r0
     ret
