@@ -38,7 +38,7 @@ draw_submenu_items_calculate_x_loop:
     loop draw_submenu_items_calculate_x_loop
 draw_submenu_items_calculate_x_skip:
     sub r30, 8                    ; move the submenu to the left by 8 pixels
-    mov.16 [overlay_29_position_x], r30
+    mov.16 [OVERLAY_29_POSITION_X], r30
 
     mov r31, r0
     inc r31                       ; point to submenu list pointer
@@ -53,7 +53,7 @@ draw_submenu_items_calculate_x_skip:
     ; multiply the number of submenu items by 16 (the font is 16 pixels tall)
     mov r1, r31
     mul r1, 16
-    mov.16 [overlay_29_height], r1
+    mov.16 [OVERLAY_29_HEIGHT], r1
 
     ; calculate the required width for the submenu overlay
     ; multiply the width by 8 (the font is 8 pixels wide)
@@ -62,25 +62,25 @@ draw_submenu_items_calculate_x_skip:
     movz.8 r1, [r1]               ; load width of submenu
     mov r8, r1                    ; save the width in characters in r8 for later
     mul r1, 8
-    mov.16 [overlay_29_width], r1
+    mov.16 [OVERLAY_29_WIDTH], r1
 
     push r0
 
     ; set properties of overlay 29
-    mov.16 [overlay_29_position_y], 16
-    mov [overlay_29_framebuffer_ptr], overlay_29_framebuffer
+    mov.16 [OVERLAY_29_POSITION_Y], 16
+    mov [OVERLAY_29_FRAMEBUFFER_PTR], OVERLAY_29_FRAMEBUFFER
     mov r0, 0x8000001D ; overlay 29: position
-    mov.16 r1, [overlay_29_position_y]
+    mov.16 r1, [OVERLAY_29_POSITION_Y]
     sla r1, 16
-    mov.16 r1, [overlay_29_position_x]
+    mov.16 r1, [OVERLAY_29_POSITION_X]
     out r0, r1
     mov r0, 0x8000011D ; overlay 29: size
-    mov.16 r1, [overlay_29_height]
+    mov.16 r1, [OVERLAY_29_HEIGHT]
     sla r1, 16
-    mov.16 r1, [overlay_29_width]
+    mov.16 r1, [OVERLAY_29_WIDTH]
     out r0, r1
     mov r0, 0x8000021D ; overlay 29: framebuffer pointer
-    mov r1, [overlay_29_framebuffer_ptr]
+    mov r1, [OVERLAY_29_FRAMEBUFFER_PTR]
     out r0, r1
     mov r0, 0x8000031D
     out r0, 1
@@ -239,7 +239,7 @@ submenu_update_event_clicked:
     mov r5, 0
     mov r6, 0
     mov r7, 0
-    mov r0, submenu_click_event_type
+    mov r0, SUBMENU_CLICK_EVENT_TYPE
     call new_event
     mov r0, r1
     call close_submenu
@@ -253,7 +253,7 @@ submenu_update_event_end_push:
     mov r5, 0
     mov r6, 0
     mov r7, 0
-    mov r0, submenu_update_event_type
+    mov r0, SUBMENU_UPDATE_EVENT_TYPE
     call new_event
 submenu_update_event_end_no_push:
     pop r9

@@ -175,7 +175,7 @@ menu_bar_click_event_found_item:
     mov r5, 0
     mov r6, 0
     mov r7, 0
-    mov r0, submenu_update_event_type
+    mov r0, SUBMENU_UPDATE_EVENT_TYPE
     call new_event
 menu_bar_click_event_end:
     pop r31

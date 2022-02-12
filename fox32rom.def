@@ -28,8 +28,8 @@ draw_submenu_items:                       jmp [0xF100300C]
 close_submenu:                            jmp [0xF1003010]
 
 ; event types
-const mouse_click_event_type:    0x00000000
-const menu_bar_click_event_type: 0x00000001
-const submenu_update_event_type: 0x00000002
-const submenu_click_event_type:  0x00000003
-const empty_event_type:          0xFFFFFFFF
+const MOUSE_CLICK_EVENT_TYPE:    0x00000000
+const MENU_BAR_CLICK_EVENT_TYPE: 0x00000001
+const SUBMENU_UPDATE_EVENT_TYPE: 0x00000002
+const SUBMENU_CLICK_EVENT_TYPE:  0x00000003
+const EMPTY_EVENT_TYPE:          0xFFFFFFFF

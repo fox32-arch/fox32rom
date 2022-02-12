@@ -79,7 +79,7 @@ mouse_update:
     mov r5, 0
     mov r6, 0
     mov r7, 0
-    mov r0, mouse_click_event_type ; set event type to mouse type
+    mov r0, MOUSE_CLICK_EVENT_TYPE ; set event type to mouse type
     call new_event
     jmp mouse_update_end
 mouse_update_menu_was_clicked:
@@ -90,7 +90,7 @@ mouse_update_menu_was_clicked:
     mov r5, 0
     mov r6, 0
     mov r7, 0
-    mov r0, menu_bar_click_event_type ; set event type to menu bar click type
+    mov r0, MENU_BAR_CLICK_EVENT_TYPE ; set event type to menu bar click type
     call new_event
 mouse_update_end:
     pop r7

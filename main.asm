@@ -2,12 +2,12 @@
     ; fox32 starts here on reset
     org 0xF0000000
 
-const system_stack:     0x01FFF800
-const background_color: 0xFF414C50
+const SYSTEM_STACK:     0x01FFF800
+const BACKGROUND_COLOR: 0xFF414C50
 
     ; initialization code
 entry:
-    mov rsp, system_stack
+    mov rsp, SYSTEM_STACK
 
     mov [0x000003FC], system_vsync_handler
 
@@ -44,7 +44,7 @@ cursor_enable:
     mov r0, 0x8000031F
     out r0, 1
 
-    mov r0, background_color
+    mov r0, BACKGROUND_COLOR
     call fill_background
 
 menu_bar_enable:
@@ -112,20 +112,20 @@ event_loop:
     call get_next_event
 
     ; was the mouse clicked?
-    cmp r0, mouse_click_event_type
+    cmp r0, MOUSE_CLICK_EVENT_TYPE
     ;ifz call mouse_click_event
 
     ; did the user click the menu bar?
-    cmp r0, menu_bar_click_event_type
+    cmp r0, MENU_BAR_CLICK_EVENT_TYPE
     ifz mov r0, menu_items_root
     ifz call menu_bar_click_event
 
     ; is the user in a submenu?
-    cmp r0, submenu_update_event_type
+    cmp r0, SUBMENU_UPDATE_EVENT_TYPE
     ifz call submenu_update_event
 
     ; did the user click a submenu item?
-    cmp r0, submenu_click_event_type
+    cmp r0, SUBMENU_CLICK_EVENT_TYPE
     ifz call submenu_click_event
 
     ; check if a disk is mounted as disk 0
@@ -231,12 +231,12 @@ overlay_30_framebuffer_ptr: data.32 0x8012D180
 
 ; submenu overlay struct:
 ; this struct must be writable, so these are hard-coded addresses in shared memory
-const overlay_29_width:           0x80137180 ; 2 bytes
-const overlay_29_height:          0x80137182 ; 2 bytes
-const overlay_29_position_x:      0x80137184 ; 2 bytes
-const overlay_29_position_y:      0x80137186 ; 2 bytes
-const overlay_29_framebuffer_ptr: 0x8013718A ; 4 bytes
-const overlay_29_framebuffer:     0x8013718E
+const OVERLAY_29_WIDTH:           0x80137180 ; 2 bytes
+const OVERLAY_29_HEIGHT:          0x80137182 ; 2 bytes
+const OVERLAY_29_POSITION_X:      0x80137184 ; 2 bytes
+const OVERLAY_29_POSITION_Y:      0x80137186 ; 2 bytes
+const OVERLAY_29_FRAMEBUFFER_PTR: 0x8013718A ; 4 bytes
+const OVERLAY_29_FRAMEBUFFER:     0x8013718E
 
 startup_str_1: data.str "Welcome to fox32" data.8 0
 startup_str_2: data.str "Insert boot disk" data.8 0

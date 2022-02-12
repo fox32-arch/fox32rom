@@ -1,6 +1,6 @@
 ; background routines
 
-const background: 0x80000000 ; pointer to background framebuffer
+const BACKGROUND_FRAMEBUFFER: 0x80000000 ; pointer to background framebuffer
 
 ; fill the whole background with a color
 ; inputs:
@@ -11,7 +11,7 @@ fill_background:
     push r1
     push r31
 
-    mov r1, background
+    mov r1, BACKGROUND_FRAMEBUFFER
     mov r31, 0x0004B000 ; 640*480
 fill_background_loop:
     mov [r1], r0
@@ -44,7 +44,7 @@ draw_filled_rectangle_to_background:
     mul r1, 2560             ; y * 2560 (640 * 4 = 2560)
     mul r0, 4                ; x * 4
     add r0, r1               ; y * 2560 + (x * 4)
-    add r0, background       ; r0: pointer to framebuffer
+    add r0, BACKGROUND_FRAMEBUFFER ; r0: pointer to framebuffer
 
     mov r6, r2
     mul r6, 4                ; multiply the X size by 4, since 4 bytes per pixel
@@ -105,7 +105,7 @@ draw_font_tile_to_background:
     mul r2, 2560             ; y * 2560 (640 * 4 = 2560)
     mul r1, 4                ; x * 4
     add r1, r2               ; y * 2560 + (x * 4)
-    add r1, background       ; r1: pointer to framebuffer
+    add r1, BACKGROUND_FRAMEBUFFER ; r1: pointer to framebuffer
 
     mov r6, 16               ; y counter
 draw_font_tile_to_background_y_loop:

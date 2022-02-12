@@ -1,18 +1,18 @@
 ; event system routines
 
-const event_queue_top:    0x01FFFFFE
-const event_queue_bottom: 0x01FFFBFE ; top - 0x400 (32 events * (4 bytes * (1 type + 7 parameters)))
-const event_queue_index:  0x01FFFFFF ; byte
-const event_queue_size:   32         ; 32 events
-const event_size_bytes:   32         ; 32 bytes per event
-const event_size_words:   8          ; 8 words per event
+const EVENT_QUEUE_TOP:    0x01FFFFFE
+const EVENT_QUEUE_BOTTOM: 0x01FFFBFE ; top - 0x400 (32 events * (4 bytes * (1 type + 7 parameters)))
+const EVENT_QUEUE_INDEX:  0x01FFFFFF ; byte
+const EVENT_QUEUE_SIZE:   32         ; 32 events
+const EVENT_SIZE_BYTES:   32         ; 32 bytes per event
+const EVENT_SIZE_WORDS:   8          ; 8 words per event
 
 ; event types
-const mouse_click_event_type:    0x00000000
-const menu_bar_click_event_type: 0x00000001
-const submenu_update_event_type: 0x00000002
-const submenu_click_event_type:  0x00000003
-const empty_event_type:          0xFFFFFFFF
+const MOUSE_CLICK_EVENT_TYPE:    0x00000000
+const MENU_BAR_CLICK_EVENT_TYPE: 0x00000001
+const SUBMENU_UPDATE_EVENT_TYPE: 0x00000002
+const SUBMENU_CLICK_EVENT_TYPE:  0x00000003
+const EMPTY_EVENT_TYPE:          0xFFFFFFFF
 
 ; block until an event is available
 ; inputs:
@@ -25,7 +25,7 @@ wait_for_event:
     halt
 
     ; if the event queue index doesn't equal zero, then at least one event is available
-    cmp.8 [event_queue_index], 0
+    cmp.8 [EVENT_QUEUE_INDEX], 0
     ifz jmp wait_for_event
 
     ; an event is available in the event queue, remove it from the queue and return it
@@ -41,16 +41,16 @@ wait_for_event:
 ; none
 new_event:
     ; ensure there is enough space left for another event
-    cmp.8 [event_queue_index], event_queue_size
+    cmp.8 [EVENT_QUEUE_INDEX], EVENT_QUEUE_SIZE
     ifz ret
 
     push r8
     push r9
 
     ; point to the current event queue index
-    mov r8, event_queue_bottom
-    movz.8 r9, [event_queue_index]
-    mul r9, event_size_bytes
+    mov r8, EVENT_QUEUE_BOTTOM
+    movz.8 r9, [EVENT_QUEUE_INDEX]
+    mul r9, EVENT_SIZE_BYTES
     add r8, r9
 
     ; copy the event type
@@ -74,7 +74,7 @@ new_event:
     add r8, 4
 
     ; increment the index
-    inc.8 [event_queue_index]
+    inc.8 [EVENT_QUEUE_INDEX]
 
     pop r9
     pop r8
@@ -88,14 +88,14 @@ new_event:
 ; r1-r7: event parameters
 get_next_event:
     ; if the event queue index equals zero, then the queue is empty
-    cmp.8 [event_queue_index], 0
+    cmp.8 [EVENT_QUEUE_INDEX], 0
     ifz jmp get_next_event_empty
 
     icl
     push r8
 
     ; point to the bottom of the event queue
-    mov r8, event_queue_bottom
+    mov r8, EVENT_QUEUE_BOTTOM
 
     ; copy the event type
     mov r0, [r8]
@@ -120,13 +120,13 @@ get_next_event:
     call shift_events
 
     ; decrement the index
-    dec.8 [event_queue_index]
+    dec.8 [EVENT_QUEUE_INDEX]
 
     pop r8
     ise
     ret
 get_next_event_empty:
-    mov r0, empty_event_type
+    mov r0, EMPTY_EVENT_TYPE
     mov r1, 0
     mov r2, 0
     mov r3, 0
@@ -153,24 +153,24 @@ shift_events:
     ;    event_queue[i] = event_queue[i + 1];
     ; }
 
-    movz.8 r31, [event_queue_index]
+    movz.8 r31, [EVENT_QUEUE_INDEX]
     mov r3, 0 ; i
 
     ; source pointer: event_queue[i + 1]
-    mov r0, event_queue_bottom
+    mov r0, EVENT_QUEUE_BOTTOM
     mov r4, r3
     inc r4
-    mul r4, event_size_words
+    mul r4, EVENT_SIZE_WORDS
     add r0, r4
 
     ; destination pointer: event_queue[i]
-    mov r1, event_queue_bottom
+    mov r1, EVENT_QUEUE_BOTTOM
     mov r4, r3
-    mul r4, event_size_words
+    mul r4, EVENT_SIZE_WORDS
     add r1, r4
 
     ; size: event_size_words
-    mov r2, event_size_words
+    mov r2, EVENT_SIZE_WORDS
 
     call copy_memory_words
 
