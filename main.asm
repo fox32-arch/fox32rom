@@ -256,8 +256,3 @@ menu_items_system_list:
 
     ; pad out to 32 MiB
     org.pad 0xF2000000
-
-    ; TODO: ideas:
-    ;       rectangle drawing routine
-    ;       fill background/overlay routine
-    ;       seperators in submenus
