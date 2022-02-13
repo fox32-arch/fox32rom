@@ -173,6 +173,7 @@ get_rom_version:
     #include "background.asm"
     #include "boot.asm"
     #include "debug.asm"
+    #include "draw_text.asm"
     #include "event.asm"
     #include "memory.asm"
     #include "menu.asm"
@@ -196,23 +197,28 @@ get_rom_version:
     data.32 wait_for_event
     data.32 get_next_event
 
-    ; background jump table
+    ; generic text drawing jump table
     org.pad 0xF0041000
+    data.32 draw_str_generic
+    data.32 draw_font_tile_generic
+
+    ; background jump table
+    org.pad 0xF0042000
+    data.32 fill_background
     data.32 draw_str_to_background
     data.32 draw_font_tile_to_background
-    data.32 fill_background
 
     ; overlay jump table
-    org.pad 0xF0042000
+    org.pad 0xF0043000
+    data.32 fill_overlay
     data.32 draw_str_to_overlay
     data.32 draw_font_tile_to_overlay
-    data.32 fill_overlay
     data.32 find_overlay_covering_position
     data.32 check_if_overlay_covers_position
     data.32 check_if_enabled_overlay_covers_position
 
     ; menu bar jump table
-    org.pad 0xF0043000
+    org.pad 0xF0044000
     data.32 menu_bar_click_event
     data.32 clear_menu_bar
     data.32 draw_menu_bar_root_items
@@ -220,7 +226,11 @@ get_rom_version:
     data.32 close_submenu
 
     org.pad 0xF004F000
-font:
+standard_font_width:
+    data.16 8
+standard_font_height:
+    data.16 16
+standard_font_data:
     #include_bin "font/unifont-thin.raw"
 
 mouse_cursor:

@@ -81,67 +81,27 @@ draw_filled_rectangle_to_background_x_loop:
 ; outputs:
 ; none
 draw_font_tile_to_background:
-    push r0
-    push r1
-    push r2
     push r5
     push r6
+    push r7
+    push r8
+    push r9
 
-    ;movz.8 r0, r0            ; ensure the tile number is a single byte
+    mov r5, standard_font_data
+    movz.16 r6, [standard_font_width]
+    movz.16 r7, [standard_font_height]
+    mov r8, BACKGROUND_FRAMEBUFFER
+    mov r9, 640
+    call draw_font_tile_generic
 
-    ; calculate pointer to the tile data
-    push r1
-    push r2
-    mov r1, 8                ; tile width
-    mov r2, 16               ; tile height
-    mul r1, r2
-    mul r0, r1
-    mul r0, 4                ; 4 bytes per pixel
-    add r0, font             ; r0: pointer to tile data
-    pop r2
-    pop r1
-
-    ; calculate pointer to the framebuffer
-    mul r2, 2560             ; y * 2560 (640 * 4 = 2560)
-    mul r1, 4                ; x * 4
-    add r1, r2               ; y * 2560 + (x * 4)
-    add r1, BACKGROUND_FRAMEBUFFER ; r1: pointer to framebuffer
-
-    mov r6, 16               ; y counter
-draw_font_tile_to_background_y_loop:
-    mov r5, 8                ; x counter
-draw_font_tile_to_background_x_loop:
-    mov r2, [r0]
-    cmp r2, 0xFF000000
-    ifz jmp draw_font_tile_to_background_x_loop_background
-    ; drawing foreground pixel
-    cmp r3, 0x00000000       ; is the foreground color supposed to be transparent?
-    ifz jmp draw_font_tile_to_background_x_loop_end
-    mov [r1], r3             ; draw foreground color
-    jmp draw_font_tile_to_background_x_loop_end
-draw_font_tile_to_background_x_loop_background:
-    ; drawing background pixel
-    cmp r4, 0x00000000       ; is the background color supposed to be transparent?
-    ifz jmp draw_font_tile_to_background_x_loop_end
-    mov [r1], r4             ; draw background color
-draw_font_tile_to_background_x_loop_end:
-    add r0, 4                ; increment tile pointer
-    add r1, 4                ; increment framebuffer pointer
-    dec r5
-    ifnz jmp draw_font_tile_to_background_x_loop ; loop if there are still more X pixels to draw
-    sub r1, 32               ; 8*4, return to the beginning of this line
-    add r1, 2560             ; 640*4, increment to the next line
-    dec r6
-    ifnz jmp draw_font_tile_to_background_y_loop ; loop if there are still more Y pixels to draw
-
+    pop r9
+    pop r8
+    pop r7
     pop r6
     pop r5
-    pop r2
-    pop r1
-    pop r0
     ret
 
-; draw text on the background
+; draw text to the background
 ; inputs:
 ; r0: pointer to null-terminated string
 ; r1: X coordinate

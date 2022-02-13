@@ -103,77 +103,32 @@ draw_filled_rectangle_to_overlay_x_loop:
 ; outputs:
 ; none
 draw_font_tile_to_overlay:
-    push r0
-    push r1
-    push r2
     push r5
     push r6
     push r7
+    push r8
+    push r9
 
-    ;movz.8 r0, r0            ; ensure the tile number is a single byte
-
-    ; calculate pointer to the tile data
-    push r1
-    push r2
-    mov r1, 8                ; tile width
-    mov r2, 16               ; tile height
-    mul r1, r2
-    mul r0, r1
-    mul r0, 4                ; 4 bytes per pixel
-    add r0, font             ; r0: pointer to tile data
-    pop r2
-    pop r1
-
-    ; calculate pointer to the framebuffer
-    mov r7, r5               ; r7: overlay number
-    or r7, 0x80000100        ; bitwise or the overlay number with the command to get the overlay size
-    in r6, r7
-    and r6, 0x0000FFFF       ; mask off the height, we only need the width
-    mul r6, 4                ; 4 bytes per pixel
-    mov r7, r6               ; r7: overlay width in bytes (width * 4)
-    mul r2, r7               ; y * width * 4
-    mul r1, 4                ; x * 4
-    add r1, r2               ; y * width * 4 + (x * 4)
+    mov r6, r5
+    or r6, 0x80000100        ; bitwise or the overlay number with the command to get the overlay size
     or r5, 0x80000200        ; bitwise or the overlay number with the command to get the framebuffer pointer
-    in r6, r5
-    add r1, r6               ; r1: pointer to framebuffer
+    in r8, r5                ; r8: overlay framebuffer poiner
+    in r9, r6
+    and r9, 0x0000FFFF       ; r9: overlay width
 
-    mov r6, 16               ; y counter
-draw_font_tile_to_overlay_y_loop:
-    mov r5, 8                ; x counter
-draw_font_tile_to_overlay_x_loop:
-    mov r2, [r0]
-    cmp r2, 0xFF000000
-    ifz jmp draw_font_tile_to_overlay_x_loop_background
-    ; drawing foreground pixel
-    cmp r3, 0x00000000       ; is the foreground color supposed to be transparent?
-    ifz jmp draw_font_tile_to_overlay_x_loop_end
-    mov [r1], r3             ; draw foreground color
-    jmp draw_font_tile_to_overlay_x_loop_end
-draw_font_tile_to_overlay_x_loop_background:
-    ; drawing background pixel
-    cmp r4, 0x00000000       ; is the background color supposed to be transparent?
-    ifz jmp draw_font_tile_to_overlay_x_loop_end
-    mov [r1], r4             ; draw background color
-draw_font_tile_to_overlay_x_loop_end:
-    add r0, 4                ; increment tile pointer
-    add r1, 4                ; increment framebuffer pointer
-    dec r5
-    ifnz jmp draw_font_tile_to_overlay_x_loop ; loop if there are still more X pixels to draw
-    sub r1, 32               ; 8*4, return to the beginning of this line
-    add r1, r7               ; increment to the next line by adding the overlay width in bytes
-    dec r6
-    ifnz jmp draw_font_tile_to_overlay_y_loop ; loop if there are still more Y pixels to draw
+    mov r5, standard_font_data
+    movz.16 r6, [standard_font_width]
+    movz.16 r7, [standard_font_height]
+    call draw_font_tile_generic
 
+    pop r9
+    pop r8
     pop r7
     pop r6
     pop r5
-    pop r2
-    pop r1
-    pop r0
     ret
 
-; draw text on an overlay
+; draw text to an overlay
 ; inputs:
 ; r0: pointer to null-terminated string
 ; r1: X coordinate
