@@ -153,7 +153,7 @@ draw_font_tile_to_overlay_x_loop:
 draw_font_tile_to_overlay_x_loop_background:
     ; drawing background pixel
     cmp r4, 0x00000000       ; is the background color supposed to be transparent?
-    ifz jmp draw_font_tile_to_background_x_loop_end
+    ifz jmp draw_font_tile_to_overlay_x_loop_end
     mov [r1], r4             ; draw background color
 draw_font_tile_to_overlay_x_loop_end:
     add r0, 4                ; increment tile pointer
