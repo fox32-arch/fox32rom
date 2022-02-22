@@ -9,7 +9,7 @@
 ; none (doesn't return)
 start_boot_process:
     ; in the future, this will check the header for various different types of disk types
-    ; but for now, just assume the user mounted a raw binary
+    ; but for now, just assume the user inserted a raw binary
     ; load it to 0x00000800 (immediately after the interrupt vectors) and jump
 
     ; r0 contains the size of the disk in bytes

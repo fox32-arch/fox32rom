@@ -108,8 +108,8 @@ event_loop:
     cmp r0, MENU_CLICK_EVENT_TYPE
     ifz call menu_click_event
 
-    ; check if a disk is mounted as disk 0
-    ; if port 0x8000100n returns a non-zero value, then a disk is mounted as disk n
+    ; check if a disk is inserted as disk 0
+    ; if port 0x8000100n returns a non-zero value, then a disk is inserted as disk n
     in r0, 0x80001000
     cmp r0, 0
     ifnz call start_boot_process
@@ -123,9 +123,9 @@ menu_click_event:
     cmp r3, 0
     ;
 
-    ; mount disk
+    ; insert disk
     cmp r3, 1
-    ifz jmp mount_boot_disk
+    ifz jmp insert_boot_disk
 
     ; halt
     cmp r3, 2
@@ -134,7 +134,7 @@ menu_click_event:
 
     ret
 
-mount_boot_disk:
+insert_boot_disk:
     mov r0, 0x80001000
     out r0, 0
     ret
@@ -254,10 +254,10 @@ menu_items_system_name:
     data.8 6 data.str "System" data.8 0x00      ; text length, text, null-terminator
 menu_items_system_list:
     data.8 3                                    ; number of items
-    data.8 12                                   ; menu width (usually longest item + 2)
-    data.8 5  data.str "About"      data.8 0x00 ; text length, text, null-terminator
-    data.8 10 data.str "Mount Disk" data.8 0x00 ; text length, text, null-terminator
-    data.8 4  data.str "Halt"       data.8 0x00 ; text length, text, null-terminator
+    data.8 13                                   ; menu width (usually longest item + 2)
+    data.8 5  data.str "About"       data.8 0x00 ; text length, text, null-terminator
+    data.8 11 data.str "Insert Disk" data.8 0x00 ; text length, text, null-terminator
+    data.8 4  data.str "Halt"        data.8 0x00 ; text length, text, null-terminator
 
     ; pad out to 512 KiB
     org.pad 0xF0080000
