@@ -65,7 +65,7 @@ mouse_update:
     cmp r1, 17
     ifc jmp mouse_update_menu_was_clicked
 
-    ; if a submenu is open, don't push a click event
+    ; if a menu is open, don't push a click event
     ; this is hacky as fuck
     in r3, 0x8000031D             ; overlay 29: enable status
     cmp r3, 0

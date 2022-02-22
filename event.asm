@@ -10,8 +10,8 @@ const EVENT_SIZE_WORDS:   8          ; 8 words per event
 ; event types
 const MOUSE_CLICK_EVENT_TYPE:    0x00000000
 const MENU_BAR_CLICK_EVENT_TYPE: 0x00000001
-const SUBMENU_UPDATE_EVENT_TYPE: 0x00000002
-const SUBMENU_CLICK_EVENT_TYPE:  0x00000003
+const MENU_UPDATE_EVENT_TYPE:    0x00000002
+const MENU_CLICK_EVENT_TYPE:     0x00000003
 const EMPTY_EVENT_TYPE:          0xFFFFFFFF
 
 ; block until an event is available

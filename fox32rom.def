@@ -32,12 +32,12 @@ check_if_enabled_overlay_covers_position: jmp [0xF0043018]
 menu_bar_click_event:                     jmp [0xF0044000]
 clear_menu_bar:                           jmp [0xF0044004]
 draw_menu_bar_root_items:                 jmp [0xF0044008]
-draw_submenu_items:                       jmp [0xF004400C]
-close_submenu:                            jmp [0xF0044010]
+draw_menu_items:                          jmp [0xF004400C]
+close_menu:                               jmp [0xF0044010]
 
 ; event types
 const MOUSE_CLICK_EVENT_TYPE:    0x00000000
 const MENU_BAR_CLICK_EVENT_TYPE: 0x00000001
-const SUBMENU_UPDATE_EVENT_TYPE: 0x00000002
-const SUBMENU_CLICK_EVENT_TYPE:  0x00000003
+const MENU_UPDATE_EVENT_TYPE:    0x00000002
+const MENU_CLICK_EVENT_TYPE:     0x00000003
 const EMPTY_EVENT_TYPE:          0xFFFFFFFF

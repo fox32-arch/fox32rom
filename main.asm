@@ -124,13 +124,13 @@ event_loop:
     ifz mov r0, menu_items_root
     ifz call menu_bar_click_event
 
-    ; is the user in a submenu?
-    cmp r0, SUBMENU_UPDATE_EVENT_TYPE
-    ifz call submenu_update_event
+    ; is the user in a menu?
+    cmp r0, MENU_UPDATE_EVENT_TYPE
+    ifz call menu_update_event
 
-    ; did the user click a submenu item?
-    cmp r0, SUBMENU_CLICK_EVENT_TYPE
-    ifz call submenu_click_event
+    ; did the user click a menu item?
+    cmp r0, MENU_CLICK_EVENT_TYPE
+    ifz call menu_click_event
 
     ; check if a disk is mounted as disk 0
     ; if port 0x8000100n returns a non-zero value, then a disk is mounted as disk n
@@ -140,8 +140,8 @@ event_loop:
 
     jmp event_loop
 
-submenu_click_event:
-    ; r3 contains the clicked submenu item
+menu_click_event:
+    ; r3 contains the clicked menu item
 
     ; about
     cmp r3, 0
@@ -178,9 +178,9 @@ get_rom_version:
     #include "event.asm"
     #include "memory.asm"
     #include "menu.asm"
+    #include "menu_bar.asm"
     #include "mouse.asm"
     #include "overlay.asm"
-    #include "submenu.asm"
     #include "vsync.asm"
 
 
@@ -226,8 +226,8 @@ get_rom_version:
     data.32 menu_bar_click_event
     data.32 clear_menu_bar
     data.32 draw_menu_bar_root_items
-    data.32 draw_submenu_items
-    data.32 close_submenu
+    data.32 draw_menu_items
+    data.32 close_menu
 
     org.pad 0xF004F000
 standard_font_width:
@@ -254,7 +254,7 @@ overlay_30_position_x:      data.16 0
 overlay_30_position_y:      data.16 0
 overlay_30_framebuffer_ptr: data.32 0x8012D180
 
-; submenu overlay struct:
+; menu overlay struct:
 ; this struct must be writable, so these are hard-coded addresses in shared memory
 const OVERLAY_29_WIDTH:           0x80137180 ; 2 bytes
 const OVERLAY_29_HEIGHT:          0x80137182 ; 2 bytes
@@ -267,13 +267,13 @@ startup_str_1: data.str "Welcome to fox32" data.8 0
 startup_str_2: data.str "Insert boot disk" data.8 0
 
 menu_items_root:
-    data.8 1                                                      ; number of submenus
-    data.32 menu_items_system_list data.32 menu_items_system_name ; pointer to submenu list, pointer to submenu name
+    data.8 1                                                      ; number of menus
+    data.32 menu_items_system_list data.32 menu_items_system_name ; pointer to menu list, pointer to menu name
 menu_items_system_name:
     data.8 6 data.str "System" data.8 0x00      ; text length, text, null-terminator
 menu_items_system_list:
     data.8 3                                    ; number of items
-    data.8 12                                   ; submenu width (usually longest item + 2)
+    data.8 12                                   ; menu width (usually longest item + 2)
     data.8 5  data.str "About"      data.8 0x00 ; text length, text, null-terminator
     data.8 10 data.str "Mount Disk" data.8 0x00 ; text length, text, null-terminator
     data.8 4  data.str "Halt"       data.8 0x00 ; text length, text, null-terminator
