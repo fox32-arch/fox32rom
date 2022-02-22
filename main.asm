@@ -7,7 +7,8 @@ const FOX32ROM_VERSION_MINOR: 1
 const FOX32ROM_VERSION_PATCH: 0
 
 const SYSTEM_STACK:     0x01FFF800
-const BACKGROUND_COLOR: 0xFF414C50
+const BACKGROUND_COLOR: 0xFF674764
+const TEXT_COLOR:       0xFFFFFFFF
 
     ; initialization code
 entry:
@@ -80,7 +81,7 @@ draw_startup_text:
     mov r0, startup_str
     mov r1, 16
     mov r2, 464
-    mov r3, 0xFFFFFFFF
+    mov r3, TEXT_COLOR
     mov r4, 0x00000000
     mov r10, FOX32ROM_VERSION_MAJOR
     mov r11, FOX32ROM_VERSION_MINOR

@@ -1,5 +1,10 @@
 ; menu routines
 
+const MENU_SELECTED_BACKGROUND_COLOR:   0xFFFFFFFF
+const MENU_SELECTED_TEXT_COLOR:         0xFF000000
+const MENU_UNSELECTED_BACKGROUND_COLOR: 0xFF3F3F3F
+const MENU_UNSELECTED_TEXT_COLOR:       0xFFFFFFFF
+
 ; draw menu items
 ; inputs:
 ; r0: pointer to menu bar root struct
@@ -90,16 +95,14 @@ draw_menu_items_calculate_x_skip:
     movz.8 r0, ' '
     mov r1, 0
     mov r2, 0
-    mov r3, 0xFF000000
-    mov r4, 0xFFFFFFFF
     mov r5, 29
 draw_empty_menu_loop:
     mov r7, r8                    ; inner loop counter
     cmp r30, r29
-    ifz mov r3, 0xFFFFFFFF        ; foreground color: white
-    ifz mov r4, 0xFF000000        ; background color: black
-    ifnz mov r3, 0xFF000000       ; foreground color: black
-    ifnz mov r4, 0xFFFFFFFF       ; background color: white
+    ;ifz mov r3, MENU_UNSELECTED_BACKGROUND_COLOR
+    ifz mov r4, MENU_SELECTED_BACKGROUND_COLOR
+    ;ifnz mov r3, MENU_SELECTED_BACKGROUND_COLOR
+    ifnz mov r4, MENU_UNSELECTED_BACKGROUND_COLOR
 draw_empty_menu_line_loop:
     call draw_font_tile_to_overlay
     add r1, 8
@@ -118,10 +121,10 @@ draw_empty_menu_line_loop:
     mov r2, 0                     ; Y = 0
 draw_menu_text_loop:
     cmp r30, r29
-    ifz mov r3, 0xFFFFFFFF        ; foreground color: white
-    ifz mov r4, 0xFF000000        ; background color: black
-    ifnz mov r3, 0xFF000000       ; foreground color: black
-    ifnz mov r4, 0xFFFFFFFF       ; background color: white
+    ifz mov r3, MENU_SELECTED_TEXT_COLOR
+    ifz mov r4, MENU_SELECTED_BACKGROUND_COLOR
+    ifnz mov r3, MENU_UNSELECTED_TEXT_COLOR
+    ifnz mov r4, MENU_UNSELECTED_BACKGROUND_COLOR
 
     mov r1, 0                     ; X = 0
     call draw_str_to_overlay      ; draw menu item text

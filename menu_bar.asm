@@ -1,5 +1,9 @@
 ; menu bar routines
 
+const MENU_BAR_BACKGROUND_COLOR: 0xFF3F3F3F
+const MENU_BAR_SELECTED_COLOR:   0xFFFFFFFF
+const MENU_BAR_UNSELECTED_COLOR: 0xFF3F3F3F
+
 ; clear menu bar
 ; inputs:
 ; none
@@ -19,7 +23,7 @@ clear_menu_bar:
     mov r1, 0
     mov r2, 0
     mov r3, 0xFF000000
-    mov r4, 0xFFFFFFFF
+    mov r4, MENU_BAR_BACKGROUND_COLOR
     mov r5, 30
 clear_menu_bar_loop:
     call draw_font_tile_to_overlay
@@ -64,10 +68,10 @@ draw_menu_bar_root_items:
     mov r5, 30                    ; overlay 30
 draw_menu_bar_root_items_loop:
     cmp r30, r29
-    ifz mov r3, 0xFFFFFFFF        ; foreground color: white
-    ifz mov r4, 0xFF000000        ; background color: black
-    ifnz mov r3, 0xFF000000       ; foreground color: black
-    ifnz mov r4, 0xFFFFFFFF       ; background color: white
+    ifz mov r3, MENU_BAR_UNSELECTED_COLOR
+    ifz mov r4, MENU_BAR_SELECTED_COLOR
+    ifnz mov r3, MENU_BAR_SELECTED_COLOR
+    ifnz mov r4, MENU_BAR_UNSELECTED_COLOR
 
     ; draw colored space before text
     sub r1, 8
