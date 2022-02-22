@@ -109,3 +109,49 @@ draw_str_generic_loop:
     pop r10
     pop r0
     ret
+
+; draw a decimal value to a framebuffer
+; inputs:
+; r0: value
+; r1: X coordinate
+; r2: Y coordinate
+; r3: foreground color
+; r4: background color
+; r5: pointer to font graphics
+; r6: font width
+; r7: font height
+; r8: pointer to framebuffer
+; r9: framebuffer width
+; outputs:
+; r1: X coordinate of end of text
+draw_decimal_generic:
+    push r0
+    push r10                 ; r10: original stack pointer
+    push r11                 ; temp 1
+    push r12                 ; temp 2
+    push r13                 ; temp 3
+    mov r10, rsp
+    mov r12, r0
+
+    push.8 0x00              ; end the string with a terminator
+draw_decimal_generic_find_loop:
+    push r12
+    div r12, 10              ; quotient goes into r12
+    pop r13
+    rem r13, 10              ; remainder goes into r13
+    mov r11, r13
+    add r11, '0'
+    push.8 r11
+    cmp r12, 0
+    ifnz jmp draw_decimal_generic_find_loop
+draw_decimal_generic_print:
+    mov r0, rsp              ; point to start of string in the stack
+    call draw_str_generic
+
+    mov rsp, r10
+    pop r13
+    pop r12
+    pop r11
+    pop r10
+    pop r0
+    ret

@@ -10,23 +10,26 @@ get_next_event:                           jmp [0xF0040014]
 
 ; generic drawing jump table
 draw_str_generic:                         jmp [0xF0041000]
-draw_font_tile_generic:                   jmp [0xF0041004]
-draw_filled_rectangle_generic:            jmp [0xF0041008]
+draw_decimal_generic:                     jmp [0xF0041004]
+draw_font_tile_generic:                   jmp [0xF0041008]
+draw_filled_rectangle_generic:            jmp [0xF004100C]
 
 ; background jump table entries
 fill_background:                          jmp [0xF0042000]
 draw_str_to_background:                   jmp [0xF0042004]
-draw_font_tile_to_background:             jmp [0xF0042008]
-draw_filled_rectangle_to_background:      jmp [0xF004200C]
+draw_decimal_to_background:               jmp [0xF0042008]
+draw_font_tile_to_background:             jmp [0xF004200C]
+draw_filled_rectangle_to_background:      jmp [0xF0042010]
 
 ; overlay jump table entries
 fill_overlay:                             jmp [0xF0043000]
 draw_str_to_overlay:                      jmp [0xF0043004]
-draw_font_tile_to_overlay:                jmp [0xF0043008]
-draw_filled_rectangle_to_overlay:         jmp [0xF004300C]
-find_overlay_covering_position:           jmp [0xF0043010]
-check_if_overlay_covers_position:         jmp [0xF0043014]
-check_if_enabled_overlay_covers_position: jmp [0xF0043018]
+draw_decimal_to_overlay:                  jmp [0xF0043008]
+draw_font_tile_to_overlay:                jmp [0xF004300C]
+draw_filled_rectangle_to_overlay:         jmp [0xF0043010]
+find_overlay_covering_position:           jmp [0xF0043014]
+check_if_overlay_covers_position:         jmp [0xF0043018]
+check_if_enabled_overlay_covers_position: jmp [0xF004301C]
 
 ; menu bar jump table entries
 menu_bar_click_event:                     jmp [0xF0044000]

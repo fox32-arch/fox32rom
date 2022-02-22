@@ -96,3 +96,33 @@ draw_str_to_background_loop:
     pop r5
     pop r0
     ret
+
+; draw a decimal value to the background
+; inputs:
+; r0: value
+; r1: X coordinate
+; r2: Y coordinate
+; r3: foreground color
+; r4: background color
+; outputs:
+; r1: X coordinate of end of text
+draw_decimal_to_background:
+    push r5
+    push r6
+    push r7
+    push r8
+    push r9
+
+    mov r5, standard_font_data
+    movz.16 r6, [standard_font_width]
+    movz.16 r7, [standard_font_height]
+    mov r8, BACKGROUND_FRAMEBUFFER
+    mov r9, 640
+    call draw_decimal_generic
+
+    pop r9
+    pop r8
+    pop r7
+    pop r6
+    pop r5
+    ret
