@@ -127,12 +127,24 @@ draw_format_str_generic_loop:
 draw_format_str_generic_found_format_specifier:
     inc r0
 
+    ; percent sign
+    cmp.8 [r0], '%'
+    ifz call draw_format_str_generic_percent_sign
+
     ; unsigned decimal
     cmp.8 [r0], 'u'
     ifz call draw_format_str_generic_unsigned_decimal
 
     inc r0
     jmp draw_format_str_generic_loop
+draw_format_str_generic_percent_sign:
+    push r0
+    mov r0, '%'
+    call draw_font_tile_generic
+    add r1, r6
+    pop r0
+    inc r16
+    ret
 draw_format_str_generic_unsigned_decimal:
     call draw_format_str_generic_get_parameter
     push r0
