@@ -44,52 +44,20 @@ fill_overlay_loop:
 ; outputs:
 ; none
 draw_filled_rectangle_to_overlay:
-    push r0
-    push r1
-    push r2
-    push r3
-    push r4
     push r5
     push r6
-    push r7
 
-    ; calculate pointer to the framebuffer
-    mov r6, r5               ; r6: overlay number
+    mov r6, r5
     or r6, 0x80000100        ; bitwise or the overlay number with the command to get the overlay size
-    in r7, r6
-    and r7, 0x0000FFFF       ; mask off the height, we only need the width
-    mul r7, 4                ; r7: overlay width in bytes (width * 4)
-    mul r1, r7               ; y * width * 4
-    mul r0, 4                ; x * 4
-    add r0, r1               ; y * width * 4 + (x * 4)
     or r5, 0x80000200        ; bitwise or the overlay number with the command to get the framebuffer pointer
-    in r5, r5
-    add r0, r5               ; r0: pointer to framebuffer
+    in r5, r5                ; r5: overlay framebuffer poiner
+    in r6, r6
+    and r6, 0x0000FFFF       ; r6: overlay width
 
-    mov r6, r2
-    mul r6, 4                ; multiply the X size by 4, since 4 bytes per pixel
+    call draw_filled_rectangle_generic
 
-draw_filled_rectangle_to_overlay_y_loop:
-    mov r5, r2               ; x counter
-draw_filled_rectangle_to_overlay_x_loop:
-    mov [r0], r4
-    add r0, 4                ; increment framebuffer pointer
-    dec r5
-    ifnz jmp draw_filled_rectangle_to_overlay_x_loop ; loop if there are still more X pixels to draw
-
-    sub r0, r6               ; return to the beginning of this line
-    add r0, r7               ; increment to the next line
-    dec r3
-    ifnz jmp draw_filled_rectangle_to_overlay_y_loop ; loop if there are still more Y pixels to draw
-
-    pop r7
     pop r6
     pop r5
-    pop r4
-    pop r3
-    pop r2
-    pop r1
-    pop r0
     ret
 
 ; draw a single font tile to an overlay

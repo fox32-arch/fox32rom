@@ -32,43 +32,15 @@ fill_background_loop:
 ; outputs:
 ; none
 draw_filled_rectangle_to_background:
-    push r0
-    push r1
-    push r2
-    push r3
-    push r4
     push r5
     push r6
 
-    ; calculate pointer to the framebuffer
-    mul r1, 2560             ; y * 2560 (640 * 4 = 2560)
-    mul r0, 4                ; x * 4
-    add r0, r1               ; y * 2560 + (x * 4)
-    add r0, BACKGROUND_FRAMEBUFFER ; r0: pointer to framebuffer
-
-    mov r6, r2
-    mul r6, 4                ; multiply the X size by 4, since 4 bytes per pixel
-
-draw_filled_rectangle_to_background_y_loop:
-    mov r5, r2               ; x counter
-draw_filled_rectangle_to_background_x_loop:
-    mov [r0], r4
-    add r0, 4                ; increment framebuffer pointer
-    dec r5
-    ifnz jmp draw_filled_rectangle_to_background_x_loop ; loop if there are still more X pixels to draw
-
-    sub r0, r6               ; return to the beginning of this line
-    add r0, 2560             ; 640*4, increment to the next line
-    dec r3
-    ifnz jmp draw_filled_rectangle_to_background_y_loop ; loop if there are still more Y pixels to draw
+    mov r5, BACKGROUND_FRAMEBUFFER
+    mov r6, 640
+    call draw_filled_rectangle_generic
 
     pop r6
     pop r5
-    pop r4
-    pop r3
-    pop r2
-    pop r1
-    pop r0
     ret
 
 ; draw a single font tile to the background
