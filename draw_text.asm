@@ -112,7 +112,7 @@ draw_format_str_generic:
 draw_format_str_generic_loop:
     cmp.8 [r0], 0
     ifz jmp draw_format_str_generic_end
-    cmp.8 [r0], '\'
+    cmp.8 [r0], '%'
     ifz jmp draw_format_str_generic_found_format_specifier
 
     ; if this is not a format specifier or the end of the string, print the character

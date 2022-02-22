@@ -245,7 +245,7 @@ const OVERLAY_29_POSITION_Y:      0x80137186 ; 2 bytes
 const OVERLAY_29_FRAMEBUFFER_PTR: 0x8013718A ; 4 bytes
 const OVERLAY_29_FRAMEBUFFER:     0x8013718E
 
-startup_str: data.str "fox32 - ROM version \u.\u.\u - insert boot disk" data.8 0
+startup_str: data.str "fox32 - ROM version %u.%u.%u - insert boot disk" data.8 0
 
 menu_items_root:
     data.8 1                                                      ; number of menus
