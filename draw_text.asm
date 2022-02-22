@@ -81,6 +81,114 @@ draw_font_tile_generic_x_loop_end:
     pop r0
     ret
 
+; draw text to a framebuffer, using printf-style formatting
+; inputs:
+; r0: pointer to null-terminated string
+; r1: X coordinate
+; r2: Y coordinate
+; r3: foreground color
+; r4: background color
+; r5: pointer to font graphics
+; r6: font width
+; r7: font height
+; r8: pointer to framebuffer
+; r9: framebuffer width
+; r10-r15: optional format values
+; outputs:
+; r1: X coordinate of end of text
+draw_format_str_generic:
+    push r0
+    push r1
+    push r2
+    push r5
+    push r6
+    push r7
+    push r8
+    push r9
+    push r16
+    push r17
+
+    mov r16, 0               ; current format specifier counter
+draw_format_str_generic_loop:
+    cmp.8 [r0], 0
+    ifz jmp draw_format_str_generic_end
+    cmp.8 [r0], '\'
+    ifz jmp draw_format_str_generic_found_format_specifier
+
+    ; if this is not a format specifier or the end of the string, print the character
+    push r0
+    movz.8 r0, [r0]
+    call draw_font_tile_generic
+    pop r0
+    add r1, r6               ; add the font width to the X coordinate
+
+    inc r0
+    jmp draw_format_str_generic_loop
+draw_format_str_generic_found_format_specifier:
+    inc r0
+
+    ; unsigned decimal
+    cmp.8 [r0], 'u'
+    ifz call draw_format_str_generic_unsigned_decimal
+
+    inc r0
+    jmp draw_format_str_generic_loop
+draw_format_str_generic_unsigned_decimal:
+    call draw_format_str_generic_get_parameter
+    push r0
+    mov r0, r17
+    call draw_decimal_generic
+    pop r0
+    inc r16
+    ret
+draw_format_str_generic_get_parameter:
+    ; load the correct format parameter into r17
+    ; this is messy, but i don't know of any other way to do this at the moment
+    cmp r16, 0
+    ifz jmp draw_format_str_generic_get_parameter_0
+    cmp r16, 1
+    ifz jmp draw_format_str_generic_get_parameter_1
+    cmp r16, 2
+    ifz jmp draw_format_str_generic_get_parameter_2
+    cmp r16, 3
+    ifz jmp draw_format_str_generic_get_parameter_3
+    cmp r16, 4
+    ifz jmp draw_format_str_generic_get_parameter_4
+    cmp r16, 5
+    ifz jmp draw_format_str_generic_get_parameter_5
+    mov r17, 0
+    ret
+draw_format_str_generic_get_parameter_0:
+    mov r17, r10
+    ret
+draw_format_str_generic_get_parameter_1:
+    mov r17, r11
+    ret
+draw_format_str_generic_get_parameter_2:
+    mov r17, r12
+    ret
+draw_format_str_generic_get_parameter_3:
+    mov r17, r13
+    ret
+draw_format_str_generic_get_parameter_4:
+    mov r17, r14
+    ret
+draw_format_str_generic_get_parameter_5:
+    mov r17, r15
+    ret
+draw_format_str_generic_end:
+    pop r17
+    pop r16
+    pop r9
+    pop r8
+    pop r7
+    pop r6
+    pop r5
+    pop r2
+    pop r1
+    pop r0
+    ret
+
 ; draw text to a framebuffer
 ; inputs:
 ; r0: pointer to null-terminated string

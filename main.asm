@@ -201,6 +201,7 @@ get_rom_version:
     ; generic drawing jump table
     org.pad 0xF0041000
     data.32 draw_str_generic
+    data.32 draw_format_str_generic
     data.32 draw_decimal_generic
     data.32 draw_font_tile_generic
     data.32 draw_filled_rectangle_generic
@@ -209,6 +210,7 @@ get_rom_version:
     org.pad 0xF0042000
     data.32 fill_background
     data.32 draw_str_to_background
+    data.32 draw_format_str_to_background
     data.32 draw_decimal_to_background
     data.32 draw_font_tile_to_background
     data.32 draw_filled_rectangle_to_background
@@ -217,6 +219,7 @@ get_rom_version:
     org.pad 0xF0043000
     data.32 fill_overlay
     data.32 draw_str_to_overlay
+    data.32 draw_format_str_to_overlay
     data.32 draw_decimal_to_overlay
     data.32 draw_font_tile_to_overlay
     data.32 draw_filled_rectangle_to_overlay
