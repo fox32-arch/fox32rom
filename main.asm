@@ -77,39 +77,15 @@ menu_bar_enable:
     call draw_menu_bar_root_items
 
 draw_startup_text:
-    mov r0, 252
-    mov r1, 229
-    mov r2, 136
-    mov r3, 40
-    mov r4, 0xFF505C60
-    ;mov r4, 0xFFFFFFFF
-    call draw_filled_rectangle_to_background
-    mov r0, 253
-    mov r1, 230
-    mov r2, 134
-    mov r3, 38
-    mov r4, 0xFFFFFFFF
-    ;mov r4, 0xFF000000
-    call draw_filled_rectangle_to_background
-    mov r0, 254
-    mov r1, 231
-    mov r2, 132
-    mov r3, 36
-    mov r4, 0xFF505C60
-    ;mov r4, 0xFFFFFFFF
-    call draw_filled_rectangle_to_background
-
-    mov r0, startup_str_1
-    mov r1, 256
-    mov r2, 232
+    mov r0, startup_str
+    mov r1, 16
+    mov r2, 464
     mov r3, 0xFFFFFFFF
     mov r4, 0x00000000
-    call draw_str_to_background
-
-    mov r0, startup_str_2
-    mov r1, 256
-    mov r2, 248
-    call draw_str_to_background
+    mov r10, FOX32ROM_VERSION_MAJOR
+    mov r11, FOX32ROM_VERSION_MINOR
+    mov r12, FOX32ROM_VERSION_PATCH
+    call draw_format_str_to_background
 
     ise
 event_loop:
@@ -269,8 +245,7 @@ const OVERLAY_29_POSITION_Y:      0x80137186 ; 2 bytes
 const OVERLAY_29_FRAMEBUFFER_PTR: 0x8013718A ; 4 bytes
 const OVERLAY_29_FRAMEBUFFER:     0x8013718E
 
-startup_str_1: data.str "Welcome to fox32" data.8 0
-startup_str_2: data.str "Insert boot disk" data.8 0
+startup_str: data.str "fox32 - ROM version \u.\u.\u - insert boot disk" data.8 0
 
 menu_items_root:
     data.8 1                                                      ; number of menus
