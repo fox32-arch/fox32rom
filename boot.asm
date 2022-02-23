@@ -48,7 +48,7 @@ start_boot_process_byte_loop:
 ; none
 boot_cleanup:
     ; clear the background
-    mov r0, 0xFF000000
+    mov r0, BACKGROUND_COLOR
     call fill_background
 
     ; disable the menu bar
