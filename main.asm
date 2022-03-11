@@ -120,16 +120,12 @@ event_loop:
 menu_click_event:
     ; r3 contains the clicked menu item
 
-    ; about
-    cmp r3, 0
-    ;
-
     ; insert disk
-    cmp r3, 1
+    cmp r3, 0
     ifz jmp insert_boot_disk
 
     ; halt
-    cmp r3, 2
+    cmp r3, 1
     ifz icl
     ifz halt
 
@@ -252,11 +248,10 @@ menu_items_root:
     data.8 1                                                      ; number of menus
     data.32 menu_items_system_list data.32 menu_items_system_name ; pointer to menu list, pointer to menu name
 menu_items_system_name:
-    data.8 6 data.str "System" data.8 0x00      ; text length, text, null-terminator
+    data.8 6 data.str "System" data.8 0x00       ; text length, text, null-terminator
 menu_items_system_list:
-    data.8 3                                    ; number of items
-    data.8 13                                   ; menu width (usually longest item + 2)
-    data.8 5  data.str "About"       data.8 0x00 ; text length, text, null-terminator
+    data.8 2                                     ; number of items
+    data.8 13                                    ; menu width (usually longest item + 2)
     data.8 11 data.str "Insert Disk" data.8 0x00 ; text length, text, null-terminator
     data.8 4  data.str "Halt"        data.8 0x00 ; text length, text, null-terminator
 
