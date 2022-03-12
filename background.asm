@@ -1,6 +1,6 @@
 ; background routines
 
-const BACKGROUND_FRAMEBUFFER: 0x80000000 ; pointer to background framebuffer
+const BACKGROUND_FRAMEBUFFER: 0x02000000 ; pointer to background framebuffer
 
 ; fill the whole background with a color
 ; inputs:

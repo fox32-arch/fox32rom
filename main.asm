@@ -224,23 +224,23 @@ overlay_31_width:           data.16 8
 overlay_31_height:          data.16 12
 overlay_31_position_x:      data.16 0
 overlay_31_position_y:      data.16 0
-overlay_31_framebuffer_ptr: data.32 0x8012D000
+overlay_31_framebuffer_ptr: data.32 0x0212D000
 
 ; menu bar overlay struct:
 overlay_30_width:           data.16 640
 overlay_30_height:          data.16 16
 overlay_30_position_x:      data.16 0
 overlay_30_position_y:      data.16 0
-overlay_30_framebuffer_ptr: data.32 0x8012D180
+overlay_30_framebuffer_ptr: data.32 0x0212D180
 
 ; menu overlay struct:
-; this struct must be writable, so these are hard-coded addresses in shared memory
-const OVERLAY_29_WIDTH:           0x80137180 ; 2 bytes
-const OVERLAY_29_HEIGHT:          0x80137182 ; 2 bytes
-const OVERLAY_29_POSITION_X:      0x80137184 ; 2 bytes
-const OVERLAY_29_POSITION_Y:      0x80137186 ; 2 bytes
-const OVERLAY_29_FRAMEBUFFER_PTR: 0x8013718A ; 4 bytes
-const OVERLAY_29_FRAMEBUFFER:     0x8013718E
+; this struct must be writable, so these are hard-coded addresses in ram
+const OVERLAY_29_WIDTH:           0x02137180 ; 2 bytes
+const OVERLAY_29_HEIGHT:          0x02137182 ; 2 bytes
+const OVERLAY_29_POSITION_X:      0x02137184 ; 2 bytes
+const OVERLAY_29_POSITION_Y:      0x02137186 ; 2 bytes
+const OVERLAY_29_FRAMEBUFFER_PTR: 0x0213718A ; 4 bytes
+const OVERLAY_29_FRAMEBUFFER:     0x0213718E
 
 startup_str: data.str "fox32 - ROM version %u.%u.%u - insert boot disk" data.8 0
 
