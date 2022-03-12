@@ -124,7 +124,7 @@ menu_click_event:
     cmp r3, 0
     ifz jmp insert_boot_disk
 
-    ; halt
+    ; shutdown
     cmp r3, 1
     ifz icl
     ifz halt
@@ -253,7 +253,7 @@ menu_items_system_list:
     data.8 2                                     ; number of items
     data.8 13                                    ; menu width (usually longest item + 2)
     data.8 11 data.str "Insert Disk" data.8 0x00 ; text length, text, null-terminator
-    data.8 4  data.str "Halt"        data.8 0x00 ; text length, text, null-terminator
+    data.8 9  data.str "Shut Down"   data.8 0x00 ; text length, text, null-terminator
 
     ; pad out to 512 KiB
     org.pad 0xF0080000
