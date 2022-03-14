@@ -131,6 +131,10 @@ draw_format_str_generic_found_format_specifier:
     cmp.8 [r0], '%'
     ifz call draw_format_str_generic_percent_sign
 
+    ; character
+    cmp.8 [r0], 'c'
+    ifz call draw_format_str_generic_character
+
     ; unsigned decimal
     cmp.8 [r0], 'u'
     ifz call draw_format_str_generic_unsigned_decimal
@@ -140,6 +144,15 @@ draw_format_str_generic_found_format_specifier:
 draw_format_str_generic_percent_sign:
     push r0
     mov r0, '%'
+    call draw_font_tile_generic
+    add r1, r6
+    pop r0
+    inc r16
+    ret
+draw_format_str_generic_character:
+    call draw_format_str_generic_get_parameter
+    push r0
+    mov r0, r17
     call draw_font_tile_generic
     add r1, r6
     pop r0
