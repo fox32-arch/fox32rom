@@ -7,6 +7,7 @@ get_mouse_position:                       jmp [0xF0040008]
 new_event:                                jmp [0xF004000C]
 wait_for_event:                           jmp [0xF0040010]
 get_next_event:                           jmp [0xF0040014]
+panic:                                    jmp [0xF0040018]
 
 ; generic drawing jump table
 draw_str_generic:                         jmp [0xF0041000]

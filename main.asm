@@ -154,6 +154,7 @@ get_rom_version:
     #include "menu_bar.asm"
     #include "mouse.asm"
     #include "overlay.asm"
+    #include "panic.asm"
     #include "vsync.asm"
 
 
@@ -170,6 +171,7 @@ get_rom_version:
     data.32 new_event
     data.32 wait_for_event
     data.32 get_next_event
+    data.32 panic
 
     ; generic drawing jump table
     org.pad 0xF0041000
