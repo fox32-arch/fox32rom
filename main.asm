@@ -52,26 +52,7 @@ cursor_enable:
     mov r0, BACKGROUND_COLOR
     call fill_background
 
-menu_bar_enable:
-    ; set properties of overlay 30
-    mov r0, 0x8000001E ; overlay 30: position
-    mov.16 r1, [overlay_30_position_y]
-    sla r1, 16
-    mov.16 r1, [overlay_30_position_x]
-    out r0, r1
-    mov r0, 0x8000011E ; overlay 30: size
-    mov.16 r1, [overlay_30_height]
-    sla r1, 16
-    mov.16 r1, [overlay_30_width]
-    out r0, r1
-    mov r0, 0x8000021E ; overlay 30: framebuffer pointer
-    mov r1, [overlay_30_framebuffer_ptr]
-    out r0, r1
-
-    ; enable overlay 30 (menu bar)
-    mov r0, 0x8000031E
-    out r0, 1
-
+    call enable_menu_bar
     call clear_menu_bar
     mov r0, menu_items_root
     mov r1, 0xFFFFFFFF
@@ -204,6 +185,8 @@ get_rom_version:
 
     ; menu bar jump table
     org.pad 0xF0044000
+    data.32 enable_menu_bar
+    data.32 disable_menu_bar
     data.32 menu_bar_click_event
     data.32 clear_menu_bar
     data.32 draw_menu_bar_root_items

@@ -51,7 +51,6 @@ boot_cleanup:
     call fill_background
 
     ; disable the menu bar
-    mov r0, 0x8000031E
-    out r0, 0
+    call disable_menu_bar
 
     ret

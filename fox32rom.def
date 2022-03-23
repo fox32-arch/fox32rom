@@ -36,11 +36,13 @@ check_if_overlay_covers_position:         jmp [0xF004301C]
 check_if_enabled_overlay_covers_position: jmp [0xF0043020]
 
 ; menu bar jump table entries
-menu_bar_click_event:                     jmp [0xF0044000]
-clear_menu_bar:                           jmp [0xF0044004]
-draw_menu_bar_root_items:                 jmp [0xF0044008]
-draw_menu_items:                          jmp [0xF004400C]
-close_menu:                               jmp [0xF0044010]
+enable_menu_bar:                          jmp [0xF0044000]
+disable_menu_bar:                         jmp [0xF0044004]
+menu_bar_click_event:                     jmp [0xF0044008]
+clear_menu_bar:                           jmp [0xF004400C]
+draw_menu_bar_root_items:                 jmp [0xF0044010]
+draw_menu_items:                          jmp [0xF0044014]
+close_menu:                               jmp [0xF0044018]
 
 ; event types
 const MOUSE_CLICK_EVENT_TYPE:    0x00000000

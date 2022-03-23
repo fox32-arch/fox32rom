@@ -4,6 +4,53 @@ const MENU_BAR_BACKGROUND_COLOR: 0xFF3F3F3F
 const MENU_BAR_SELECTED_COLOR:   0xFFFFFFFF
 const MENU_BAR_UNSELECTED_COLOR: 0xFF3F3F3F
 
+; enable menu bar
+; inputs:
+; none
+; outputs:
+; none
+enable_menu_bar:
+    push r0
+    push r1
+
+    ; set properties of overlay 30
+    mov r0, 0x8000001E ; overlay 30: position
+    mov.16 r1, [overlay_30_position_y]
+    sla r1, 16
+    mov.16 r1, [overlay_30_position_x]
+    out r0, r1
+    mov r0, 0x8000011E ; overlay 30: size
+    mov.16 r1, [overlay_30_height]
+    sla r1, 16
+    mov.16 r1, [overlay_30_width]
+    out r0, r1
+    mov r0, 0x8000021E ; overlay 30: framebuffer pointer
+    mov r1, [overlay_30_framebuffer_ptr]
+    out r0, r1
+
+    ; enable overlay 30 (menu bar)
+    mov r0, 0x8000031E
+    out r0, 1
+
+    pop r1
+    pop r0
+    ret
+
+; disable menu bar
+; inputs:
+; none
+; outputs:
+; none
+disable_menu_bar:
+    push r0
+
+    ; disable overlay 30 (menu bar)
+    mov r0, 0x8000031E
+    out r0, 0
+
+    pop r0
+    ret
+
 ; clear menu bar
 ; inputs:
 ; none
