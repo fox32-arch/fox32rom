@@ -192,6 +192,7 @@ get_rom_version:
     data.32 draw_menu_bar_root_items
     data.32 draw_menu_items
     data.32 close_menu
+    data.32 menu_update_event
 
     org.pad 0xF004F000
 standard_font_width:
