@@ -62,8 +62,13 @@ mouse_update:
 
     ; if Y <= 16, mouse was clicked in the menu bar
     ; this is less expensive than calling overlay_check_if_enabled_covers_position every frame
+    ; first check if the menu bar is enabled
+    in r3, 0x8000031E             ; overlay 30: enable status
+    cmp r3, 0
+    ifz jmp mouse_update_no_menu
     cmp r1, 17
     ifc jmp mouse_update_menu_was_clicked
+mouse_update_no_menu:
 
     ; if a menu is open, don't push a click event
     ; this is hacky as fuck
