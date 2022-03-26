@@ -49,6 +49,12 @@ menu_update_event:                        jmp [0xF004401C]
 read_sector:                              jmp [0xF0045000]
 write_sector:                             jmp [0xF0045004]
 
+; memory copy/compare jump table
+copy_memory_bytes:                        jmp [0xF0046000]
+copy_memory_words:                        jmp [0xF0046004]
+compare_memory_bytes:                     jmp [0xF0046008]
+compare_memory_words:                     jmp [0xF004600C]
+
 ; event types
 const MOUSE_CLICK_EVENT_TYPE:    0x00000000
 const MENU_BAR_CLICK_EVENT_TYPE: 0x00000001

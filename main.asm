@@ -200,6 +200,13 @@ get_rom_version:
     data.32 read_sector
     data.32 write_sector
 
+    ; memory copy/compare jump table
+    org.pad 0xF0046000
+    data.32 copy_memory_bytes
+    data.32 copy_memory_words
+    data.32 compare_memory_bytes
+    data.32 compare_memory_words
+
     org.pad 0xF004F000
 standard_font_width:
     data.16 8
