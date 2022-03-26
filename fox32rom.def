@@ -45,6 +45,10 @@ draw_menu_items:                          jmp [0xF0044014]
 close_menu:                               jmp [0xF0044018]
 menu_update_event:                        jmp [0xF004401C]
 
+; disk jump table
+read_sector:                              jmp [0xF0045000]
+write_sector:                             jmp [0xF0045004]
+
 ; event types
 const MOUSE_CLICK_EVENT_TYPE:    0x00000000
 const MENU_BAR_CLICK_EVENT_TYPE: 0x00000001

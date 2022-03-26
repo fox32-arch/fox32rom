@@ -127,6 +127,7 @@ get_rom_version:
     #include "background.asm"
     #include "boot.asm"
     #include "debug.asm"
+    #include "disk.asm"
     #include "draw_rectangle.asm"
     #include "draw_text.asm"
     #include "event.asm"
@@ -193,6 +194,11 @@ get_rom_version:
     data.32 draw_menu_items
     data.32 close_menu
     data.32 menu_update_event
+
+    ; disk jump table
+    org.pad 0xF0045000
+    data.32 read_sector
+    data.32 write_sector
 
     org.pad 0xF004F000
 standard_font_width:
