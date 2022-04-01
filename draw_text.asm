@@ -139,6 +139,10 @@ draw_format_str_generic_found_format_specifier:
     cmp.8 [r0], 'u'
     ifz call draw_format_str_generic_unsigned_decimal
 
+    ; hex
+    cmp.8 [r0], 'x'
+    ifz call draw_format_str_generic_hex
+
     inc r0
     jmp draw_format_str_generic_loop
 draw_format_str_generic_percent_sign:
@@ -163,6 +167,14 @@ draw_format_str_generic_unsigned_decimal:
     push r0
     mov r0, r17
     call draw_decimal_generic
+    pop r0
+    inc r16
+    ret
+draw_format_str_generic_hex:
+    call draw_format_str_generic_get_parameter
+    push r0
+    mov r0, r17
+    call draw_hex_generic
     pop r0
     inc r16
     ret
