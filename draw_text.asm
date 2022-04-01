@@ -288,3 +288,43 @@ draw_decimal_generic_print:
     pop r10
     pop r0
     ret
+
+; draw a hex value to a framebuffer
+; inputs:
+; r0: value
+; r1: X coordinate
+; r2: Y coordinate
+; r3: foreground color
+; r4: background color
+; r5: pointer to font graphics
+; r6: font width
+; r7: font height
+; r8: pointer to framebuffer
+; r9: framebuffer width
+; outputs:
+; r1: X coordinate of end of text
+draw_hex_generic:
+    push r10
+    push r11
+    push r12
+    push r31
+
+    mov r10, r0
+    mov r31, 8
+draw_hex_generic_loop:
+    rol r10, 4
+    movz.16 r11, r10
+    and r11, 0x0F
+    mov r12, draw_hex_generic_characters
+    add r12, r11
+    movz.8 r0, [r12]
+    call draw_font_tile_generic
+    add r1, r6
+    loop draw_hex_generic_loop
+
+    pop r31
+    pop r12
+    pop r11
+    pop r10
+    ret
+draw_hex_generic_characters: data.str "0123456789ABCDEF"

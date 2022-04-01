@@ -193,6 +193,41 @@ draw_decimal_to_overlay:
     pop r5
     ret
 
+; draw a hex value to an overlay
+; inputs:
+; r0: value
+; r1: X coordinate
+; r2: Y coordinate
+; r3: foreground color
+; r4: background color
+; outputs:
+; r1: X coordinate of end of text
+draw_hex_to_overlay:
+    push r5
+    push r6
+    push r7
+    push r8
+    push r9
+
+    mov r6, r5
+    or r6, 0x80000100        ; bitwise or the overlay number with the command to get the overlay size
+    or r5, 0x80000200        ; bitwise or the overlay number with the command to get the framebuffer pointer
+    in r8, r5                ; r8: overlay framebuffer poiner
+    in r9, r6
+    and r9, 0x0000FFFF       ; r9: overlay width
+
+    mov r5, standard_font_data
+    movz.16 r6, [standard_font_width]
+    movz.16 r7, [standard_font_height]
+    call draw_hex_generic
+
+    pop r9
+    pop r8
+    pop r7
+    pop r6
+    pop r5
+    ret
+
 ; finds the overlay with the highest priority covering the specified position
 ; does not check overlay 31, which is always the mouse pointer
 ; inputs:
