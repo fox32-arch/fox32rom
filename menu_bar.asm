@@ -218,7 +218,7 @@ menu_bar_click_event_found_item:
     call draw_menu_bar_root_items
     call draw_menu_items
 
-    ; add a menu_update_event_type event to the event queue
+    ; add a event_type_menu_update event to the event queue
     mov r1, r0                    ; event parameter 0: pointer to menu bar root struct
     mov r2, r30                   ; event parameter 1: selected root menu item
     mov r3, 0xFFFFFFFF            ; event parameter 2: hovering menu item (or 0xFFFFFFFF for none)
@@ -226,7 +226,7 @@ menu_bar_click_event_found_item:
     mov r5, 0
     mov r6, 0
     mov r7, 0
-    mov r0, MENU_UPDATE_EVENT_TYPE
+    mov r0, EVENT_TYPE_MENU_UPDATE
     call new_event
 menu_bar_click_event_end:
     pop r31

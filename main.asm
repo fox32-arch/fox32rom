@@ -74,20 +74,20 @@ event_loop:
     call get_next_event
 
     ; was the mouse clicked?
-    cmp r0, MOUSE_CLICK_EVENT_TYPE
+    cmp r0, EVENT_TYPE_MOUSE_CLICK
     ;ifz call mouse_click_event
 
     ; did the user click the menu bar?
-    cmp r0, MENU_BAR_CLICK_EVENT_TYPE
+    cmp r0, EVENT_TYPE_MENU_BAR_CLICK
     ifz mov r0, menu_items_root
     ifz call menu_bar_click_event
 
     ; is the user in a menu?
-    cmp r0, MENU_UPDATE_EVENT_TYPE
+    cmp r0, EVENT_TYPE_MENU_UPDATE
     ifz call menu_update_event
 
     ; did the user click a menu item?
-    cmp r0, MENU_CLICK_EVENT_TYPE
+    cmp r0, EVENT_TYPE_MENU_CLICK
     ifz call menu_click_event
 
     ; check if a disk is inserted as disk 0

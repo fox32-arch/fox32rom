@@ -25,7 +25,7 @@ get_mouse_button:
 
     ret
 
-; updates the cursor position and adds a mouse_click_event_type event to the event queue if the mouse button was clicked
+; updates the cursor position and adds a event_type_mouse_click event to the event queue if the mouse button was clicked
 ; this should only be called by system_vsync_handler
 mouse_update:
     push r0
@@ -84,7 +84,7 @@ mouse_update_no_menu:
     mov r5, 0
     mov r6, 0
     mov r7, 0
-    mov r0, MOUSE_CLICK_EVENT_TYPE ; set event type to mouse type
+    mov r0, EVENT_TYPE_MOUSE_CLICK ; set event type to mouse type
     call new_event
     jmp mouse_update_end
 mouse_update_menu_was_clicked:
@@ -95,7 +95,7 @@ mouse_update_menu_was_clicked:
     mov r5, 0
     mov r6, 0
     mov r7, 0
-    mov r0, MENU_BAR_CLICK_EVENT_TYPE ; set event type to menu bar click type
+    mov r0, EVENT_TYPE_MENU_BAR_CLICK ; set event type to menu bar click type
     call new_event
 mouse_update_end:
     pop r7

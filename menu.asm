@@ -173,7 +173,7 @@ close_menu:
 
 ; update the currently open menu
 ; detects mouse movements over the menu and handles clicks
-; this should only be called if a menu_update_event_type event is received
+; this should only be called if a event_type_menu_update event is received
 ; inputs:
 ; *** these inputs should already be in the required registers from the event parameters ***
 ; r1: pointer to menu bar root struct
@@ -242,13 +242,13 @@ menu_update_event_clicked:
     mov r5, 0
     mov r6, 0
     mov r7, 0
-    mov r0, MENU_CLICK_EVENT_TYPE
+    mov r0, EVENT_TYPE_MENU_CLICK
     call new_event
     mov r0, r1
     call close_menu
     jmp menu_update_event_end_no_add
 menu_update_event_end_add:
-    ; readd the menu_update_event_type event to the event queue
+    ; readd the event_type_menu_update event to the event queue
     mov r1, r8                    ; event parameter 0: pointer to menu bar root struct
     mov r2, r9                    ; event parameter 1: selected root menu item
     mov r3, r10                   ; event parameter 2: hovering menu item (or 0xFFFFFFFF for none)
@@ -256,7 +256,7 @@ menu_update_event_end_add:
     mov r5, 0
     mov r6, 0
     mov r7, 0
-    mov r0, MENU_UPDATE_EVENT_TYPE
+    mov r0, EVENT_TYPE_MENU_UPDATE
     call new_event
 menu_update_event_end_no_add:
     pop r9

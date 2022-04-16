@@ -59,8 +59,8 @@ compare_memory_bytes:                     jmp [0xF0046008]
 compare_memory_words:                     jmp [0xF004600C]
 
 ; event types
-const MOUSE_CLICK_EVENT_TYPE:    0x00000000
-const MENU_BAR_CLICK_EVENT_TYPE: 0x00000001
-const MENU_UPDATE_EVENT_TYPE:    0x00000002
-const MENU_CLICK_EVENT_TYPE:     0x00000003
-const EMPTY_EVENT_TYPE:          0xFFFFFFFF
+const EVENT_TYPE_MOUSE_CLICK:    0x00000000
+const EVENT_TYPE_MENU_BAR_CLICK: 0x00000001
+const EVENT_TYPE_MENU_UPDATE:    0x00000002
+const EVENT_TYPE_MENU_CLICK:     0x00000003
+const EVENT_TYPE_EMPTY:          0xFFFFFFFF
