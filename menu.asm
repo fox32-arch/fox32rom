@@ -229,7 +229,7 @@ menu_update_event_no_redraw:
     ; check the mouse held bit
     ; this is kinda hacky but it works
     call get_mouse_button
-    bts r0, 1
+    bts r0, 2
     ifnz jmp menu_update_event_clicked
 
     jmp menu_update_event_end_add

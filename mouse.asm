@@ -49,8 +49,19 @@ mouse_update:
     in r3, r2
 
     ; check click bit
+    push r2
+    push r3
     bts r3, 0
-    ifz jmp mouse_update_end
+    ifnz call mouse_update_clicked
+    pop r3
+    pop r2
+
+    ; check release bit
+    bts r3, 1
+    ifnz call mouse_update_released
+
+    jmp mouse_update_end
+mouse_update_clicked:
     ; mouse was clicked, clear the click bit
     bcl r3, 0
     out r2, r3
@@ -65,16 +76,16 @@ mouse_update:
     ; first check if the menu bar is enabled
     in r3, 0x8000031E             ; overlay 30: enable status
     cmp r3, 0
-    ifz jmp mouse_update_no_menu
+    ifz jmp mouse_update_clicked_no_menu
     cmp r1, 17
     ifc jmp mouse_update_menu_was_clicked
-mouse_update_no_menu:
+mouse_update_clicked_no_menu:
 
     ; if a menu is open, don't push a click event
     ; this is hacky as fuck
     in r3, 0x8000031D             ; overlay 29: enable status
     cmp r3, 0
-    ifnz jmp mouse_update_end
+    ifnz ret
 
     ; otherwise, just add a standard mouse click event to the event queue
     mov r2, r1                    ; copy Y position to event parameter 1
@@ -84,9 +95,24 @@ mouse_update_no_menu:
     mov r5, 0
     mov r6, 0
     mov r7, 0
-    mov r0, EVENT_TYPE_MOUSE_CLICK ; set event type to mouse type
+    mov r0, EVENT_TYPE_MOUSE_CLICK ; set event type to mouse click
     call new_event
-    jmp mouse_update_end
+    ret
+mouse_update_released:
+    ; mouse was released, clear the release bit
+    bcl r3, 1
+    out r2, r3
+
+    mov r2, r1                    ; copy Y position to event parameter 1
+    mov r1, r0                    ; copy X position to event parameter 0
+    mov r3, 0
+    mov r4, 0
+    mov r5, 0
+    mov r6, 0
+    mov r7, 0
+    mov r0, EVENT_TYPE_MOUSE_RELEASE ; set event type to mouse release
+    call new_event
+    ret
 mouse_update_menu_was_clicked:
     mov r2, r1                    ; copy Y position to event parameter 1
     mov r1, r0                    ; copy X position to event parameter 0
@@ -97,6 +123,7 @@ mouse_update_menu_was_clicked:
     mov r7, 0
     mov r0, EVENT_TYPE_MENU_BAR_CLICK ; set event type to menu bar click type
     call new_event
+    ret
 mouse_update_end:
     pop r7
     pop r6

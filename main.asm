@@ -77,6 +77,10 @@ event_loop:
     cmp r0, EVENT_TYPE_MOUSE_CLICK
     ;ifz call mouse_click_event
 
+    ; was the mouse released?
+    cmp r0, EVENT_TYPE_MOUSE_RELEASE
+    ;ifz call mouse_release_event
+
     ; did the user click the menu bar?
     cmp r0, EVENT_TYPE_MENU_BAR_CLICK
     ifz mov r0, menu_items_root
