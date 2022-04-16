@@ -132,6 +132,7 @@ get_rom_version:
     #include "boot.asm"
     #include "debug.asm"
     #include "disk.asm"
+    #include "draw_pixel.asm"
     #include "draw_rectangle.asm"
     #include "draw_text.asm"
     #include "event.asm"
@@ -165,6 +166,7 @@ get_rom_version:
     data.32 draw_format_str_generic
     data.32 draw_decimal_generic
     data.32 draw_font_tile_generic
+    data.32 draw_pixel_generic
     data.32 draw_filled_rectangle_generic
 
     ; background jump table
@@ -174,6 +176,7 @@ get_rom_version:
     data.32 draw_format_str_to_background
     data.32 draw_decimal_to_background
     data.32 draw_font_tile_to_background
+    data.32 draw_pixel_to_background
     data.32 draw_filled_rectangle_to_background
 
     ; overlay jump table
@@ -183,6 +186,7 @@ get_rom_version:
     data.32 draw_format_str_to_overlay
     data.32 draw_decimal_to_overlay
     data.32 draw_font_tile_to_overlay
+    data.32 draw_pixel_to_overlay
     data.32 draw_filled_rectangle_to_overlay
     data.32 find_overlay_covering_position
     data.32 check_if_overlay_covers_position

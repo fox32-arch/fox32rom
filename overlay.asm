@@ -33,6 +33,31 @@ fill_overlay_loop:
     pop r1
     ret
 
+; draw a pixel to an overlay
+; inputs:
+; r0: X coordinate
+; r1: Y coordinate
+; r2: color
+; r3: overlay number
+; outputs:
+; none
+draw_pixel_to_overlay:
+    push r3
+    push r4
+
+    mov r4, r3
+    or r4, 0x80000100        ; bitwise or the overlay number with the command to get the overlay size
+    or r3, 0x80000200        ; bitwise or the overlay number with the command to get the framebuffer pointer
+    in r3, r3                ; r3: overlay framebuffer poiner
+    in r4, r4
+    and r4, 0x0000FFFF       ; r4: overlay width
+
+    call draw_pixel_generic
+
+    pop r4
+    pop r3
+    ret
+
 ; draw a filled rectangle to an overlay
 ; inputs:
 ; r0: X coordinate of top-left

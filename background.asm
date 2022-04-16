@@ -22,6 +22,25 @@ fill_background_loop:
     pop r1
     ret
 
+; draw a pixel to the background
+; inputs:
+; r0: X coordinate
+; r1: Y coordinate
+; r2: color
+; outputs:
+; none
+draw_pixel_to_background:
+    push r5
+    push r6
+
+    mov r3, BACKGROUND_FRAMEBUFFER
+    mov r4, 640
+    call draw_pixel_generic
+
+    pop r6
+    pop r5
+    ret
+
 ; draw a filled rectangle to the background
 ; inputs:
 ; r0: X coordinate of top-left
