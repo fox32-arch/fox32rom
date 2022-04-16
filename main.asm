@@ -175,6 +175,7 @@ get_rom_version:
     data.32 draw_str_to_background
     data.32 draw_format_str_to_background
     data.32 draw_decimal_to_background
+    data.32 draw_hex_to_background
     data.32 draw_font_tile_to_background
     data.32 draw_pixel_to_background
     data.32 draw_filled_rectangle_to_background
@@ -185,6 +186,7 @@ get_rom_version:
     data.32 draw_str_to_overlay
     data.32 draw_format_str_to_overlay
     data.32 draw_decimal_to_overlay
+    data.32 draw_hex_to_overlay
     data.32 draw_font_tile_to_overlay
     data.32 draw_pixel_to_overlay
     data.32 draw_filled_rectangle_to_overlay
