@@ -43,7 +43,7 @@ draw_menu_items_calculate_x_loop:
     loop draw_menu_items_calculate_x_loop
 draw_menu_items_calculate_x_skip:
     sub r30, 8                    ; move the menu to the left by 8 pixels
-    mov.16 [OVERLAY_29_POSITION_X], r30
+    mov.16 [MENU_POSITION_X], r30
 
     mov r31, r0
     inc r31                       ; point to menu list pointer
@@ -58,7 +58,7 @@ draw_menu_items_calculate_x_skip:
     ; multiply the number of menu items by 16 (the font is 16 pixels tall)
     mov r1, r31
     mul r1, 16
-    mov.16 [OVERLAY_29_HEIGHT], r1
+    mov.16 [MENU_HEIGHT], r1
 
     ; calculate the required width for the menu overlay
     ; multiply the width by 8 (the font is 8 pixels wide)
@@ -67,25 +67,25 @@ draw_menu_items_calculate_x_skip:
     movz.8 r1, [r1]               ; load width of menu
     mov r8, r1                    ; save the width in characters in r8 for later
     mul r1, 8
-    mov.16 [OVERLAY_29_WIDTH], r1
+    mov.16 [MENU_WIDTH], r1
 
     push r0
 
     ; set properties of overlay 29
-    mov.16 [OVERLAY_29_POSITION_Y], 16
-    mov [OVERLAY_29_FRAMEBUFFER_PTR], OVERLAY_29_FRAMEBUFFER
+    mov.16 [MENU_POSITION_Y], 16
+    mov [MENU_FRAMEBUFFER_PTR], MENU_FRAMEBUFFER
     mov r0, 0x8000001D ; overlay 29: position
-    mov.16 r1, [OVERLAY_29_POSITION_Y]
+    mov.16 r1, [MENU_POSITION_Y]
     sla r1, 16
-    mov.16 r1, [OVERLAY_29_POSITION_X]
+    mov.16 r1, [MENU_POSITION_X]
     out r0, r1
     mov r0, 0x8000011D ; overlay 29: size
-    mov.16 r1, [OVERLAY_29_HEIGHT]
+    mov.16 r1, [MENU_HEIGHT]
     sla r1, 16
-    mov.16 r1, [OVERLAY_29_WIDTH]
+    mov.16 r1, [MENU_WIDTH]
     out r0, r1
     mov r0, 0x8000021D ; overlay 29: framebuffer pointer
-    mov r1, [OVERLAY_29_FRAMEBUFFER_PTR]
+    mov r1, [MENU_FRAMEBUFFER_PTR]
     out r0, r1
     mov r0, 0x8000031D
     out r0, 1

@@ -35,7 +35,7 @@ disable_all_overlays_loop:
     out r0, 0
 
     ; write the cursor bitmap to the overlay framebuffer
-    mov r0, [overlay_31_framebuffer_ptr]
+    mov r0, CURSOR_FRAMEBUFFER_PTR
     mov r1, mouse_cursor
     mov r31, 96 ; 8x12
 cursor_overlay_loop:
@@ -47,12 +47,12 @@ cursor_overlay_loop:
 cursor_enable:
     ; set properties of overlay 31
     mov r0, 0x8000011F ; overlay 31: size
-    mov.16 r1, [overlay_31_height]
+    mov.16 r1, CURSOR_HEIGHT
     sla r1, 16
-    mov.16 r1, [overlay_31_width]
+    mov.16 r1, CURSOR_WIDTH
     out r0, r1
     mov r0, 0x8000021F ; overlay 31: framebuffer pointer
-    mov r1, [overlay_31_framebuffer_ptr]
+    mov r1, CURSOR_FRAMEBUFFER_PTR
     out r0, r1
 
     ; enable overlay 31 (cursor)
@@ -240,27 +240,25 @@ mouse_cursor:
     #include_bin "font/cursor2.raw"
 
 ; cursor overlay struct:
-overlay_31_width:           data.16 8
-overlay_31_height:          data.16 12
-overlay_31_position_x:      data.16 0
-overlay_31_position_y:      data.16 0
-overlay_31_framebuffer_ptr: data.32 0x0212D000
+const CURSOR_WIDTH:           8
+const CURSOR_HEIGHT:          12
+const CURSOR_FRAMEBUFFER_PTR: 0x0212D000
 
 ; menu bar overlay struct:
-overlay_30_width:           data.16 640
-overlay_30_height:          data.16 16
-overlay_30_position_x:      data.16 0
-overlay_30_position_y:      data.16 0
-overlay_30_framebuffer_ptr: data.32 0x0212D180
+const MENU_BAR_WIDTH:           640
+const MENU_BAR_HEIGHT:          16
+const MENU_BAR_POSITION_X:      0
+const MENU_BAR_POSITION_Y:      0
+const MENU_BAR_FRAMEBUFFER_PTR: 0x0212D180
 
 ; menu overlay struct:
 ; this struct must be writable, so these are hard-coded addresses in ram
-const OVERLAY_29_WIDTH:           0x02137180 ; 2 bytes
-const OVERLAY_29_HEIGHT:          0x02137182 ; 2 bytes
-const OVERLAY_29_POSITION_X:      0x02137184 ; 2 bytes
-const OVERLAY_29_POSITION_Y:      0x02137186 ; 2 bytes
-const OVERLAY_29_FRAMEBUFFER_PTR: 0x0213718A ; 4 bytes
-const OVERLAY_29_FRAMEBUFFER:     0x0213718E
+const MENU_WIDTH:           0x02137180 ; 2 bytes
+const MENU_HEIGHT:          0x02137182 ; 2 bytes
+const MENU_POSITION_X:      0x02137184 ; 2 bytes
+const MENU_POSITION_Y:      0x02137186 ; 2 bytes
+const MENU_FRAMEBUFFER_PTR: 0x0213718A ; 4 bytes
+const MENU_FRAMEBUFFER:     0x0213718E
 
 startup_str: data.str "fox32 - ROM version %u.%u.%u - insert boot disk" data.8 0
 
