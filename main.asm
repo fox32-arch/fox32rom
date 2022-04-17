@@ -146,6 +146,7 @@ get_rom_version:
     #include "draw_rectangle.asm"
     #include "draw_text.asm"
     #include "event.asm"
+    #include "keyboard.asm"
     #include "memory.asm"
     #include "menu.asm"
     #include "menu_bar.asm"

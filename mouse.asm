@@ -28,15 +28,6 @@ get_mouse_button:
 ; updates the cursor position and adds a event_type_mouse_click event to the event queue if the mouse button was clicked
 ; this should only be called by system_vsync_handler
 mouse_update:
-    push r0
-    push r1
-    push r2
-    push r3
-    push r4
-    push r5
-    push r6
-    push r7
-
     mov r0, 0x8000001F            ; overlay 31: position
     in r2, 0x80000401             ; mouse position
     out r0, r2
@@ -125,12 +116,4 @@ mouse_update_menu_was_clicked:
     call new_event
     ret
 mouse_update_end:
-    pop r7
-    pop r6
-    pop r5
-    pop r4
-    pop r3
-    pop r2
-    pop r1
-    pop r0
     ret
