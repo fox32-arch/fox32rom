@@ -24,6 +24,16 @@ disable_all_overlays_loop:
     inc r0
     loop disable_all_overlays_loop
 
+    ; remove all disks
+    mov r0, 0x80005000
+    out r0, 0
+    inc r0
+    out r0, 0
+    inc r0
+    out r0, 0
+    inc r0
+    out r0, 0
+
     ; write the cursor bitmap to the overlay framebuffer
     mov r0, [overlay_31_framebuffer_ptr]
     mov r1, mouse_cursor
