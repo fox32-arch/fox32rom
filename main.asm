@@ -152,6 +152,7 @@ get_rom_version:
     #include "mouse.asm"
     #include "overlay.asm"
     #include "panic.asm"
+    #include "ryfs.asm"
     #include "vsync.asm"
 
 

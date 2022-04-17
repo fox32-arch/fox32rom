@@ -1,5 +1,7 @@
 ; disk routines
 
+const TEMP_SECTOR_BUF: 0x01FFF808
+
 ; read a sector into the specified memory buffer
 ; inputs:
 ; r0: sector number
