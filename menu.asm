@@ -234,6 +234,11 @@ menu_update_event_no_redraw:
 
     jmp menu_update_event_end_add
 menu_update_event_clicked:
+    ; wait until the mouse button is released
+    ; this is extremely hacky
+    call get_mouse_button
+    bts r0, 2
+    ifnz jmp menu_update_event_clicked
     ;div r2, 16                    ; mouse Y / 16
     mov r1, r8                    ; event parameter 0: pointer to menu bar root struct
     mov r2, r9                    ; event parameter 1: selected root menu item
