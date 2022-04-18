@@ -61,8 +61,6 @@ monitor_event_loop:
 key_down_event:
     mov r0, r1
     call scancode_to_ascii
-    mov r1, TEXT_COLOR
-    mov r2, 0x00000000
     call print_character_to_monitor
     call redraw_monitor_console_line
     ret

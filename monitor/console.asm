@@ -3,8 +3,6 @@
 ; print a string to the monitor
 ; inputs:
 ; r0: pointer to null-terminated string
-; r1: foreground color
-; r2: background color
 ; outputs:
 print_string_to_monitor:
     push r0
@@ -23,20 +21,12 @@ print_string_to_monitor_loop:
 ; print a single character to the monitor
 ; inputs:
 ; r0: character
-; r1: foreground color
-; r2: background color
 ; outputs:
 ; none
 print_character_to_monitor:
     push r0
     push r1
     push r2
-    push r3
-    push r4
-    push r5
-
-    mov r3, r1
-    mov r4, r2
 
     cmp.8 r0, 0     ; null
     ifz jmp print_character_to_monitor_end
@@ -80,9 +70,6 @@ print_character_to_monitor_lf:
     ifgteq call scroll_monitor_console
     call redraw_monitor_console
 print_character_to_monitor_end:
-    pop r5
-    pop r4
-    pop r3
     pop r2
     pop r1
     pop r0
