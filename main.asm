@@ -150,6 +150,7 @@ get_rom_version:
     #include "memory.asm"
     #include "menu.asm"
     #include "menu_bar.asm"
+    #include "monitor/monitor.asm"
     #include "mouse.asm"
     #include "overlay.asm"
     #include "panic.asm"
@@ -261,7 +262,7 @@ const MENU_POSITION_Y:      0x02137186 ; 2 bytes
 const MENU_FRAMEBUFFER_PTR: 0x0213718A ; 4 bytes
 const MENU_FRAMEBUFFER:     0x0213718E
 
-startup_str: data.str "fox32 - ROM version %u.%u.%u - insert boot disk" data.8 0
+startup_str: data.str "fox32 - ROM version %u.%u.%u - insert boot disk - F12 for monitor" data.8 0
 
 menu_items_root:
     data.8 1                                                      ; number of menus
