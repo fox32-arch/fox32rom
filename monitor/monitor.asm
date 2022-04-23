@@ -2,12 +2,9 @@
 
 invoke_monitor:
     ; set the vsync handler to our own and reenable interrupts
-    ; TODO: save the old vsync handler for when the monitor exits!!!
+    mov [MONITOR_OLD_VSYNC_HANDLER], [0x000003FC]
     mov [0x000003FC], monitor_vsync_handler
     ise
-
-    ; set text buffer poinrer to the start of the text buffer
-    mov [MONITOR_TEXT_BUF_PTR], MONITOR_TEXT_BUF_BOTTOM
 
     ; set the X and Y coords of the console text
     mov.8 [MONITOR_CONSOLE_X], 0
@@ -49,30 +46,20 @@ invoke_monitor:
     mov r5, 31
     call draw_filled_rectangle_to_overlay
 
-monitor_event_loop:
-    call get_next_event
+    call monitor_shell_start
 
-    ; was a key pressed?
-    cmp r0, EVENT_TYPE_KEY_DOWN
-    ifz call key_down_event
-
-    jmp monitor_event_loop
-
-key_down_event:
-    mov r0, r1
-    call scancode_to_ascii
-    call print_character_to_monitor
-    call redraw_monitor_console_line
+    ; restore the old vsync handler and exit
+    mov [0x000003FC], [MONITOR_OLD_VSYNC_HANDLER]
     ret
 
 info_str: data.str "fox32rom monitor" data.8 0x00
 
     #include "monitor/console.asm"
     #include "monitor/keyboard.asm"
+    #include "monitor/shell.asm"
     #include "monitor/vsync.asm"
 
-const MONITOR_TEXT_BUF_BOTTOM: 0x03ED3FE0 ; 32 characters
-const MONITOR_TEXT_BUF_PTR:    0x03ED3FDC ; 4 bytes
+const MONITOR_OLD_VSYNC_HANDLER: 0x03ED36C6 ; 4 bytes
 
 const MONITOR_BACKGROUND_COLOR: 0xFF282828
 

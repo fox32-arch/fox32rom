@@ -6,19 +6,56 @@
 ; outputs:
 ; r0: ASCII character
 scancode_to_ascii:
-    add r0, scancode_table
+    push r1
+
+    mov r1, scancode_table
+    bts [MODIFIER_BITMAP], 0
+    ifnz mov r1, scancode_table_shift
+    bts [MODIFIER_BITMAP], 1
+    ifnz mov r1, scancode_table_caps
+    add r0, r1
     movz.8 r0, [r0]
+
+    pop r1
+    ret
+
+; set bit 0 in the modifier bitmap
+; inputs:
+; none
+; outputs:
+; none
+shift_pressed:
+    bse [MODIFIER_BITMAP], 0
+
+    ret
+
+; clear bit 0 in the modifier bitmap
+; inputs:
+; none
+; outputs:
+; none
+shift_released:
+    bcl [MODIFIER_BITMAP], 0
+
+    ret
+
+; toggle bit 1 in the modifier bitmap
+; inputs:
+; none
+; outputs:
+; none
+caps_pressed:
+    bts [MODIFIER_BITMAP], 1
+    ifz bse [MODIFIER_BITMAP], 1
+    ifnz bcl [MODIFIER_BITMAP], 1
 
     ret
 
 ; scancode set 1:
 ; https://wiki.osdev.org/PS/2_Keyboard#Scan_Code_Set_1
-const LSHIFT_PRESS:   0x2A
-const LSHIFT_RELEASE: 0xAA
-const RSHIFT_PRESS:   0x36
-const RSHIFT_RELEASE: 0xB6
-const CAPS_PRESS:     0x3A
-const CAPS_RELEASE:   0xBA
+const LSHIFT: 0x2A
+const RSHIFT: 0x36
+const CAPS:   0x3A
 scancode_table:
     data.8 0 data.8 27 data.str "1234567890-=" data.8 8
     data.8 9 data.str "qwertyuiop[]" data.8 10 data.8 0
@@ -59,4 +96,4 @@ scancode_table_caps:
     data.8 0 data.8 0 data.8 0 data.8 0
     data.8 0 data.8 0 data.8 0
 
-const MONITOR_MODIFIER_BITMAP: 0x03ED3FDB ; 1 byte
+const MODIFIER_BITMAP: 0x03ED36C9 ; 1 byte

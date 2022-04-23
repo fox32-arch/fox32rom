@@ -14,6 +14,7 @@ print_string_to_monitor_loop:
     inc r3
     cmp.8 [r3], 0x00
     ifnz jmp print_string_to_monitor_loop
+    call redraw_monitor_console_line
     pop r3
     pop r0
     ret
@@ -30,10 +31,12 @@ print_character_to_monitor:
 
     cmp.8 r0, 0     ; null
     ifz jmp print_character_to_monitor_end
-    cmp.8 r0, 13    ; carriage return
-    ifz jmp print_character_to_monitor_cr
+    cmp.8 r0, 8     ; backspace
+    ifz jmp print_character_to_monitor_bs
     cmp.8 r0, 10    ; line feed
     ifz jmp print_character_to_monitor_lf
+    cmp.8 r0, 13    ; carriage return
+    ifz jmp print_character_to_monitor_cr
 
     ; check if we are at the end of this line
     cmp.8 [MONITOR_CONSOLE_X], MONITOR_CONSOLE_X_SIZE
@@ -69,6 +72,11 @@ print_character_to_monitor_lf:
     cmp.8 [MONITOR_CONSOLE_Y], MONITOR_CONSOLE_Y_SIZE
     ifgteq call scroll_monitor_console
     call redraw_monitor_console
+    jmp print_character_to_monitor_end
+print_character_to_monitor_bs:
+    ; go back one character
+    cmp.8 [MONITOR_CONSOLE_X], 0
+    ifnz dec.8 [MONITOR_CONSOLE_X]
 print_character_to_monitor_end:
     pop r2
     pop r1
