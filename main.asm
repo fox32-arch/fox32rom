@@ -155,6 +155,7 @@ get_rom_version:
     #include "overlay.asm"
     #include "panic.asm"
     #include "ryfs.asm"
+    #include "string.asm"
     #include "vsync.asm"
 
 
@@ -227,6 +228,7 @@ get_rom_version:
     org.pad 0xF0046000
     data.32 copy_memory_bytes
     data.32 copy_memory_words
+    data.32 copy_string
     data.32 compare_memory_bytes
     data.32 compare_memory_words
 

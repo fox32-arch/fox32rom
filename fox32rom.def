@@ -58,8 +58,9 @@ write_sector:                             jmp [0xF0045004]
 ; memory copy/compare jump table
 copy_memory_bytes:                        jmp [0xF0046000]
 copy_memory_words:                        jmp [0xF0046004]
-compare_memory_bytes:                     jmp [0xF0046008]
-compare_memory_words:                     jmp [0xF004600C]
+copy_string:                              jmp [0xF0046008]
+compare_memory_bytes:                     jmp [0xF004600C]
+compare_memory_words:                     jmp [0xF0046010]
 
 ; event types
 const EVENT_TYPE_MOUSE_CLICK:    0x00000000
