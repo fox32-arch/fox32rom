@@ -74,6 +74,47 @@ monitor_shell_key_up_event:
     ret
 
 monitor_shell_parse_line:
+    ; if the line is empty, just return
+    cmp.8 [MONITOR_SHELL_TEXT_BUF_BOTTOM], 0
+    ifz ret
+
+    ; separate the command from the arguments
+    ; store the pointer to the arguments
+    mov r0, MONITOR_SHELL_TEXT_BUF_BOTTOM
+    mov r1, ' '
+    call monitor_shell_tokenize
+    mov [MONTIOR_SHELL_ARGS_PTR], r0
+
+    mov r0, MONITOR_SHELL_TEXT_BUF_BOTTOM
+    mov r1, test_string
+    call compare_string
+    ifz mov r0, test_working
+    ifz call print_string_to_monitor
+
+    ret
+test_string: data.str "test" data.8 0
+test_working: data.str "it's working!!!" data.8 10 data.8 0
+
+; return tokens separated by the specified character
+; returns the next token in the list
+; inputs:
+; r0: pointer to null-terminated string
+; r1: separator character
+; outputs:
+; r0: pointer to next token or zero if none
+monitor_shell_tokenize:
+    cmp.8 [r0], r1
+    ifz jmp monitor_shell_tokenize_found_token
+
+    cmp.8 [r0], 0
+    ifz mov r0, 0
+    ifz ret
+
+    inc r0
+    jmp monitor_shell_tokenize
+monitor_shell_tokenize_found_token:
+    mov.8 [r0], 0
+    inc r0
     ret
 
 ; push a character to the text buffer
@@ -131,6 +172,7 @@ monitor_shell_clear_buffer:
 
 const MONITOR_SHELL_TEXT_BUF_TOP:    0x03ED4000
 const MONITOR_SHELL_TEXT_BUF_BOTTOM: 0x03ED3FE0 ; 32 characters
-const MONITOR_SHELL_TEXT_BUF_PTR:    0x03ED3FDC ; 4 bytes
+const MONITOR_SHELL_TEXT_BUF_PTR:    0x03ED3FDC ; 4 bytes - pointer to the current input character
+const MONTIOR_SHELL_ARGS_PTR:        0x03ED36C5 ; 4 bytes - pointer to the beginning of the command arguments
 
 monitor_shell_prompt: data.str "> " data.8 0
