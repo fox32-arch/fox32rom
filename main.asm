@@ -231,6 +231,7 @@ get_rom_version:
     data.32 copy_string
     data.32 compare_memory_bytes
     data.32 compare_memory_words
+    data.32 compare_string
 
     org.pad 0xF004F000
 standard_font_width:
