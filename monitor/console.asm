@@ -62,7 +62,6 @@ print_character_to_monitor:
 print_character_to_monitor_cr:
     ; return to the beginning of the line
     mov.8 [MONITOR_CONSOLE_X], 0
-    call redraw_monitor_console
     jmp print_character_to_monitor_end
 print_character_to_monitor_lf:
     ; return to the beginning of the line and increment the line
@@ -71,7 +70,6 @@ print_character_to_monitor_lf:
     ; scroll the display if needed
     cmp.8 [MONITOR_CONSOLE_Y], MONITOR_CONSOLE_Y_SIZE
     ifgteq call scroll_monitor_console
-    call redraw_monitor_console
     jmp print_character_to_monitor_end
 print_character_to_monitor_bs:
     ; go back one character
@@ -106,8 +104,9 @@ scroll_monitor_console:
     ; size
     mov r2, MONITOR_CONSOLE_X_SIZE
     mul r2, 28
+    div r2, 4
 
-    call copy_memory_bytes
+    call copy_memory_words
 
     mov.8 [MONITOR_CONSOLE_X], 0
     mov.8 [MONITOR_CONSOLE_Y], 28
