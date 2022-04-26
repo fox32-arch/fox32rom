@@ -10,7 +10,7 @@ keyboard_update:
 
     ; invoke the debug monitor if F12 was pressed
     cmp r0, 0x58
-    ifz call invoke_monitor
+    ifz jmp invoke_monitor
 
     ; check if this is a make or break scancode
     bts r0, 7
