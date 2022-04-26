@@ -46,6 +46,10 @@ monitor_shell_key_down_event:
 monitor_shell_key_down_event_enter:
     mov r0, 10 ; line feed
     call print_character_to_monitor
+
+    mov r0, 0
+    call monitor_shell_push_character
+
     call monitor_shell_parse_line
     call monitor_shell_clear_buffer
     mov r0, monitor_shell_prompt
@@ -85,15 +89,9 @@ monitor_shell_parse_line:
     call monitor_shell_tokenize
     mov [MONTIOR_SHELL_ARGS_PTR], r0
 
-    mov r0, MONITOR_SHELL_TEXT_BUF_BOTTOM
-    mov r1, test_string
-    call compare_string
-    ifz mov r0, test_working
-    ifz call print_string_to_monitor
+    call monitor_shell_parse_command
 
     ret
-test_string: data.str "test" data.8 0
-test_working: data.str "it's working!!!" data.8 10 data.8 0
 
 ; return tokens separated by the specified character
 ; returns the next token in the list

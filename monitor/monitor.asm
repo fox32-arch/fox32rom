@@ -46,20 +46,29 @@ invoke_monitor:
     mov r5, 31
     call draw_filled_rectangle_to_overlay
 
-    call monitor_shell_start
+    call redraw_monitor_console
 
-    ; restore the old vsync handler and exit
+    mov [MONITOR_OLD_RSP], rsp
+    jmp monitor_shell_start
+exit_monitor:
+    ; restore the old RSP and vsync handler, reset the cursor, and exit
+    mov rsp, [MONITOR_OLD_RSP]
     mov [0x000003FC], [MONITOR_OLD_VSYNC_HANDLER]
+
+    call enable_cursor
+
     ret
 
 info_str: data.str "fox32rom monitor" data.8 0x00
 
+    #include "monitor/commands/commands.asm"
     #include "monitor/console.asm"
     #include "monitor/keyboard.asm"
     #include "monitor/shell.asm"
     #include "monitor/vsync.asm"
 
-const MONITOR_OLD_VSYNC_HANDLER: 0x03ED36C6 ; 4 bytes
+const MONITOR_OLD_RSP:           0x03ED36BD ; 4 bytes
+const MONITOR_OLD_VSYNC_HANDLER: 0x03ED36C1 ; 4 bytes
 
 const MONITOR_BACKGROUND_COLOR: 0xFF282828
 
