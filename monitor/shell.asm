@@ -115,6 +115,38 @@ monitor_shell_tokenize_found_token:
     inc r0
     ret
 
+; parse up to 4 arguments into individual strings
+; for example, "this is a test" will be converted to
+;              r0: pointer to "this" data.8 0
+;              r1: pointer to "is"   data.8 0
+;              r2: pointer to "a"    data.8 0
+;              r3: pointer to "test" data.8 0
+; inputs:
+; none
+; outputs:
+; r0: pointer to 1st null-terminated argument, or zero if none
+; r1: pointer to 2nd null-terminated argument, or zero if none
+; r2: pointer to 3rd null-terminated argument, or zero if none
+; r3: pointer to 4th null-terminated argument, or zero if none
+monitor_shell_parse_arguments:
+    push r31
+
+    mov r0, [MONTIOR_SHELL_ARGS_PTR]
+    mov r1, ' '
+    mov r31, 3
+    push r0
+monitor_shell_parse_arguments_loop:
+    call monitor_shell_tokenize
+    push r0
+    loop monitor_shell_parse_arguments_loop
+    pop r3
+    pop r2
+    pop r1
+    pop r0
+
+    pop r31
+    ret
+
 ; push a character to the text buffer
 ; inputs:
 ; r0: character
