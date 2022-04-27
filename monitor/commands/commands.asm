@@ -14,7 +14,13 @@ monitor_shell_parse_command:
     call compare_string
     ifz jmp monitor_shell_help_command
 
+    ; invalid command
+    mov r0, monitor_shell_invalid_command_string
+    call print_string_to_monitor
+
     ret
+
+monitor_shell_invalid_command_string: data.str "invalid command" data.8 10 data.8 0
 
     ; all commands
     #include "monitor/commands/exit.asm"
