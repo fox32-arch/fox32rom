@@ -59,3 +59,24 @@ compare_string_equal:
     pop r1
     pop r0
     ret
+
+; get the length of a string
+; inputs:
+; r0: pointer to null-terminated string
+; outputs:
+; r0: length of the string, not including the null-terminator
+string_length:
+    push r1
+    mov r1, 0
+string_length_loop:
+    ; check if this is the end of the string
+    cmp.8 [r0], 0
+    ifz jmp string_length_end
+    inc r0
+    inc r1
+    jmp string_length_loop
+string_length_end:
+    mov r0, r1
+    pop r1
+    ret
+

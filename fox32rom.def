@@ -62,6 +62,7 @@ copy_string:                              jmp [0xF0046008]
 compare_memory_bytes:                     jmp [0xF004600C]
 compare_memory_words:                     jmp [0xF0046010]
 compare_string:                           jmp [0xF0046014]
+string_length:                            jmp [0xF0046018]
 
 ; event types
 const EVENT_TYPE_MOUSE_CLICK:    0x00000000
