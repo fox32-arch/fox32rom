@@ -12,4 +12,5 @@ monitor_shell_help_text:
     data.str "------- | -----------" data.8 10
     data.str "exit    | exit the monitor" data.8 10
     data.str "help    | display this help text" data.8 10
+    data.str "set.SZ  | set [$0] to $1; equivalent to `mov.SZ [$0], $1`" data.8 10
     data.8 0
