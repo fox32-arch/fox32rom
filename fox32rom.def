@@ -64,6 +64,9 @@ compare_memory_words:                     jmp [0xF0046010]
 compare_string:                           jmp [0xF0046014]
 string_length:                            jmp [0xF0046018]
 
+; integer jump table
+string_to_int:                            jmp [0xF0047000]
+
 ; event types
 const EVENT_TYPE_MOUSE_CLICK:    0x00000000
 const EVENT_TYPE_MOUSE_RELEASE:  0x00000001

@@ -124,6 +124,7 @@ get_rom_version:
     #include "draw_rectangle.asm"
     #include "draw_text.asm"
     #include "event.asm"
+    #include "integer.asm"
     #include "keyboard.asm"
     #include "memory.asm"
     #include "menu.asm"
@@ -210,6 +211,11 @@ get_rom_version:
     data.32 compare_memory_bytes
     data.32 compare_memory_words
     data.32 compare_string
+    data.32 string_length
+
+    ; integer jump table
+    org.pad 0xF0047000
+    data.32 string_to_int
 
     org.pad 0xF004F000
 standard_font_width:
