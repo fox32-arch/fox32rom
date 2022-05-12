@@ -19,6 +19,66 @@ print_string_to_monitor_loop:
     pop r0
     ret
 
+; print a hex word to the monitor
+; inputs:
+; r0: value
+; outputs:
+print_hex_word_to_monitor:
+    push r10
+    push r11
+    push r12
+    push r31
+
+    mov r10, r0
+    mov r31, 8
+print_hex_word_to_monitor_loop:
+    rol r10, 4
+    movz.16 r11, r10
+    and r11, 0x0F
+    mov r12, draw_hex_generic_characters
+    add r12, r11
+    movz.8 r0, [r12]
+    call print_character_to_monitor
+    add r1, r6
+    loop print_hex_word_to_monitor_loop
+    call redraw_monitor_console_line
+
+    pop r31
+    pop r12
+    pop r11
+    pop r10
+    ret
+
+; print a hex byte to the monitor
+; inputs:
+; r0: value
+; outputs:
+print_hex_byte_to_monitor:
+    push r10
+    push r11
+    push r12
+    push r31
+
+    movz.8 r10, r0
+    mov r31, 2
+print_hex_byte_to_monitor_loop:
+    rol.8 r10, 4
+    movz.16 r11, r10
+    and r11, 0x0F
+    mov r12, draw_hex_generic_characters
+    add r12, r11
+    movz.8 r0, [r12]
+    call print_character_to_monitor
+    add r1, r6
+    loop print_hex_byte_to_monitor_loop
+    call redraw_monitor_console_line
+
+    pop r31
+    pop r12
+    pop r11
+    pop r10
+    ret
+
 ; print a single character to the monitor
 ; inputs:
 ; r0: character

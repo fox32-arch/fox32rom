@@ -14,6 +14,16 @@ monitor_shell_parse_command:
     call compare_string
     ifz jmp monitor_shell_help_command
 
+    ; jump
+    mov r1, monitor_shell_jump_command_string
+    call compare_string
+    ifz jmp monitor_shell_jump_command
+
+    ; list
+    mov r1, monitor_shell_list_command_string
+    call compare_string
+    ifz jmp monitor_shell_list_command
+
     ; set.8
     mov r1, monitor_shell_set8_command_string
     call compare_string
@@ -40,4 +50,6 @@ monitor_shell_invalid_command_string: data.str "invalid command" data.8 10 data.
     ; all commands
     #include "monitor/commands/exit.asm"
     #include "monitor/commands/help.asm"
+    #include "monitor/commands/jump.asm"
+    #include "monitor/commands/list.asm"
     #include "monitor/commands/set.asm"
