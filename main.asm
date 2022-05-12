@@ -250,6 +250,7 @@ const MENU_FRAMEBUFFER_PTR: 0x0213718A ; 4 bytes
 const MENU_FRAMEBUFFER:     0x0213718E
 
 startup_str: data.str "fox32 - ROM version %u.%u.%u - insert boot disk - F12 for monitor" data.8 0
+boot_str: data.str "fox32 - ROM version %u.%u.%u - booting..." data.8 0
 
 menu_items_root:
     data.8 1                                                      ; number of menus

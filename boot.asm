@@ -14,8 +14,21 @@ start_boot_process:
     ; divide the size by 512 and add 1 to get the size in sectors
     div r0, 512
     inc r0
-
     mov r31, r0
+
+    mov r0, BACKGROUND_COLOR
+    call fill_background
+draw_boot_text:
+    mov r0, boot_str
+    mov r1, 16
+    mov r2, 464
+    mov r3, TEXT_COLOR
+    mov r4, 0x00000000
+    mov r10, FOX32ROM_VERSION_MAJOR
+    mov r11, FOX32ROM_VERSION_MINOR
+    mov r12, FOX32ROM_VERSION_PATCH
+    call draw_format_str_to_background
+
     mov r0, 0          ; sector counter
     mov r2, 0x00000800 ; destination pointer
     mov r3, 0x80003000 ; command to read a sector from disk 0 into memory
