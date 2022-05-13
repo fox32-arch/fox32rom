@@ -37,13 +37,31 @@ monitor_shell_key_down_event:
     cmp.8 r0, 0x0E ; backspace
     ifz jmp monitor_shell_key_down_event_backspace
 
-    ; otherwise, add it to the text buffer and print it to the screen
+    ; then, overwrite the cursor
+    mov r1, r0
+    mov r0, 8 ; backspace character
+    call print_character_to_monitor
+    mov r0, r1
+
+    ; then, add it to the text buffer and print it to the screen
     call scancode_to_ascii
     call print_character_to_monitor
     call monitor_shell_push_character
+
+    ; finally, print the cursor and redraw the line
+    mov r0, '_'
+    call print_character_to_monitor
     call redraw_monitor_console_line
     ret
 monitor_shell_key_down_event_enter:
+    ; clear the cursor from the screen
+    mov r0, 8 ; backspace character
+    call print_character_to_monitor
+    mov r0, ' ' ; space character
+    call print_character_to_monitor
+    mov r0, 8 ; backspace character
+    call print_character_to_monitor
+
     mov r0, 10 ; line feed
     call print_character_to_monitor
 
@@ -52,6 +70,7 @@ monitor_shell_key_down_event_enter:
 
     call monitor_shell_parse_line
     call monitor_shell_clear_buffer
+
     mov r0, monitor_shell_prompt
     call print_string_to_monitor
     ret
@@ -60,12 +79,15 @@ monitor_shell_key_down_event_backspace:
     mov r1, [MONITOR_SHELL_TEXT_BUF_PTR]
     cmp r1, MONITOR_SHELL_TEXT_BUF_BOTTOM
     iflteq ret
-    ; delete the last character from the screen, and pop the last character from the buffer
+    ; delete the last character from the screen, draw the cursor, and pop the last character from the buffer
     mov r0, 8 ; backspace character
     call print_character_to_monitor
     mov r0, ' ' ; space character
     call print_character_to_monitor
     mov r0, 8 ; backspace character
+    call print_character_to_monitor
+    call print_character_to_monitor
+    mov r0, '_' ; cursor
     call print_character_to_monitor
     call monitor_shell_delete_character
     call redraw_monitor_console_line
@@ -209,4 +231,4 @@ const MONITOR_SHELL_TEXT_BUF_BOTTOM: 0x03ED3FE0 ; 32 characters
 const MONITOR_SHELL_TEXT_BUF_PTR:    0x03ED3FDC ; 4 bytes - pointer to the current input character
 const MONTIOR_SHELL_ARGS_PTR:        0x03ED36C5 ; 4 bytes - pointer to the beginning of the command arguments
 
-monitor_shell_prompt: data.str "> " data.8 0
+monitor_shell_prompt: data.str "> _" data.8 0
