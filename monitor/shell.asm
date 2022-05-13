@@ -56,6 +56,10 @@ monitor_shell_key_down_event_enter:
     call print_string_to_monitor
     ret
 monitor_shell_key_down_event_backspace:
+    ; check if we are already at the start of the prompt
+    mov r1, [MONITOR_SHELL_TEXT_BUF_PTR]
+    cmp r1, MONITOR_SHELL_TEXT_BUF_BOTTOM
+    iflteq ret
     ; delete the last character from the screen, and pop the last character from the buffer
     mov r0, 8 ; backspace character
     call print_character_to_monitor
