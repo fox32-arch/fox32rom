@@ -24,16 +24,6 @@ disable_all_overlays_loop:
     inc r0
     loop disable_all_overlays_loop
 
-    ; remove all disks
-    mov r0, 0x80005000
-    out r0, 0
-    inc r0
-    out r0, 0
-    inc r0
-    out r0, 0
-    inc r0
-    out r0, 0
-
     call enable_cursor
 
     mov r0, BACKGROUND_COLOR
