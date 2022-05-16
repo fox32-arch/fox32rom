@@ -192,6 +192,10 @@ get_rom_version:
     org.pad 0xF0045000
     data.32 read_sector
     data.32 write_sector
+    data.32 ryfs_open
+    data.32 ryfs_seek
+    data.32 ryfs_read
+    data.32 ryfs_read_whole_file
 
     ; memory copy/compare jump table
     org.pad 0xF0046000

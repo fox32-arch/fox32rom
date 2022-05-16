@@ -54,6 +54,10 @@ menu_update_event:                        jmp [0xF004401C]
 ; disk jump table
 read_sector:                              jmp [0xF0045000]
 write_sector:                             jmp [0xF0045004]
+ryfs_open:                                jmp [0xF0045008]
+ryfs_seek:                                jmp [0xF004500C]
+ryfs_read:                                jmp [0xF0045010]
+ryfs_read_whole_file:                     jmp [0xF0045014]
 
 ; memory copy/compare jump table
 copy_memory_bytes:                        jmp [0xF0046000]

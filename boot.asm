@@ -60,7 +60,6 @@ start_boot_process_ryfs:
     mov r0, kernel_file_name
     mov r1, 0
     mov r2, KERNEL_FILE_STRUCT
-    mov r3, TEMP_SECTOR_BUF
     call ryfs_open
 
     mov r0, KERNEL_FILE_STRUCT
