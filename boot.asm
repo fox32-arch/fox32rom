@@ -2,7 +2,7 @@
 ; these are only used during booting, they are not exposed via the jump table
 
 const KERNEL_FILE_STRUCT: 0x01FFF800 ; kernel.bin file struct is right above the system stack
-kernel_file_name: data.str "kernel  bin" data.8 0
+kernel_file_name: data.str "system  bin" data.8 0
 
 ; read disk 0 and attempt to figure out what type of disk it is, and load the correct binary into memory
 ; inputs:
