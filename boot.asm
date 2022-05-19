@@ -61,6 +61,8 @@ start_boot_process_ryfs:
     mov r1, 0
     mov r2, KERNEL_FILE_STRUCT
     call ryfs_open
+    cmp r0, 0
+    ifz jmp start_boot_process_error
 
     mov r0, KERNEL_FILE_STRUCT
     mov r1, 0x00000800
@@ -70,6 +72,21 @@ start_boot_process_done:
     ; now clean up and jump to the loaded binary
     call boot_cleanup
     jmp 0x00000800
+start_boot_process_error:
+    mov r0, BACKGROUND_COLOR
+    call fill_background
+
+    mov r0, boot_error_str
+    mov r1, 16
+    mov r2, 464
+    mov r3, TEXT_COLOR
+    mov r4, 0x00000000
+    mov r10, FOX32ROM_VERSION_MAJOR
+    mov r11, FOX32ROM_VERSION_MINOR
+    mov r12, FOX32ROM_VERSION_PATCH
+    call draw_format_str_to_background
+
+    ret
 
 ; clean up the system's state before jumping to the loaded binary
 ; inputs:
