@@ -12,11 +12,12 @@
 ; r1: disk ID
 ; r2: file struct: pointer to a blank file struct
 ; outputs:
-; r0: first file sector
+; r0: first file sector, or zero if file wasn't found
 ryfs_open:
     push r1
     push r2
     push r10
+    push r31
 
     ; r10: pointer to file struct entry
     mov r10, r2
@@ -33,11 +34,15 @@ ryfs_open:
     mov r1, TEMP_SECTOR_BUF
     add r1, 20
     mov r2, 11 ; compare 11 bytes
+    mov r31, 31 ; 31 file entries total
 ryfs_open_find_dir_entry_loop:
     call compare_memory_bytes
     ifz jmp ryfs_open_found_dir_entry
     add r1, 16 ; point to the file name in the next directory entry
-    jmp ryfs_open_find_dir_entry_loop ; FIXME: this never returns if the file wasn't found
+    loop ryfs_open_find_dir_entry_loop
+    ; if we reach this point, the file wasn't found
+    mov r0, 0
+    jmp ryfs_open_end
 ryfs_open_found_dir_entry:
     sub r1, 4          ; point to first sector of this file
     mov.16 [r10], [r1] ; write file_first_sector
@@ -46,7 +51,8 @@ ryfs_open_found_dir_entry:
     inc r10
     mov.8 [r10], 0     ; write file_reserved
     movz.16 r0, [r1]
-
+ryfs_open_end:
+    pop r31
     pop r10
     pop r2
     pop r1
