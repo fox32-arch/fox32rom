@@ -6,10 +6,9 @@
 ; outputs:
 ; none, does not return
 panic:
-    icl
     brk
     cmp r0, 0
-    ifnz mov r0, panic_string
+    ifz mov r0, panic_string
     call debug_print
 panic_loop:
     jmp panic_loop
