@@ -1,6 +1,6 @@
-; fox32 rom routine definitions
+; fox32rom routine definitions
 
-; system jump table entries
+; system jump table
 get_rom_version:                          jmp [0xF0040000]
 system_vsync_handler:                     jmp [0xF0040004]
 get_mouse_position:                       jmp [0xF0040008]
@@ -18,7 +18,7 @@ draw_font_tile_generic:                   jmp [0xF0041010]
 draw_pixel_generic:                       jmp [0xF0041014]
 draw_filled_rectangle_generic:            jmp [0xF0041018]
 
-; background jump table entries
+; background jump table
 fill_background:                          jmp [0xF0042000]
 draw_str_to_background:                   jmp [0xF0042004]
 draw_format_str_to_background:            jmp [0xF0042008]
@@ -28,7 +28,7 @@ draw_font_tile_to_background:             jmp [0xF0042014]
 draw_pixel_to_background:                 jmp [0xF0042018]
 draw_filled_rectangle_to_background:      jmp [0xF004201C]
 
-; overlay jump table entries
+; overlay jump table
 fill_overlay:                             jmp [0xF0043000]
 draw_str_to_overlay:                      jmp [0xF0043004]
 draw_format_str_to_overlay:               jmp [0xF0043008]
@@ -41,7 +41,7 @@ find_overlay_covering_position:           jmp [0xF0043020]
 check_if_overlay_covers_position:         jmp [0xF0043024]
 check_if_enabled_overlay_covers_position: jmp [0xF0043028]
 
-; menu bar jump table entries
+; menu bar jump table
 enable_menu_bar:                          jmp [0xF0044000]
 disable_menu_bar:                         jmp [0xF0044004]
 menu_bar_click_event:                     jmp [0xF0044008]

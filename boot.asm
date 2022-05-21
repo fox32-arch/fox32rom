@@ -56,7 +56,7 @@ start_boot_process_raw_binary_sector_loop:
 start_boot_process_fat:
     jmp start_boot_process_fat
 start_boot_process_ryfs:
-    ; open kernel.bin
+    ; open system.bin
     mov r0, kernel_file_name
     mov r1, 0
     mov r2, KERNEL_FILE_STRUCT
