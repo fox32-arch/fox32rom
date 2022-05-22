@@ -70,7 +70,7 @@ info_str: data.str "fox32rom monitor" data.8 0x00
 const MONITOR_OLD_RSP:           0x03ED36BD ; 4 bytes
 const MONITOR_OLD_VSYNC_HANDLER: 0x03ED36C1 ; 4 bytes
 
-const MONITOR_BACKGROUND_COLOR: 0xFF282828
+const MONITOR_BACKGROUND_COLOR: 0xFF000000
 
 const MONITOR_WIDTH:           640
 const MONITOR_HEIGHT:          480
