@@ -225,14 +225,14 @@ mouse_cursor:
 ; cursor overlay struct:
 const CURSOR_WIDTH:           8
 const CURSOR_HEIGHT:          12
-const CURSOR_FRAMEBUFFER_PTR: 0x0212D000
+const CURSOR_FRAMEBUFFER_PTR: 0x0214C000
 
 ; menu bar overlay struct:
 const MENU_BAR_WIDTH:           640
 const MENU_BAR_HEIGHT:          16
 const MENU_BAR_POSITION_X:      0
 const MENU_BAR_POSITION_Y:      0
-const MENU_BAR_FRAMEBUFFER_PTR: 0x0212D180
+const MENU_BAR_FRAMEBUFFER_PTR: 0x0214C180
 
 ; menu overlay struct:
 ; this struct must be writable, so these are hard-coded addresses in ram
