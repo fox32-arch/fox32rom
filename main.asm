@@ -16,6 +16,13 @@ entry:
 
     mov [0x000003FC], system_vsync_handler
 
+    ; disable audio playback
+    mov r0, 0x80000600
+    out r0, 0
+
+    ; clear the interrupt vector for interrupt 0xFE - audio buffer switch
+    mov [0x000003F8], 0x00000000
+
     ; disable all overlays
     mov r31, 0x1F
     mov r0, 0x80000300
