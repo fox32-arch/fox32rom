@@ -71,6 +71,10 @@ string_length:                            jmp [0xF0046018]
 ; integer jump table
 string_to_int:                            jmp [0xF0047000]
 
+; audio jump table
+play_audio:                               jmp [0xF0048000]
+stop_audio:                               jmp [0xF0048004]
+
 ; event types
 const EVENT_TYPE_MOUSE_CLICK:    0x00000000
 const EVENT_TYPE_MOUSE_RELEASE:  0x00000001

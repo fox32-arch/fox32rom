@@ -112,6 +112,7 @@ get_rom_version:
     ret
 
     ; code
+    #include "audio.asm"
     #include "background.asm"
     #include "boot.asm"
     #include "cursor.asm"
@@ -217,6 +218,11 @@ get_rom_version:
     ; integer jump table
     org.pad 0xF0047000
     data.32 string_to_int
+
+    ; audio jump table
+    org.pad 0xF0048000
+    data.32 play_audio
+    data.32 stop_audio
 
     org.pad 0xF004F000
 standard_font_width:
