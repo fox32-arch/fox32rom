@@ -85,6 +85,35 @@ draw_filled_rectangle_to_overlay:
     pop r5
     ret
 
+; draw a single tile to an overlay
+; inputs:
+; r0: tile number
+; r1: X coordinate
+; r2: Y coordinate
+; r3: overlay number
+; outputs:
+; none
+draw_tile_to_overlay:
+    push r3
+    push r4
+    push r8
+    push r9
+
+    mov r4, r3
+    or r4, 0x80000100        ; bitwise or the overlay number with the command to get the overlay size
+    or r3, 0x80000200        ; bitwise or the overlay number with the command to get the framebuffer pointer
+    in r8, r3                ; r8: overlay framebuffer poiner
+    in r9, r4
+    and r9, 0x0000FFFF       ; r9: overlay width
+
+    call draw_tile_generic
+
+    pop r9
+    pop r8
+    pop r4
+    pop r3
+    ret
+
 ; draw a single font tile to an overlay
 ; inputs:
 ; r0: tile number

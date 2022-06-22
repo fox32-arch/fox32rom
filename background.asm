@@ -62,6 +62,25 @@ draw_filled_rectangle_to_background:
     pop r5
     ret
 
+; draw a single tile to the background
+; inputs:
+; r0: tile number
+; r1: X coordinate
+; r2: Y coordinate
+; outputs:
+; none
+draw_tile_to_background:
+    push r8
+    push r9
+
+    mov r8, BACKGROUND_FRAMEBUFFER
+    mov r9, 640
+    call draw_tile_generic
+
+    pop r9
+    pop r8
+    ret
+
 ; draw a single font tile to the background
 ; inputs:
 ; r0: tile number

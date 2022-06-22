@@ -121,6 +121,7 @@ get_rom_version:
     #include "draw_pixel.asm"
     #include "draw_rectangle.asm"
     #include "draw_text.asm"
+    #include "draw_tile.asm"
     #include "event.asm"
     #include "integer.asm"
     #include "keyboard.asm"
@@ -157,6 +158,7 @@ get_rom_version:
     data.32 draw_format_str_generic
     data.32 draw_decimal_generic
     data.32 draw_font_tile_generic
+    data.32 draw_tile_generic
     data.32 draw_pixel_generic
     data.32 draw_filled_rectangle_generic
 
@@ -168,6 +170,7 @@ get_rom_version:
     data.32 draw_decimal_to_background
     data.32 draw_hex_to_background
     data.32 draw_font_tile_to_background
+    data.32 draw_tile_to_background
     data.32 draw_pixel_to_background
     data.32 draw_filled_rectangle_to_background
 
@@ -179,6 +182,7 @@ get_rom_version:
     data.32 draw_decimal_to_overlay
     data.32 draw_hex_to_overlay
     data.32 draw_font_tile_to_overlay
+    data.32 draw_tile_to_overlay
     data.32 draw_pixel_to_overlay
     data.32 draw_filled_rectangle_to_overlay
     data.32 find_overlay_covering_position
