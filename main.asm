@@ -208,6 +208,7 @@ get_rom_version:
     data.32 ryfs_seek
     data.32 ryfs_read
     data.32 ryfs_read_whole_file
+    data.32 ryfs_get_size
 
     ; memory copy/compare jump table
     org.pad 0xF0046000

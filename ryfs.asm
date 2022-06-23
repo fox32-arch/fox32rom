@@ -267,3 +267,53 @@ ryfs_read_whole_file_last_sector:
     pop r1
     pop r0
     ret
+
+; get the exact size of a file
+; inputs:
+; r0: pointer to file struct
+; outputs:
+; r0: file size in bytes
+ryfs_get_size:
+    push r1
+    push r2
+    push r10
+    push r11
+
+    mov r10, r0
+    mov r11, 0 ; byte counter
+
+    ; read the first sector into the temp buffer
+    movz.8 r1, [r0] ; file_disk
+    inc r0
+    movz.16 r0, [r0] ; file_first_sector
+ryfs_get_size_sector_loop:
+    mov r2, TEMP_SECTOR_BUF
+    call read_sector
+
+    ; check to see if this is the last sector
+    ; if this is the last sector, read the sector size field in the header
+    mov r0, TEMP_SECTOR_BUF
+    add r0, 2
+    cmp.16 [r0], 0
+    ifz jmp ryfs_get_size_last_sector
+
+    ; there are more sectors left, load them
+    movz.16 r0, [r0] ; sector number
+    mov r1, [r10]    ; file_disk
+    add r11, 506
+    jmp ryfs_get_size_sector_loop
+ryfs_get_size_last_sector:
+    ; this is the last sector, read the header to get the reamining number of bytes
+    mov r0, TEMP_SECTOR_BUF
+    add r0, 4
+    movz.16 r0, [r0]
+    add r11, r0
+
+    ; return final size
+    mov r0, r11
+
+    pop r11
+    pop r10
+    pop r2
+    pop r1
+    ret
