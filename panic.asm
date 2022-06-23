@@ -1,6 +1,6 @@
 ; panic routines
 
-; panic and hang
+; panic invoke the monitor
 ; inputs:
 ; r0: pointer to null-terminated string, or zero for none
 ; outputs:
@@ -10,8 +10,8 @@ panic:
     cmp r0, 0
     ifz mov r0, panic_string
     call debug_print
-panic_loop:
-    jmp panic_loop
-    halt
+    call print_string_to_monitor
+    call invoke_monitor
+    rjmp 0
 
-panic_string: data.str "Panic occurred!" data.8 10 data.8 0
+panic_string: data.str "Unspecified panic occurred!" data.8 10 data.8 0

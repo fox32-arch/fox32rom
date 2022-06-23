@@ -6,6 +6,7 @@
 ; outputs:
 ; none
 debug_print:
+    push r0
     push r1
 debug_print_loop:
     mov r1, 0x00000000
@@ -14,4 +15,5 @@ debug_print_loop:
     cmp.8 [r0], 0x00
     ifnz jmp debug_print_loop
     pop r1
+    pop r0
     ret
