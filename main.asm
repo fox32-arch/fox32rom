@@ -157,6 +157,7 @@ get_rom_version:
     data.32 draw_str_generic
     data.32 draw_format_str_generic
     data.32 draw_decimal_generic
+    data.32 draw_hex_generic
     data.32 draw_font_tile_generic
     data.32 draw_tile_generic
     data.32 set_tilemap
