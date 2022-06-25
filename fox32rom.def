@@ -16,8 +16,9 @@ draw_decimal_generic:                     jmp [0xF0041008]
 draw_hex_generic:                         jmp [0xF004100C]
 draw_font_tile_generic:                   jmp [0xF0041010]
 draw_tile_generic:                        jmp [0xF0041014]
-draw_pixel_generic:                       jmp [0xF0041018]
-draw_filled_rectangle_generic:            jmp [0xF004101C]
+set_tilemap:                              jmp [0xF0041018]
+draw_pixel_generic:                       jmp [0xF004101C]
+draw_filled_rectangle_generic:            jmp [0xF0041020]
 
 ; background jump table
 fill_background:                          jmp [0xF0042000]
