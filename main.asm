@@ -189,6 +189,11 @@ get_rom_version:
     data.32 draw_filled_rectangle_to_overlay
     data.32 check_if_overlay_covers_position
     data.32 check_if_enabled_overlay_covers_position
+    data.32 enable_overlay
+    data.32 disable_overlay
+    data.32 move_overlay
+    data.32 resize_overlay
+    data.32 set_overlay_framebuffer_pointer
 
     ; menu bar jump table
     org.pad 0xF0044000

@@ -1,5 +1,79 @@
 ; overlay routines
 
+; enable an overlay
+; inputs:
+; r0: overlay number
+; outputs:
+; none
+enable_overlay:
+    push r0
+
+    or r0, 0x80000300
+    out r0, 1
+
+    pop r0
+    ret
+
+; disable an overlay
+; inputs:
+; r0: overlay number
+; outputs:
+; none
+disable_overlay:
+    push r0
+
+    or r0, 0x80000300
+    out r0, 0
+
+    pop r0
+    ret
+
+; move an overlay
+; r0: X position
+; r1: Y position
+; r2: overlay number
+move_overlay:
+    push r1
+    push r2
+
+    or r2, 0x80000000
+    sla r1, 16
+    mov.16 r1, r0
+    out r2, r1
+
+    pop r2
+    pop r1
+    ret
+
+; resize an overlay
+; r0: width
+; r1: height
+; r2: overlay number
+resize_overlay:
+    push r1
+    push r2
+
+    or r2, 0x80000100
+    sla r1, 16
+    mov.16 r1, r0
+    out r2, r1
+
+    pop r2
+    pop r1
+    ret
+
+; set an overlay's framebuffer pointer
+; r0: framebuffer pointer
+; r1: overlay number
+set_overlay_framebuffer_pointer:
+    push r1
+
+    or r1, 0x80000200
+    out r1, r0
+
+    pop r1
+    ret
+
 ; fill a whole overlay with a color
 ; inputs:
 ; r0: color

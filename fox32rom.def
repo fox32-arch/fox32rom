@@ -43,6 +43,11 @@ draw_pixel_to_overlay:                    jmp [0xF004301C]
 draw_filled_rectangle_to_overlay:         jmp [0xF0043020]
 check_if_overlay_covers_position:         jmp [0xF0043024]
 check_if_enabled_overlay_covers_position: jmp [0xF0043028]
+enable_overlay:                           jmp [0xF004302C]
+disable_overlay:                          jmp [0xF0043030]
+move_overlay:                             jmp [0xF0043034]
+resize_overlay:                           jmp [0xF0043038]
+set_overlay_framebuffer_pointer:          jmp [0xF004303C]
 
 ; menu bar jump table
 enable_menu_bar:                          jmp [0xF0044000]
