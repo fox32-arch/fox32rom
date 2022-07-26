@@ -187,7 +187,6 @@ get_rom_version:
     data.32 draw_tile_to_overlay
     data.32 draw_pixel_to_overlay
     data.32 draw_filled_rectangle_to_overlay
-    data.32 find_overlay_covering_position
     data.32 check_if_overlay_covers_position
     data.32 check_if_enabled_overlay_covers_position
 

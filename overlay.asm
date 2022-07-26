@@ -284,16 +284,6 @@ draw_hex_to_overlay:
     pop r5
     ret
 
-; finds the overlay with the highest priority covering the specified position
-; does not check overlay 31, which is always the mouse pointer
-; inputs:
-; r0: X coordinate
-; r1: Y coordinate
-; outputs:
-; r0: overlay number
-find_overlay_covering_position:
-    ; TODO:
-
 ; checks if the specified overlay is covering the specified position on screen
 ; the overlay can be enabled or disabled
 ; example:

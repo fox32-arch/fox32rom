@@ -41,9 +41,8 @@ draw_font_tile_to_overlay:                jmp [0xF0043014]
 draw_tile_to_overlay:                     jmp [0xF0043018]
 draw_pixel_to_overlay:                    jmp [0xF004301C]
 draw_filled_rectangle_to_overlay:         jmp [0xF0043020]
-find_overlay_covering_position:           jmp [0xF0043024]
-check_if_overlay_covers_position:         jmp [0xF0043028]
-check_if_enabled_overlay_covers_position: jmp [0xF004302C]
+check_if_overlay_covers_position:         jmp [0xF0043024]
+check_if_enabled_overlay_covers_position: jmp [0xF0043028]
 
 ; menu bar jump table
 enable_menu_bar:                          jmp [0xF0044000]
