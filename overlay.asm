@@ -219,6 +219,7 @@ draw_str_to_overlay_loop:
 ; r2: Y coordinate
 ; r3: foreground color
 ; r4: background color
+; r5: overlay number
 ; outputs:
 ; r1: X coordinate of end of text
 draw_decimal_to_overlay:
@@ -254,6 +255,7 @@ draw_decimal_to_overlay:
 ; r2: Y coordinate
 ; r3: foreground color
 ; r4: background color
+; r5: overlay number
 ; outputs:
 ; r1: X coordinate of end of text
 draw_hex_to_overlay:
