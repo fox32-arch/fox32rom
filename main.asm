@@ -260,12 +260,12 @@ const MENU_BAR_FRAMEBUFFER_PTR: 0x0214C180
 
 ; menu overlay struct:
 ; this struct must be writable, so these are hard-coded addresses in ram
-const MENU_WIDTH:           0x02137180 ; 2 bytes
-const MENU_HEIGHT:          0x02137182 ; 2 bytes
-const MENU_POSITION_X:      0x02137184 ; 2 bytes
-const MENU_POSITION_Y:      0x02137186 ; 2 bytes
-const MENU_FRAMEBUFFER_PTR: 0x0213718A ; 4 bytes
-const MENU_FRAMEBUFFER:     0x0213718E
+const MENU_WIDTH:           0x02156180 ; 2 bytes
+const MENU_HEIGHT:          0x02156182 ; 2 bytes
+const MENU_POSITION_X:      0x02156184 ; 2 bytes
+const MENU_POSITION_Y:      0x02156186 ; 2 bytes
+const MENU_FRAMEBUFFER_PTR: 0x0215618A ; 4 bytes
+const MENU_FRAMEBUFFER:     0x0215618E ; max 640x480x4 = end address at 0x0228218E
 
 startup_str: data.str "fox32 - ROM version %u.%u.%u - insert boot disk - F12 for monitor" data.8 0
 boot_str: data.str "fox32 - ROM version %u.%u.%u - booting..." data.8 0
