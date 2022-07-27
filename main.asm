@@ -14,11 +14,24 @@ const TEXT_COLOR:       0xFFFFFFFF
 entry:
     mov rsp, SYSTEM_STACK
 
-    mov [0x000003FC], system_vsync_handler
-
     ; disable audio playback
     mov r0, 0x80000600
     out r0, 0
+
+    ; seed the random number generator
+entry_seed:
+    mov [0x000003FC], entry_seed_done
+    ise
+    mov r0, 2166136261
+entry_seed_loop:
+    mul r0, 16777619
+    rjmp entry_seed_loop
+entry_seed_done:
+    mov [RANDOM_STATE], r0
+
+    ; set up the vsync interrupt
+    mov [0x000003FC], system_vsync_handler
+    ise
 
     ; clear the interrupt vector for interrupt 0xFE - audio buffer switch
     mov [0x000003F8], 0x00000000
@@ -53,7 +66,6 @@ draw_startup_text:
     mov r12, FOX32ROM_VERSION_PATCH
     call draw_format_str_to_background
 
-    ise
 event_loop:
     call get_next_event
 
@@ -132,6 +144,7 @@ get_rom_version:
     #include "mouse.asm"
     #include "overlay.asm"
     #include "panic.asm"
+    #include "random.asm"
     #include "ryfs.asm"
     #include "string.asm"
     #include "vsync.asm"
@@ -234,6 +247,11 @@ get_rom_version:
     org.pad 0xF0048000
     data.32 play_audio
     data.32 stop_audio
+
+    ; random number jump table
+    org.pad 0xF0049000
+    data.32 random
+    data.32 random_range
 
     org.pad 0xF004F000
 standard_font_width:
