@@ -1,6 +1,10 @@
 ; debug monitor
 
 invoke_monitor:
+    ; return if we're already in the monitor
+    cmp [0x000003FC], monitor_vsync_handler
+    ifz ret
+
     ; set the vsync handler to our own and reenable interrupts
     mov [MONITOR_OLD_VSYNC_HANDLER], [0x000003FC]
     mov [0x000003FC], monitor_vsync_handler
