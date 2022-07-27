@@ -35,6 +35,7 @@ new_event: jmp event_new
 get_next_event: jmp event_next
 
 ; implementation
+; this is my child - lua
 
 const EVENT_SIZE:          32
 const EVENT_TEMP:          0x01FFFBDA
