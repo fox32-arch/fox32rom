@@ -29,7 +29,10 @@ entry_seed_loop:
 entry_seed_done:
     mov [RANDOM_STATE], r0
 
-    ; set up the vsync interrupt
+    ; set the stach pointer again to pop the return address and flags off the stack
+    mov rsp, SYSTEM_STACK
+
+    ; set the interrupt vector for interrupt 0xFF - vsync
     mov [0x000003FC], system_vsync_handler
     ise
 
