@@ -16,6 +16,7 @@ const OLD_BUFFER_SWAP_VECTOR: 0x01FFFF09
 ; inputs:
 ; r0: pointer to audio clip
 ; r1: length of audio clip in bytes (must be a multiple of 32768 bytes)
+; r2: audio sample rate
 ; outputs:
 ; none
 play_audio:
@@ -40,9 +41,9 @@ play_audio:
     ; so set it to 0xFF so that it becomes zero when checked for the first time
     mov.8 [CURRENT_BUFFER], 0xFF
 
-    ; enable audio playback
+    ; enable audio playback and set sample rate
     mov r0, 0x80000600
-    out r0, 1
+    out r0, r2
 
     pop r1
     pop r0
