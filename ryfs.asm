@@ -317,3 +317,49 @@ ryfs_get_size_last_sector:
     pop r2
     pop r1
     ret
+
+; get a list of all files on disk
+; format: "file1   extfile2   ext", etc.
+; each file name is exactly 11 characters long, the buffer is not null-terminated
+; inputs:
+; r0: pointer to 341 byte buffer (max size) for file names (31 file entries * 11 chars)
+; r1: disk ID
+; outputs:
+; r0: number of files
+ryfs_get_file_list:
+    push r1
+    push r2
+    push r3
+
+    mov r3, r0
+
+    ; load directory sector into temp buffer
+    mov r0, 1
+    mov r2, TEMP_SECTOR_BUF
+    call read_sector
+
+    mov r31, 31
+    mov r0, TEMP_SECTOR_BUF
+    add r0, 20 ; point to first file name
+    mov r1, r3
+    mov r3, 0 ; file counter
+ryfs_get_file_list_loop:
+    ; check if this file entry is filled
+    cmp.8 [r0], 0
+    ifz jmp ryfs_get_file_list_loop_next
+    ; copy 11 bytes from [r0] to [r1]
+    mov r2, 11
+    call copy_memory_bytes
+    inc r3
+ryfs_get_file_list_loop_next:
+    add r0, 16 ; point to next file entry
+    add r1, 11 ; increment the destination pointer
+    loop ryfs_get_file_list_loop
+
+    ; return number of files
+    mov r0, r3
+
+    pop r3
+    pop r2
+    pop r1
+    ret

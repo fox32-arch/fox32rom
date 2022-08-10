@@ -3,7 +3,7 @@
     org 0xF0000000
 
 const FOX32ROM_VERSION_MAJOR: 0
-const FOX32ROM_VERSION_MINOR: 2
+const FOX32ROM_VERSION_MINOR: 3
 const FOX32ROM_VERSION_PATCH: 0
 
 const SYSTEM_STACK:     0x01FFF800
@@ -231,6 +231,7 @@ get_rom_version:
     data.32 ryfs_read
     data.32 ryfs_read_whole_file
     data.32 ryfs_get_size
+    data.32 ryfs_get_file_list
 
     ; memory copy/compare jump table
     org.pad 0xF0046000
