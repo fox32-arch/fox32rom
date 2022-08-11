@@ -199,7 +199,14 @@ ryfs_read_sector_loop:
     pop r1
     pop r0
 
-    dec r10
+    ; this_sector = this_sector.next
+    mov r5, TEMP_SECTOR_BUF
+    add r5, 2
+    movz.16 r5, [r5]
+    mov r4, r5
+
+    add r2, r11
+    sub r10, r11
     ifnz jmp ryfs_read_sector_loop
 
     ; file_struct.file_seek_offset += input r0
