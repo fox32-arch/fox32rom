@@ -225,7 +225,6 @@ ryfs_read_sector_loop:
     ret
 
 ; read a whole file into the specified buffer
-; FIXME: this will always load a multiple of 506 bytes, even if the file is smaller
 ; inputs:
 ; r0: pointer to file struct
 ; r1: pointer to destination buffer
@@ -235,41 +234,12 @@ ryfs_read_whole_file:
     push r0
     push r1
     push r2
-    push r10
-    push r11
 
-    mov r10, r0
-    mov r11, r1
+    mov r2, r1
+    mov r1, r0
+    call ryfs_get_size
+    call ryfs_read
 
-    ; read the first sector into the temp buffer
-    movz.8 r1, [r0] ; file_disk
-    inc r0
-    movz.16 r0, [r0] ; file_first_sector
-ryfs_read_whole_file_sector_loop:
-    mov r2, TEMP_SECTOR_BUF
-    call read_sector
-
-    ; copy the sector data to the destination buffer
-    mov r0, TEMP_SECTOR_BUF
-    add r0, 6
-    mov r1, r11
-    mov r2, 506
-    call copy_memory_bytes
-
-    ; check to see if this is the last sector
-    ; FIXME: if this is the last sector, it should respect the sector size field in the header
-    sub r0, 4
-    cmp.16 [r0], 0
-    ifz jmp ryfs_read_whole_file_last_sector
-
-    ; there are more sectors left, load them
-    movz.16 r0, [r0] ; sector number
-    mov r1, [r10]    ; file_disk
-    add r11, 506
-    jmp ryfs_read_whole_file_sector_loop
-ryfs_read_whole_file_last_sector:
-    pop r11
-    pop r10
     pop r2
     pop r1
     pop r0
