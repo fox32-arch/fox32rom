@@ -4,7 +4,7 @@
 
 const FOX32ROM_VERSION_MAJOR: 0
 const FOX32ROM_VERSION_MINOR: 3
-const FOX32ROM_VERSION_PATCH: 2
+const FOX32ROM_VERSION_PATCH: 3
 
 const SYSTEM_STACK:     0x01FFF800
 const BACKGROUND_COLOR: 0xFF674764
@@ -12,6 +12,10 @@ const TEXT_COLOR:       0xFFFFFFFF
 
     ; initialization code
 entry:
+    ; disable the MMU
+    mcl
+
+    ; set the stack pointer
     mov rsp, SYSTEM_STACK
 
     ; disable audio playback
@@ -34,6 +38,11 @@ entry_seed_done:
 
     ; set the interrupt vector for interrupt 0xFF - vsync
     mov [0x000003FC], system_vsync_handler
+
+    ; set the exception vector for exception 0x02 - page fault
+    mov [0x00000408], system_page_fault_handler
+
+    ; enable interrupts
     ise
 
     ; clear the interrupt vector for interrupt 0xFE - audio buffer switch
@@ -138,6 +147,7 @@ get_rom_version:
     #include "draw_text.asm"
     #include "draw_tile.asm"
     #include "event.asm"
+    #include "exception.asm"
     #include "integer.asm"
     #include "keyboard.asm"
     #include "memory.asm"
