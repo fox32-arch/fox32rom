@@ -68,6 +68,7 @@ ryfs_read:                                jmp [0xF0045010]
 ryfs_read_whole_file:                     jmp [0xF0045014]
 ryfs_get_size:                            jmp [0xF0045018]
 ryfs_get_file_list:                       jmp [0xF004501C]
+ryfs_tell:                                jmp [0xF0045020]
 
 ; memory copy/compare jump table
 copy_memory_bytes:                        jmp [0xF0046000]

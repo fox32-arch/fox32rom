@@ -73,6 +73,17 @@ ryfs_seek:
     pop r1
     ret
 
+; get the seek offset of the specified file
+; inputs:
+; r0: pointer to file struct
+; outputs:
+; r0: byte offset
+ryfs_tell:
+    add r0, 3
+    mov r0, [r0]
+
+    ret
+
 ; read specified number of bytes into the specified buffer
 ; inputs:
 ; r0: number of bytes to read
