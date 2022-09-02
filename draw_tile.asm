@@ -9,10 +9,26 @@ const TILEMAP_HEIGHT: 0x01FFFFF8
 ; r0: pointer to tilemap data
 ; r1: tile width
 ; r2: tile height
+; outputs:
+; none
 set_tilemap:
     mov [TILEMAP_POINTER], r0
     mov [TILEMAP_WIDTH], r1
     mov [TILEMAP_HEIGHT], r2
+
+    ret
+
+; get the current tilemap
+; inputs:
+; none
+; outputs:
+; r0: pointer to tilemap data
+; r1: tile width
+; r2: tile height
+get_tilemap:
+    mov r0, [TILEMAP_POINTER]
+    mov r1, [TILEMAP_WIDTH]
+    mov r2, [TILEMAP_HEIGHT]
 
     ret
 

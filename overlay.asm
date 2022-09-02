@@ -505,3 +505,32 @@ make_coordinates_relative_to_overlay:
     pop r3
     pop r2
     ret
+
+; find the first disabled overlay, starting from 0
+; inputs:
+; none
+; outputs:
+; r0: overlay number, or 0xFF if all overlays are enabled
+get_unused_overlay:
+    push r1
+    push r31
+
+    mov r0, 0x80000000
+    mov r31, 31
+get_unused_overlay_loop:
+    in r1, r0
+    cmp r1, 0
+    ifz jmp get_unused_overlay_found
+    inc r0
+    loop get_unused_overlay_loop
+    mov r0, 0xFF
+
+    pop r31
+    pop r1
+    ret
+get_unused_overlay_found:
+    and r0, 0x000000FF
+
+    pop r31
+    pop r1
+    ret

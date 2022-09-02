@@ -189,6 +189,7 @@ get_rom_version:
     data.32 set_tilemap
     data.32 draw_pixel_generic
     data.32 draw_filled_rectangle_generic
+    data.32 get_tilemap
 
     ; background jump table
     org.pad 0xF0042000
@@ -220,6 +221,7 @@ get_rom_version:
     data.32 move_overlay
     data.32 resize_overlay
     data.32 set_overlay_framebuffer_pointer
+    data.32 get_unused_overlay
 
     ; menu bar jump table
     org.pad 0xF0044000

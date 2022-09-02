@@ -19,6 +19,7 @@ draw_tile_generic:                        jmp [0xF0041014]
 set_tilemap:                              jmp [0xF0041018]
 draw_pixel_generic:                       jmp [0xF004101C]
 draw_filled_rectangle_generic:            jmp [0xF0041020]
+get_tilemap:                              jmp [0xF0041024]
 
 ; background jump table
 fill_background:                          jmp [0xF0042000]
@@ -48,6 +49,7 @@ disable_overlay:                          jmp [0xF0043030]
 move_overlay:                             jmp [0xF0043034]
 resize_overlay:                           jmp [0xF0043038]
 set_overlay_framebuffer_pointer:          jmp [0xF004303C]
+get_unused_overlay:                       jmp [0xF0043040]
 
 ; menu bar jump table
 enable_menu_bar:                          jmp [0xF0044000]
