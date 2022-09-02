@@ -5,6 +5,7 @@ monitor_shell_help_command_string: data.str "help" data.8 0
 monitor_shell_help_command:
     mov r0, monitor_shell_help_text
     call print_string_to_monitor
+    call redraw_monitor_console
     ret
 
 monitor_shell_help_text:

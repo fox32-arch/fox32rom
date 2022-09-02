@@ -14,7 +14,6 @@ print_string_to_monitor_loop:
     inc r3
     cmp.8 [r3], 0x00
     ifnz jmp print_string_to_monitor_loop
-    call redraw_monitor_console_line
     pop r3
     pop r0
     ret
@@ -41,7 +40,6 @@ print_hex_word_to_monitor_loop:
     call print_character_to_monitor
     add r1, r6
     loop print_hex_word_to_monitor_loop
-    call redraw_monitor_console_line
 
     pop r31
     pop r12
@@ -71,7 +69,6 @@ print_hex_byte_to_monitor_loop:
     call print_character_to_monitor
     add r1, r6
     loop print_hex_byte_to_monitor_loop
-    call redraw_monitor_console_line
 
     pop r31
     pop r12
@@ -179,9 +176,6 @@ scroll_monitor_console_clear_loop:
     mov.8 [r0], 0
     inc r0
     loop scroll_monitor_console_clear_loop
-
-    ; redraw the screen
-    call redraw_monitor_console
 
     pop r31
     pop r2

@@ -71,4 +71,6 @@ monitor_shell_set32_command:
 
     mov [r10], r11
 
+    call redraw_monitor_console
+
     ret

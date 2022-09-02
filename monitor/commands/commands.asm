@@ -42,6 +42,7 @@ monitor_shell_parse_command:
     ; invalid command
     mov r0, monitor_shell_invalid_command_string
     call print_string_to_monitor
+    call redraw_monitor_console
 
     ret
 

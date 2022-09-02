@@ -11,4 +11,6 @@ monitor_shell_jump_command:
 
     call r0
 
+    call redraw_monitor_console
+
     ret

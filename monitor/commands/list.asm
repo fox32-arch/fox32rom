@@ -64,6 +64,8 @@ monitor_shell_list_command_ascii_loop_done:
     call print_character_to_monitor
     loop monitor_shell_list_command_line_loop
 
+    call redraw_monitor_console
+
     ret
 
 monitor_shell_list_text: data.str "address  | x0 x1 x2 x3 x4 x5 x6 x7 x8 x9 xA xB xC xD xE xF | ASCII" data.8 10 data.8 0

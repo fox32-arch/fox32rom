@@ -5,6 +5,7 @@ monitor_shell_start:
     call monitor_shell_clear_buffer
     mov r0, monitor_shell_prompt
     call print_string_to_monitor
+    call redraw_monitor_console
 
 monitor_shell_event_loop:
     call get_next_event
@@ -73,6 +74,7 @@ monitor_shell_key_down_event_enter:
 
     mov r0, monitor_shell_prompt
     call print_string_to_monitor
+    call redraw_monitor_console
     ret
 monitor_shell_key_down_event_backspace:
     ; check if we are already at the start of the prompt
