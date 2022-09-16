@@ -39,8 +39,11 @@ entry_seed_done:
     ; set the interrupt vector for interrupt 0xFF - vsync
     mov [0x000003FC], system_vsync_handler
 
-    ; set the exception vector for exception 0x02 - page fault
+    ; set the exception vector for exception 0x02 - page fault read
     mov [0x00000408], system_page_fault_handler
+
+    ; set the exception vector for exception 0x03 - page fault write
+    mov [0x0000040C], system_page_fault_handler
 
     ; enable interrupts
     ise
