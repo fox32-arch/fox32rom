@@ -180,6 +180,7 @@ get_rom_version:
     data.32 wait_for_event
     data.32 get_next_event
     data.32 panic
+    data.32 get_mouse_button
 
     ; generic drawing jump table
     org.pad 0xF0041000
@@ -225,6 +226,7 @@ get_rom_version:
     data.32 resize_overlay
     data.32 set_overlay_framebuffer_pointer
     data.32 get_unused_overlay
+    data.32 make_coordinates_relative_to_overlay
 
     ; menu bar jump table
     org.pad 0xF0044000
