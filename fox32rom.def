@@ -9,6 +9,10 @@ wait_for_event:                           jmp [0xF0040010]
 get_next_event:                           jmp [0xF0040014]
 panic:                                    jmp [0xF0040018]
 get_mouse_button:                         jmp [0xF004001C]
+scancode_to_ascii:                        jmp [0xF0040020]
+shift_pressed:                            jmp [0xF0040024]
+shift_released:                           jmp [0xF0040028]
+caps_pressed:                             jmp [0xF004002C]
 
 ; generic drawing jump table
 draw_str_generic:                         jmp [0xF0041000]
@@ -103,3 +107,8 @@ const EVENT_TYPE_MENU_BAR_CLICK: 0x00000004
 const EVENT_TYPE_MENU_UPDATE:    0x00000005
 const EVENT_TYPE_MENU_CLICK:     0x00000006
 const EVENT_TYPE_EMPTY:          0xFFFFFFFF
+
+; keys
+const KEY_LSHIFT: 0x2A
+const KEY_RSHIFT: 0x36
+const KEY_CAPS:   0x3A

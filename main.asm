@@ -181,6 +181,10 @@ get_rom_version:
     data.32 get_next_event
     data.32 panic
     data.32 get_mouse_button
+    data.32 scancode_to_ascii
+    data.32 shift_pressed
+    data.32 shift_released
+    data.32 caps_pressed
 
     ; generic drawing jump table
     org.pad 0xF0041000
