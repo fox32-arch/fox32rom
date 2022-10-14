@@ -101,6 +101,7 @@ ryfs_read:
     push r10
     push r11
     push r12
+    push r31
 
     ; number_of_sectors_to_load = ceil(input r0, 506) / 506
 
@@ -224,6 +225,7 @@ ryfs_read_sector_loop:
     add r1, 3
     add [r1], r0
 
+    pop r31
     pop r12
     pop r11
     pop r10
@@ -318,6 +320,7 @@ ryfs_get_file_list:
     push r1
     push r2
     push r3
+    push r31
 
     mov r3, r0
 
@@ -347,6 +350,7 @@ ryfs_get_file_list_loop_next:
     ; return number of files
     mov r0, r3
 
+    pop r31
     pop r3
     pop r2
     pop r1
