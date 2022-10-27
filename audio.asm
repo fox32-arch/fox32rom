@@ -158,6 +158,7 @@ stop_audio:
     ret
 
 refill_buffer_0:
+    add rsp, 4
     push r0
     push r1
     push r31
@@ -181,6 +182,7 @@ refill_buffer_0_loop:
     reti
 
 refill_buffer_1:
+    add rsp, 4
     push r0
     push r1
     push r31
@@ -204,6 +206,7 @@ refill_buffer_1_loop:
     reti
 
 refill_buffer_2:
+    add rsp, 4
     push r0
     push r1
     push r31
@@ -227,6 +230,7 @@ refill_buffer_2_loop:
     reti
 
 refill_buffer_3:
+    add rsp, 4
     push r0
     push r1
     push r31

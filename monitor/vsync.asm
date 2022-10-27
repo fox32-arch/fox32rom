@@ -1,6 +1,7 @@
 ; debug monitor vsync routine
 
 monitor_vsync_handler:
+    add rsp, 4
     push r0
     push r1
     push r2

@@ -4,7 +4,7 @@
 
 const FOX32ROM_VERSION_MAJOR: 0
 const FOX32ROM_VERSION_MINOR: 5
-const FOX32ROM_VERSION_PATCH: 0
+const FOX32ROM_VERSION_PATCH: 2
 
 const SYSTEM_STACK:     0x01FFF800
 const BACKGROUND_COLOR: 0xFF674764
@@ -39,11 +39,20 @@ entry_seed_done:
     ; set the interrupt vector for interrupt 0xFF - vsync
     mov [0x000003FC], system_vsync_handler
 
+    ; set the exception vector for exception 0x00 - divide by zero
+    mov [0x00000400], system_div_zero_handler
+
+    ; set the exception vector for exception 0x01 - invalid opcode
+    mov [0x00000404], system_invalid_op_handler
+
     ; set the exception vector for exception 0x02 - page fault read
     mov [0x00000408], system_page_fault_handler
 
     ; set the exception vector for exception 0x03 - page fault write
     mov [0x0000040C], system_page_fault_handler
+
+    ; set the exception vector for exception 0x04 - breakpoint
+    mov [0x0000040C], system_breakpoint_handler
 
     ; enable interrupts
     ise

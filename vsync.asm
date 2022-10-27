@@ -1,6 +1,7 @@
 ; vsync interrupt routine
 
 system_vsync_handler:
+    add rsp, 4
     push r0
     push r1
     push r2

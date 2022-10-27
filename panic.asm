@@ -6,7 +6,6 @@
 ; outputs:
 ; none, does not return
 panic:
-    brk
     cmp r0, 0
     ifz mov r0, panic_string
     call debug_print
