@@ -322,7 +322,6 @@ const MENU_FRAMEBUFFER:     0x0215618E ; max 640x480x4 = end address at 0x022821
 
 startup_str: data.str "fox32 - ROM version %u.%u.%u - insert boot disk - F12 for monitor" data.8 0
 boot_str: data.str "fox32 - ROM version %u.%u.%u - booting..." data.8 0
-boot_error_str: data.str "fox32 - ROM version %u.%u.%u - system.bin not found! - F12 for monitor" data.8 0
 
 menu_items_root:
     data.8 1                                                      ; number of menus
