@@ -52,7 +52,7 @@ entry_seed_done:
     mov [0x0000040C], system_page_fault_handler
 
     ; set the exception vector for exception 0x04 - breakpoint
-    mov [0x0000040C], system_breakpoint_handler
+    mov [0x00000410], system_breakpoint_handler
 
     ; enable interrupts
     ise
