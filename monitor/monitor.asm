@@ -3,7 +3,7 @@
 invoke_monitor:
     ; return if we're already in the monitor
     cmp [0x000003FC], monitor_vsync_handler
-    ifz ret
+    ifz jmp invoke_monitor_aleady_in_monitor
 
     ; set the vsync handler to our own and reenable interrupts
     mov [MONITOR_OLD_VSYNC_HANDLER], [0x000003FC]
@@ -61,6 +61,10 @@ exit_monitor:
 
     call enable_cursor
 
+    ret
+
+invoke_monitor_aleady_in_monitor:
+    call redraw_monitor_console
     ret
 
 info_str: data.str "fox32rom monitor" data.8 0x00
