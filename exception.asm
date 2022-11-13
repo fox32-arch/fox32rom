@@ -500,6 +500,33 @@ system_breakpoint_handler:
     call print_character_to_monitor
     ; ---
 
+    ; rsp
+    mov r0, system_breakpoint_rsp_str
+    call print_string_to_monitor
+    mov r0, rsp
+    add r0, 133 ; account for the registers pushed above, and for the int calling convention
+    call print_hex_word_to_monitor
+
+    mov r0, ' '
+    call print_character_to_monitor
+    mov r0, '|'
+    call print_character_to_monitor
+    mov r0, ' '
+    call print_character_to_monitor
+
+    ; rip
+    mov r0, system_breakpoint_rip_str
+    call print_string_to_monitor
+    mov r0, rsp
+    add r0, 129 ; read instruction pointer from the stack
+    mov r0, [r0]
+    call print_hex_word_to_monitor
+
+    ; ---
+    mov r0, 10
+    call print_character_to_monitor
+    ; ---
+
     call invoke_monitor
 
     pop r0
@@ -568,3 +595,5 @@ system_breakpoint_r28_str: data.str "r28: " data.8 0
 system_breakpoint_r29_str: data.str "r29: " data.8 0
 system_breakpoint_r30_str: data.str "r30: " data.8 0
 system_breakpoint_r31_str: data.str "r31: " data.8 0
+system_breakpoint_rsp_str: data.str "rsp: " data.8 0
+system_breakpoint_rip_str: data.str "rip: " data.8 0
