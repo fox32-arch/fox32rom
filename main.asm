@@ -54,6 +54,9 @@ entry_seed_done:
     ; set the exception vector for exception 0x04 - breakpoint
     mov [0x00000410], system_breakpoint_handler
 
+    ; ensure the event queue gets initialized properly
+    mov [EVENT_QUEUE_POINTER], 0
+
     ; enable interrupts
     ise
 
