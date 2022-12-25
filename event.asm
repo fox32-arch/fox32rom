@@ -8,6 +8,7 @@ const EVENT_TYPE_KEY_UP:         0x00000003
 const EVENT_TYPE_MENU_BAR_CLICK: 0x00000004
 const EVENT_TYPE_MENU_UPDATE:    0x00000005
 const EVENT_TYPE_MENU_CLICK:     0x00000006
+const EVENT_TYPE_MENU_ACK:       0x00000007
 const EVENT_TYPE_EMPTY:          0xFFFFFFFF
 
 ; block until an event is available

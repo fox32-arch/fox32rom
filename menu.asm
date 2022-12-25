@@ -239,7 +239,8 @@ menu_update_event_clicked:
     call get_mouse_button
     bts r0, 2
     ifnz jmp menu_update_event_clicked
-    ;div r2, 16                    ; mouse Y / 16
+
+    ; add an EVENT_TYPE_MENU_CLICK event
     mov r1, r8                    ; event parameter 0: pointer to menu bar root struct
     mov r2, r9                    ; event parameter 1: selected root menu item
     mov r3, r10                   ; event parameter 2: selected menu item
@@ -249,8 +250,17 @@ menu_update_event_clicked:
     mov r7, 0
     mov r0, EVENT_TYPE_MENU_CLICK
     call new_event
-    mov r0, r1
-    call close_menu
+
+    ; add an EVENT_TYPE_MENU_ACK event
+    mov r1, 0
+    mov r2, 0
+    mov r3, 0
+    mov r4, 0
+    mov r5, 0
+    mov r6, 0
+    mov r7, 0
+    mov r0, EVENT_TYPE_MENU_ACK
+    call new_event
     jmp menu_update_event_end_no_add
 menu_update_event_end_add:
     ; readd the event_type_menu_update event to the event queue
