@@ -128,20 +128,11 @@ event_loop:
 menu_click_event:
     ; r3 contains the clicked menu item
 
-    ; insert disk
-    cmp r3, 0
-    ifz jmp insert_boot_disk
-
     ; shutdown
-    cmp r3, 1
+    cmp r3, 0
     ifz icl
     ifz halt
 
-    ret
-
-insert_boot_disk:
-    mov r0, 0x80001000
-    out r0, 0
     ret
 
 get_rom_version:
@@ -330,12 +321,11 @@ menu_items_root:
     data.8 1                                                      ; number of menus
     data.32 menu_items_system_list data.32 menu_items_system_name ; pointer to menu list, pointer to menu name
 menu_items_system_name:
-    data.8 6 data.str "System" data.8 0x00       ; text length, text, null-terminator
+    data.8 6 data.str "System" data.8 0x00 ; text length, text, null-terminator
 menu_items_system_list:
-    data.8 2                                     ; number of items
-    data.8 13                                    ; menu width (usually longest item + 2)
-    data.8 11 data.str "Insert Disk" data.8 0x00 ; text length, text, null-terminator
-    data.8 9  data.str "Shut Down"   data.8 0x00 ; text length, text, null-terminator
+    data.8 1                                   ; number of items
+    data.8 11                                  ; menu width (usually longest item + 2)
+    data.8 9  data.str "Shut Down" data.8 0x00 ; text length, text, null-terminator
 
     ; pad out to 512 KiB
     org.pad 0xF0080000
