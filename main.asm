@@ -82,12 +82,46 @@ disable_all_overlays_loop:
     mov r1, 0xFFFFFFFF
     call draw_menu_bar_root_items
 
-draw_startup_text:
-    mov r0, startup_str
-    mov r1, 16
-    mov r2, 464
+    ; draw the bottom bar
+    mov r0, bottom_bar_str_0
+    mov r1, 8
+    mov r2, 448
     mov r3, TEXT_COLOR
     mov r4, 0x00000000
+    call draw_str_to_background
+    mov r0, bottom_bar_patterns
+    mov r1, 1
+    mov r2, 16
+    call set_tilemap
+    mov r1, 0
+    mov r2, 464
+    mov r31, 640
+draw_bottom_bar_loop:
+    mov r4, r31
+    rem r4, 2
+    cmp r4, 0
+    ifz mov r0, 0
+    ifnz mov r0, 1
+    call draw_tile_to_background
+    inc r1
+    loop draw_bottom_bar_loop
+    mov r0, 10
+    mov r1, 464
+    mov r2, 20
+    mov r3, 16
+    mov r4, 0xFFFFFFFF
+    call draw_filled_rectangle_to_background
+    mov r0, bottom_bar_str_1
+    mov r1, 12
+    mov r2, 464
+    mov r3, 0xFF000000
+    mov r4, 0xFFFFFFFF
+    call draw_str_to_background
+    mov r0, bottom_bar_str_2
+    mov r1, 480
+    mov r2, 464
+    mov r3, 0xFF000000
+    mov r4, 0xFFFFFFFF
     mov r10, FOX32ROM_VERSION_MAJOR
     mov r11, FOX32ROM_VERSION_MINOR
     mov r12, FOX32ROM_VERSION_PATCH
@@ -314,8 +348,45 @@ const MENU_POSITION_Y:      0x02156186 ; 2 bytes
 const MENU_FRAMEBUFFER_PTR: 0x0215618A ; 4 bytes
 const MENU_FRAMEBUFFER:     0x0215618E ; max 640x480x4 = end address at 0x0228218E
 
-startup_str: data.str "fox32 - ROM version %u.%u.%u - insert boot disk - F12 for monitor" data.8 0
-boot_str: data.str "fox32 - ROM version %u.%u.%u - booting..." data.8 0
+bottom_bar_str_0: data.str "FOX" data.8 0
+bottom_bar_str_1: data.str "32" data.8 0
+bottom_bar_str_2: data.str " ROM version %u.%u.%u " data.8 0
+bottom_bar_patterns:
+    ; 1x16 tile
+    data.32 0xFF674764
+    data.32 0xFFFFFFFF
+    data.32 0xFF674764
+    data.32 0xFFFFFFFF
+    data.32 0xFF674764
+    data.32 0xFFFFFFFF
+    data.32 0xFF674764
+    data.32 0xFFFFFFFF
+    data.32 0xFF674764
+    data.32 0xFFFFFFFF
+    data.32 0xFF674764
+    data.32 0xFFFFFFFF
+    data.32 0xFF674764
+    data.32 0xFFFFFFFF
+    data.32 0xFF674764
+    data.32 0xFFFFFFFF
+
+    ; 1x16 tile
+    data.32 0xFFFFFFFF
+    data.32 0xFF674764
+    data.32 0xFFFFFFFF
+    data.32 0xFF674764
+    data.32 0xFFFFFFFF
+    data.32 0xFF674764
+    data.32 0xFFFFFFFF
+    data.32 0xFF674764
+    data.32 0xFFFFFFFF
+    data.32 0xFF674764
+    data.32 0xFFFFFFFF
+    data.32 0xFF674764
+    data.32 0xFFFFFFFF
+    data.32 0xFF674764
+    data.32 0xFFFFFFFF
+    data.32 0xFF674764
 
 menu_items_root:
     data.8 1                                                      ; number of menus

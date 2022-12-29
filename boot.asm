@@ -7,19 +7,6 @@
 ; outputs:
 ; none (doesn't return)
 start_boot_process:
-    mov r0, BACKGROUND_COLOR
-    call fill_background
-
-    mov r0, boot_str
-    mov r1, 16
-    mov r2, 464
-    mov r3, TEXT_COLOR
-    mov r4, 0x00000000
-    mov r10, FOX32ROM_VERSION_MAJOR
-    mov r11, FOX32ROM_VERSION_MINOR
-    mov r12, FOX32ROM_VERSION_PATCH
-    call draw_format_str_to_background
-
     mov r0, 0x80003000 ; command to read a sector from disk 0 into memory
     mov r1, 0x80002000 ; command to set the location of the buffer
 
