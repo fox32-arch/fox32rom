@@ -60,9 +60,6 @@ entry_seed_done:
     ; enable interrupts
     ise
 
-    ; clear the interrupt vector for interrupt 0xFE - audio buffer switch
-    mov [0x000003F8], 0x00000000
-
     ; disable all overlays
     mov r31, 0x1F
     mov r0, 0x80000300
@@ -75,12 +72,6 @@ disable_all_overlays_loop:
 
     mov r0, BACKGROUND_COLOR
     call fill_background
-
-    call enable_menu_bar
-    call clear_menu_bar
-    mov r0, menu_items_root
-    mov r1, 0xFFFFFFFF
-    call draw_menu_bar_root_items
 
     ; draw the bottom bar
     mov r0, bottom_bar_str_0
@@ -127,29 +118,42 @@ draw_bottom_bar_loop:
     mov r12, FOX32ROM_VERSION_PATCH
     call draw_format_str_to_background
 
+    ; draw the box in the middle of the screen
+    mov r0, 242
+    mov r1, 203
+    mov r2, 156
+    mov r3, 60
+    mov r4, 0xFFFFFFFF
+    call draw_filled_rectangle_to_background
+    mov r0, 243
+    mov r1, 204
+    mov r2, 154
+    mov r3, 58
+    mov r4, 0xFF000000
+    call draw_filled_rectangle_to_background
+    mov r0, 244
+    mov r1, 205
+    mov r2, 152
+    mov r3, 56
+    mov r4, 0xFFFFFFFF
+    call draw_filled_rectangle_to_background
+
+    ; draw the text inside the box
+    mov r0, startup_str_0
+    mov r1, 256
+    mov r2, 216
+    mov r3, 0xFF000000
+    mov r4, 0x00000000
+    call draw_str_to_background
+    mov r0, startup_str_1
+    mov r1, 256
+    mov r2, 232
+    call draw_str_to_background
+
 event_loop:
     call get_next_event
 
-    ; was the mouse clicked?
-    cmp r0, EVENT_TYPE_MOUSE_CLICK
-    ;ifz call mouse_click_event
-
-    ; was the mouse released?
-    cmp r0, EVENT_TYPE_MOUSE_RELEASE
-    ;ifz call mouse_release_event
-
-    ; did the user click the menu bar?
-    cmp r0, EVENT_TYPE_MENU_BAR_CLICK
-    ifz mov r0, menu_items_root
-    ifz call menu_bar_click_event
-
-    ; is the user in a menu?
-    cmp r0, EVENT_TYPE_MENU_UPDATE
-    ifz call menu_update_event
-
-    ; did the user click a menu item?
-    cmp r0, EVENT_TYPE_MENU_CLICK
-    ifz call menu_click_event
+    ; no event handling here
 
     ; check if a disk is inserted as disk 0
     ; if port 0x8000100n returns a non-zero value, then a disk is inserted as disk n
@@ -158,16 +162,6 @@ event_loop:
     ifnz call start_boot_process
 
     jmp event_loop
-
-menu_click_event:
-    ; r3 contains the clicked menu item
-
-    ; shutdown
-    cmp r3, 0
-    ifz icl
-    ifz halt
-
-    ret
 
 get_rom_version:
     mov r0, FOX32ROM_VERSION_MAJOR
@@ -348,6 +342,9 @@ const MENU_POSITION_Y:      0x02156186 ; 2 bytes
 const MENU_FRAMEBUFFER_PTR: 0x0215618A ; 4 bytes
 const MENU_FRAMEBUFFER:     0x0215618E ; max 640x480x4 = end address at 0x0228218E
 
+startup_str_0: data.str "Welcome to fox32" data.8 0
+startup_str_1: data.str "Insert boot disk" data.8 0
+
 bottom_bar_str_0: data.str "FOX" data.8 0
 bottom_bar_str_1: data.str "32" data.8 0
 bottom_bar_str_2: data.str " ROM version %u.%u.%u " data.8 0
@@ -387,16 +384,6 @@ bottom_bar_patterns:
     data.32 0xFF674764
     data.32 0xFFFFFFFF
     data.32 0xFF674764
-
-menu_items_root:
-    data.8 1                                                      ; number of menus
-    data.32 menu_items_system_list data.32 menu_items_system_name ; pointer to menu list, pointer to menu name
-menu_items_system_name:
-    data.8 6 data.str "System" data.8 0x00 ; text length, text, null-terminator
-menu_items_system_list:
-    data.8 1                                   ; number of items
-    data.8 11                                  ; menu width (usually longest item + 2)
-    data.8 9  data.str "Shut Down" data.8 0x00 ; text length, text, null-terminator
 
     ; pad out to 512 KiB
     org.pad 0xF0080000

@@ -28,7 +28,4 @@ boot_cleanup:
     mov r0, BACKGROUND_COLOR
     call fill_background
 
-    ; disable the menu bar
-    call disable_menu_bar
-
     ret
