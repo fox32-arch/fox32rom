@@ -89,7 +89,7 @@ fill_overlay:
     mov r2, r1
     or r2, 0x80000100        ; bitwise or the overlay number with the command to get the overlay size
     or r1, 0x80000200        ; bitwise or the overlay number with the command to get the framebuffer pointer
-    in r1, r1                ; r1: overlay framebuffer poiner
+    in r1, r1                ; r1: overlay framebuffer pointer
     in r2, r2
     mov r3, r2
     and r2, 0x0000FFFF       ; r2: X size
@@ -122,7 +122,7 @@ draw_pixel_to_overlay:
     mov r4, r3
     or r4, 0x80000100        ; bitwise or the overlay number with the command to get the overlay size
     or r3, 0x80000200        ; bitwise or the overlay number with the command to get the framebuffer pointer
-    in r3, r3                ; r3: overlay framebuffer poiner
+    in r3, r3                ; r3: overlay framebuffer pointer
     in r4, r4
     and r4, 0x0000FFFF       ; r4: overlay width
 
@@ -149,7 +149,7 @@ draw_filled_rectangle_to_overlay:
     mov r6, r5
     or r6, 0x80000100        ; bitwise or the overlay number with the command to get the overlay size
     or r5, 0x80000200        ; bitwise or the overlay number with the command to get the framebuffer pointer
-    in r5, r5                ; r5: overlay framebuffer poiner
+    in r5, r5                ; r5: overlay framebuffer pointer
     in r6, r6
     and r6, 0x0000FFFF       ; r6: overlay width
 
@@ -176,7 +176,7 @@ draw_tile_to_overlay:
     mov r4, r3
     or r4, 0x80000100        ; bitwise or the overlay number with the command to get the overlay size
     or r3, 0x80000200        ; bitwise or the overlay number with the command to get the framebuffer pointer
-    in r8, r3                ; r8: overlay framebuffer poiner
+    in r8, r3                ; r8: overlay framebuffer pointer
     in r9, r4
     and r9, 0x0000FFFF       ; r9: overlay width
 
@@ -208,7 +208,7 @@ draw_font_tile_to_overlay:
     mov r6, r5
     or r6, 0x80000100        ; bitwise or the overlay number with the command to get the overlay size
     or r5, 0x80000200        ; bitwise or the overlay number with the command to get the framebuffer pointer
-    in r8, r5                ; r8: overlay framebuffer poiner
+    in r8, r5                ; r8: overlay framebuffer pointer
     in r9, r6
     and r9, 0x0000FFFF       ; r9: overlay width
 
@@ -245,7 +245,7 @@ draw_format_str_to_overlay:
     mov r6, r5
     or r6, 0x80000100        ; bitwise or the overlay number with the command to get the overlay size
     or r5, 0x80000200        ; bitwise or the overlay number with the command to get the framebuffer pointer
-    in r8, r5                ; r8: overlay framebuffer poiner
+    in r8, r5                ; r8: overlay framebuffer pointer
     in r9, r6
     and r9, 0x0000FFFF       ; r9: overlay width
 
@@ -306,7 +306,7 @@ draw_decimal_to_overlay:
     mov r6, r5
     or r6, 0x80000100        ; bitwise or the overlay number with the command to get the overlay size
     or r5, 0x80000200        ; bitwise or the overlay number with the command to get the framebuffer pointer
-    in r8, r5                ; r8: overlay framebuffer poiner
+    in r8, r5                ; r8: overlay framebuffer pointer
     in r9, r6
     and r9, 0x0000FFFF       ; r9: overlay width
 
@@ -342,7 +342,7 @@ draw_hex_to_overlay:
     mov r6, r5
     or r6, 0x80000100        ; bitwise or the overlay number with the command to get the overlay size
     or r5, 0x80000200        ; bitwise or the overlay number with the command to get the framebuffer pointer
-    in r8, r5                ; r8: overlay framebuffer poiner
+    in r8, r5                ; r8: overlay framebuffer pointer
     in r9, r6
     and r9, 0x0000FFFF       ; r9: overlay width
 

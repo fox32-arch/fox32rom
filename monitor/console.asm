@@ -143,7 +143,7 @@ print_character_to_monitor_end:
 ; none
 ; outputs:
 ; none
-; FIXME: this shouldnt have hard coded values
+; FIXME: this shouldn't have hard coded values
 ;        also this is extremely slow and bad
 scroll_monitor_console:
     push r0
