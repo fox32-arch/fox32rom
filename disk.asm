@@ -23,7 +23,7 @@ read_sector:
     pop r3
     ret
 
-; wrtie a sector from the specified memory buffer
+; write a sector from the specified memory buffer
 ; inputs:
 ; r0: sector number
 ; r1: disk ID

@@ -4,7 +4,7 @@
 ; if the source and destination overlap, the behavior is undefined
 ; inputs:
 ; r0: pointer to source
-; r1: pointer to destinaton
+; r1: pointer to destination
 ; r2: number of bytes to copy
 ; outputs:
 ; none
@@ -29,7 +29,7 @@ copy_memory_bytes_loop:
 ; if the source and destination overlap, the behavior is undefined
 ; inputs:
 ; r0: pointer to source
-; r1: pointer to destinaton
+; r1: pointer to destination
 ; r2: number of words to copy
 ; outputs:
 ; none
@@ -53,7 +53,7 @@ copy_memory_words_loop:
 ; compare specified number of bytes from source pointer with destination pointer
 ; inputs:
 ; r0: pointer to source
-; r1: pointer to destinaton
+; r1: pointer to destination
 ; r2: number of bytes to compare
 ; outputs:
 ; Z flag
@@ -69,7 +69,7 @@ compare_memory_bytes_loop:
     inc r0
     inc r1
     loop compare_memory_bytes_loop
-    ; set Z flag if we reach thie point
+    ; set Z flag if we reach this point
     mov r0, 0
     cmp r0, 0
 compare_memory_bytes_not_equal:
@@ -81,7 +81,7 @@ compare_memory_bytes_not_equal:
 ; compare specified number of words from source pointer with destination pointer
 ; inputs:
 ; r0: pointer to source
-; r1: pointer to destinaton
+; r1: pointer to destination
 ; r2: number of words to compare
 ; outputs:
 ; Z flag
@@ -97,7 +97,7 @@ compare_memory_words_loop:
     add r0, 4
     add r1, 4
     loop compare_memory_words_loop
-    ; set Z flag if we reach thie point
+    ; set Z flag if we reach this point
     mov r0, 0
     cmp r0, 0
 compare_memory_words_not_equal:
