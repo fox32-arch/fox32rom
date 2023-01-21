@@ -53,6 +53,7 @@ caps_pressed:
 
 ; scancode set 1:
 ; https://wiki.osdev.org/PS/2_Keyboard#Scan_Code_Set_1
+const CTRL:   0x1D
 const LSHIFT: 0x2A
 const RSHIFT: 0x36
 const CAPS:   0x3A

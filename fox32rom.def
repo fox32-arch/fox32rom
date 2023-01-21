@@ -111,6 +111,7 @@ const EVENT_TYPE_MENU_ACK:       0x00000007
 const EVENT_TYPE_EMPTY:          0xFFFFFFFF
 
 ; keys
+const KEY_CTRL:   0x1D
 const KEY_LSHIFT: 0x2A
 const KEY_RSHIFT: 0x36
 const KEY_CAPS:   0x3A
