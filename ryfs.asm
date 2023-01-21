@@ -258,6 +258,172 @@ ryfs_read_whole_file:
     pop r0
     ret
 
+; write specified number of bytes from the specified buffer
+; THIS DOES NOT UPDATE THE TOTAL SIZE OF THE FILE; do not write past the end of a file, bad things will happen
+; inputs:
+; r0: number of bytes to write
+; r1: pointer to file struct
+; r2: pointer to source buffer
+; outputs:
+; none
+ryfs_write:
+    push r0
+    push r1
+    push r2
+    push r3
+    push r4
+    push r5
+    push r10
+    push r11
+    push r12
+    push r31
+
+    ; number_of_sectors_to_load = ceil(input r0, 506) / 506
+
+    ; first, ceil the number of bytes to multiple of 506
+    ; value_temp = value / 506
+    ; if value % 506 != 0:
+    ;   value_temp++
+    ; value_ceil = value_temp * 506
+    mov r10, r0
+    mov r11, r0
+    mov r12, 506
+    div r11, r12
+    rem r10, r12
+    ifnz inc r11
+    mul r11, r12
+    div r11, r12
+    mov r3, r11 ; r3: number_of_sectors_to_load
+
+    mov r10, r1
+    add r10, 3
+    mov r4, [r10]
+
+    mov r10, r4
+    mov r11, r4
+    mov r12, 506
+    div r11, r12
+    rem r10, r12
+    ifnz inc r11
+    mul r11, r12
+    div r11, r12
+    mov r4, r11 ; r4: number of sectors to traverse
+
+    ; start_sector = traverse through linked sectors starting at file_struct.file_first_sector
+
+    push r0
+    push r1
+    push r2
+    mov r10, r1
+    ; read the file's first sector into the temp buffer
+    movz.8 r1, [r10] ; file_disk
+    inc r10
+    movz.16 r0, [r10] ; file_first_sector
+    mov r31, r4
+ryfs_write_traverse_sectors_loop:
+    mov r2, TEMP_SECTOR_BUF
+    call read_sector
+    mov r4, r0
+    add r2, 2 ; point to next sector number
+    movz.16 r0, [r2] ; load next sector number
+    cmp r31, 0 ; if we started at zero, then don't attempt to loop
+    ifnz loop ryfs_write_traverse_sectors_loop
+    pop r2
+    pop r1
+    pop r0
+
+    ; r4: start_sector
+
+    ; total_bytes_remaining = input r0
+    ; this_sector = start_sector
+    ; for range 0..number_of_sectors_to_load:
+    ;   load this_sector into temporary buffer
+    ;   bytes_to_load = if total_bytes_remaining >= 506
+    ;     506
+    ;   else:
+    ;     total_bytes_remaining
+    ;   for range 0..bytes_to_load:
+    ;     load byte from temporary buffer into destination buffer
+    ;   this_sector = this_sector.next
+
+    mov r10, r0 ; r10: total_bytes_remaining
+ryfs_write_sector_loop:
+    push r0
+    push r1
+    push r2
+    ; read this sector into the temp buffer
+    mov r0, r4
+    movz.8 r1, [r1] ; file_disk
+    mov r2, TEMP_SECTOR_BUF
+    call read_sector
+    pop r2
+    pop r1
+    pop r0
+
+    ; r11: bytes_to_load
+    cmp r10, 506
+    ifgteq mov r11, 506
+    iflt mov r11, r10
+
+    push r0
+    push r1
+    push r2
+
+    ; calculate the seek offset
+    mov r12, r1
+    add r12, 3
+    mov r5, [r12]
+    rem r5, 506
+
+    ; copy the sector data from the source buffer to the temp buffer
+    mov r0, r2
+    mov r1, TEMP_SECTOR_BUF
+    add r1, 6
+    add r1, r5 ; add the seek offset
+    mov r2, r11
+    call copy_memory_bytes
+    pop r2
+    pop r1
+    pop r0
+
+    push r0
+    push r1
+    push r2
+    ; write this sector back out to disk
+    mov r0, r4
+    movz.8 r1, [r1] ; file_disk
+    mov r2, TEMP_SECTOR_BUF
+    call write_sector
+    pop r2
+    pop r1
+    pop r0
+
+    ; this_sector = this_sector.next
+    mov r5, TEMP_SECTOR_BUF
+    add r5, 2
+    movz.16 r5, [r5]
+    mov r4, r5
+
+    add r2, r11
+    sub r10, r11
+    ifnz jmp ryfs_write_sector_loop
+
+    ; file_struct.file_seek_offset += input r0
+    add r1, 3
+    add [r1], r0
+
+    pop r31
+    pop r12
+    pop r11
+    pop r10
+    pop r5
+    pop r4
+    pop r3
+    pop r2
+    pop r1
+    pop r0
+    ret
+
 ; get the exact size of a file
 ; inputs:
 ; r0: pointer to file struct
