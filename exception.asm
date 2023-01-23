@@ -3,23 +3,41 @@
 ; called if a divide by zero occurs
 ; does not return, calls panic
 system_div_zero_handler:
+    push r0
+
     mov r0, system_div_zero_str
-    jmp panic
+    call debug_print
+    call print_string_to_monitor
+
+    pop r0
+    jmp system_breakpoint_handler
 system_div_zero_str: data.str "Divide by zero" data.8 10 data.8 0
 
 ; called if an invalid opcode is executed
 ; does not return, calls panic
 system_invalid_op_handler:
+    push r0
+
     mov r0, system_invalid_op_str
-    jmp panic
+    call debug_print
+    call print_string_to_monitor
+
+    pop r0
+    jmp system_breakpoint_handler
 system_invalid_op_str: data.str "Invalid opcode" data.8 10 data.8 0
 
 ; called if a page fault occurs
 ; does not return, calls panic
 system_page_fault_handler:
+    push r0
+
     mov r0, system_page_fault_str
+    call debug_print
+    call print_string_to_monitor
+
+    pop r0
     pop r1
-    jmp panic
+    jmp system_breakpoint_handler
 system_page_fault_str: data.str "Page fault at virtual address r1" data.8 10 data.8 0
 
 ; called upon execution of a `brk` instruction
