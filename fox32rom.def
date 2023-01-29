@@ -13,6 +13,7 @@ scancode_to_ascii:                        jmp [0xF0040020]
 shift_pressed:                            jmp [0xF0040024]
 shift_released:                           jmp [0xF0040028]
 caps_pressed:                             jmp [0xF004002C]
+poweroff:                                 jmp [0xF0040030]
 
 ; generic drawing jump table
 draw_str_generic:                         jmp [0xF0041000]
