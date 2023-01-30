@@ -169,6 +169,13 @@ get_rom_version:
     mov r2, FOX32ROM_VERSION_PATCH
     ret
 
+poweroff:
+    mov r0, 0x80010000
+    mov r1, 0
+    out r0, r1
+poweroff_wait:
+    jmp poweroff_wait
+
     ; code
     #include "audio.asm"
     #include "background.asm"
@@ -216,6 +223,7 @@ get_rom_version:
     data.32 shift_pressed
     data.32 shift_released
     data.32 caps_pressed
+    data.32 poweroff
 
     ; generic drawing jump table
     org.pad 0xF0041000
