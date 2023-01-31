@@ -233,4 +233,4 @@ const MONITOR_SHELL_TEXT_BUF_BOTTOM: 0x03ED3FE0 ; 32 characters
 const MONITOR_SHELL_TEXT_BUF_PTR:    0x03ED3FDC ; 4 bytes - pointer to the current input character
 const MONTIOR_SHELL_ARGS_PTR:        0x03ED36C5 ; 4 bytes - pointer to the beginning of the command arguments
 
-monitor_shell_prompt: data.str "> _" data.8 0
+monitor_shell_prompt: data.strz "> _"

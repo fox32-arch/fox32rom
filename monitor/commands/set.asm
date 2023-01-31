@@ -1,8 +1,8 @@
 ; set command
 
-monitor_shell_set8_command_string:  data.str "set.8"  data.8 0
-monitor_shell_set16_command_string: data.str "set.16" data.8 0
-monitor_shell_set32_command_string: data.str "set.32" data.8 0
+monitor_shell_set8_command_string:  data.strz "set.8"
+monitor_shell_set16_command_string: data.strz "set.16"
+monitor_shell_set32_command_string: data.strz "set.32"
 
 monitor_shell_set8_command:
     call monitor_shell_parse_arguments

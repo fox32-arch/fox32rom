@@ -1,6 +1,6 @@
 ; help command
 
-monitor_shell_help_command_string: data.str "help" data.8 0
+monitor_shell_help_command_string: data.strz "help"
 
 monitor_shell_help_command:
     mov r0, monitor_shell_help_text
