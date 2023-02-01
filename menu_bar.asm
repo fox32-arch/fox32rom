@@ -249,25 +249,25 @@ menu_bar_click_event_end:
 ;    data.32 menu_items_edit_list   data.32 menu_items_edit_name   ; pointer to menu list, pointer to menu name
 ;    data.32 menu_items_system_list data.32 menu_items_system_name ; pointer to menu list, pointer to menu name
 ;menu_items_file_name:
-;    data.8 4 data.str "File" data.8 0x00   ; text length, text, null-terminator
+;    data.8 4 data.strz "File"   ; text length, text, null-terminator
 ;menu_items_file_list:
 ;    data.8 2                               ; number of items
 ;    data.8 6                               ; menu width (in number of characters)
-;    data.8 6 data.str "Test 1" data.8 0x00 ; text length, text, null-terminator
-;    data.8 6 data.str "Test 2" data.8 0x00 ; text length, text, null-terminator
+;    data.8 6 data.strz "Test 1" ; text length, text, null-terminator
+;    data.8 6 data.strz "Test 2" ; text length, text, null-terminator
 ;menu_items_edit_name:
-;    data.8 4 data.str "Edit" data.8 0x00   ; text length, text, null-terminator
+;    data.8 4 data.strz "Edit"   ; text length, text, null-terminator
 ;menu_items_edit_list:
 ;    data.8 2                               ; number of items
 ;    data.8 6                               ; menu width (in number of characters)
-;    data.8 6 data.str "Test 3" data.8 0x00 ; text length, text, null-terminator
-;    data.8 6 data.str "Test 4" data.8 0x00 ; text length, text, null-terminator
+;    data.8 6 data.strz "Test 3" ; text length, text, null-terminator
+;    data.8 6 data.strz "Test 4" ; text length, text, null-terminator
 ;menu_items_system_name:
-;    data.8 6 data.str "System" data.8 0x00 ; text length, text, null-terminator
+;    data.8 6 data.strz "System" ; text length, text, null-terminator
 ;menu_items_system_list:
 ;    data.8 4                               ; number of items
 ;    data.8 6                               ; menu width (in number of characters)
-;    data.8 6 data.str "Test 5" data.8 0x00 ; text length, text, null-terminator
-;    data.8 6 data.str "Test 6" data.8 0x00 ; text length, text, null-terminator
-;    data.8 6 data.str "Test 7" data.8 0x00 ; text length, text, null-terminator
-;    data.8 6 data.str "Test 8" data.8 0x00 ; text length, text, null-terminator
+;    data.8 6 data.strz "Test 5" ; text length, text, null-terminator
+;    data.8 6 data.strz "Test 6" ; text length, text, null-terminator
+;    data.8 6 data.strz "Test 7" ; text length, text, null-terminator
+;    data.8 6 data.strz "Test 8" ; text length, text, null-terminator

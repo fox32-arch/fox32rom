@@ -581,37 +581,37 @@ system_breakpoint_handler:
     pop r31
     reti
 system_breakpoint_str:     data.str "Breakpoint reached!" data.8 10 data.8 0
-system_breakpoint_r0_str:  data.str "r0:  " data.8 0
-system_breakpoint_r1_str:  data.str "r1:  " data.8 0
-system_breakpoint_r2_str:  data.str "r2:  " data.8 0
-system_breakpoint_r3_str:  data.str "r3:  " data.8 0
-system_breakpoint_r4_str:  data.str "r4:  " data.8 0
-system_breakpoint_r5_str:  data.str "r5:  " data.8 0
-system_breakpoint_r6_str:  data.str "r6:  " data.8 0
-system_breakpoint_r7_str:  data.str "r7:  " data.8 0
-system_breakpoint_r8_str:  data.str "r8:  " data.8 0
-system_breakpoint_r9_str:  data.str "r9:  " data.8 0
-system_breakpoint_r10_str: data.str "r10: " data.8 0
-system_breakpoint_r11_str: data.str "r11: " data.8 0
-system_breakpoint_r12_str: data.str "r12: " data.8 0
-system_breakpoint_r13_str: data.str "r13: " data.8 0
-system_breakpoint_r14_str: data.str "r14: " data.8 0
-system_breakpoint_r15_str: data.str "r15: " data.8 0
-system_breakpoint_r16_str: data.str "r16: " data.8 0
-system_breakpoint_r17_str: data.str "r17: " data.8 0
-system_breakpoint_r18_str: data.str "r18: " data.8 0
-system_breakpoint_r19_str: data.str "r19: " data.8 0
-system_breakpoint_r20_str: data.str "r20: " data.8 0
-system_breakpoint_r21_str: data.str "r21: " data.8 0
-system_breakpoint_r22_str: data.str "r22: " data.8 0
-system_breakpoint_r23_str: data.str "r23: " data.8 0
-system_breakpoint_r24_str: data.str "r24: " data.8 0
-system_breakpoint_r25_str: data.str "r25: " data.8 0
-system_breakpoint_r26_str: data.str "r26: " data.8 0
-system_breakpoint_r27_str: data.str "r27: " data.8 0
-system_breakpoint_r28_str: data.str "r28: " data.8 0
-system_breakpoint_r29_str: data.str "r29: " data.8 0
-system_breakpoint_r30_str: data.str "r30: " data.8 0
-system_breakpoint_r31_str: data.str "r31: " data.8 0
-system_breakpoint_rsp_str: data.str "rsp: " data.8 0
-system_breakpoint_rip_str: data.str "rip: " data.8 0
+system_breakpoint_r0_str:  data.strz "r0:  "
+system_breakpoint_r1_str:  data.strz "r1:  "
+system_breakpoint_r2_str:  data.strz "r2:  "
+system_breakpoint_r3_str:  data.strz "r3:  "
+system_breakpoint_r4_str:  data.strz "r4:  "
+system_breakpoint_r5_str:  data.strz "r5:  "
+system_breakpoint_r6_str:  data.strz "r6:  "
+system_breakpoint_r7_str:  data.strz "r7:  "
+system_breakpoint_r8_str:  data.strz "r8:  "
+system_breakpoint_r9_str:  data.strz "r9:  "
+system_breakpoint_r10_str: data.strz "r10: "
+system_breakpoint_r11_str: data.strz "r11: "
+system_breakpoint_r12_str: data.strz "r12: "
+system_breakpoint_r13_str: data.strz "r13: "
+system_breakpoint_r14_str: data.strz "r14: "
+system_breakpoint_r15_str: data.strz "r15: "
+system_breakpoint_r16_str: data.strz "r16: "
+system_breakpoint_r17_str: data.strz "r17: "
+system_breakpoint_r18_str: data.strz "r18: "
+system_breakpoint_r19_str: data.strz "r19: "
+system_breakpoint_r20_str: data.strz "r20: "
+system_breakpoint_r21_str: data.strz "r21: "
+system_breakpoint_r22_str: data.strz "r22: "
+system_breakpoint_r23_str: data.strz "r23: "
+system_breakpoint_r24_str: data.strz "r24: "
+system_breakpoint_r25_str: data.strz "r25: "
+system_breakpoint_r26_str: data.strz "r26: "
+system_breakpoint_r27_str: data.strz "r27: "
+system_breakpoint_r28_str: data.strz "r28: "
+system_breakpoint_r29_str: data.strz "r29: "
+system_breakpoint_r30_str: data.strz "r30: "
+system_breakpoint_r31_str: data.strz "r31: "
+system_breakpoint_rsp_str: data.strz "rsp: "
+system_breakpoint_rip_str: data.strz "rip: "

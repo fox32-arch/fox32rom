@@ -351,12 +351,12 @@ const MENU_POSITION_Y:      0x02156186 ; 2 bytes
 const MENU_FRAMEBUFFER_PTR: 0x0215618A ; 4 bytes
 const MENU_FRAMEBUFFER:     0x0215618E ; max 640x480x4 = end address at 0x0228218E
 
-startup_str_0: data.str "Welcome to fox32" data.8 0
-startup_str_1: data.str "Insert boot disk" data.8 0
+startup_str_0: data.strz "Welcome to fox32"
+startup_str_1: data.strz "Insert boot disk"
 
-bottom_bar_str_0: data.str "FOX" data.8 0
-bottom_bar_str_1: data.str "32" data.8 0
-bottom_bar_str_2: data.str " ROM version %u.%u.%u " data.8 0
+bottom_bar_str_0: data.strz "FOX"
+bottom_bar_str_1: data.strz "32"
+bottom_bar_str_2: data.strz " ROM version %u.%u.%u "
 bottom_bar_patterns:
     ; 1x16 tile
     data.32 0xFF674764

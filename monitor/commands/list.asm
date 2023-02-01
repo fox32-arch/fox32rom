@@ -1,6 +1,6 @@
 ; list command
 
-monitor_shell_list_command_string: data.str "list" data.8 0
+monitor_shell_list_command_string: data.strz "list"
 
 monitor_shell_list_command:
     mov r0, monitor_shell_list_text
