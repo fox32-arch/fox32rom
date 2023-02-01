@@ -1,6 +1,6 @@
 ; debug routines
 
-; print a string to the terminal
+; print a string to the serial port
 ; inputs:
 ; r0: pointer to null-terminated string
 ; outputs:
