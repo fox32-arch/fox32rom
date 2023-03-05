@@ -297,6 +297,7 @@ poweroff_wait:
     data.32 ryfs_get_file_list
     data.32 ryfs_tell
     data.32 ryfs_write
+    data.32 is_romdisk_available
 
     ; memory copy/compare jump table
     org.pad 0xF0046000
