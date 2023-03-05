@@ -161,6 +161,9 @@ event_loop:
     cmp r0, 0
     ifnz call start_boot_process
 
+    call is_romdisk_available
+    ifz call start_boot_process_from_romdisk
+
     jmp event_loop
 
 get_rom_version:
@@ -393,6 +396,10 @@ bottom_bar_patterns:
     data.32 0xFF674764
     data.32 0xFFFFFFFF
     data.32 0xFF674764
+
+romdisk_image:
+    #include_bin_optional "romdisk.img"
+romdisk_image_end:
 
     ; pad out to 512 KiB
     org.pad 0xF0080000

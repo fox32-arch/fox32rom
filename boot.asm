@@ -22,12 +22,26 @@ start_boot_process:
     mov r0, 0             ; booting from disk id 0
     jmp 0x00000800
 
+; load the boot sector of the romdisk and jump to it
+; inputs:
+; none
+; outputs:
+; none (returns if romdisk is not bootable)
+start_boot_process_from_romdisk:
     ; read sector 0 to 0x800
-    out r1, 0x00000800
-    out r0, 0
+    mov r0, 0
+    mov r1, 4
+    mov r2, 0x00000800
+    call read_sector
+
+    ; check for the bootable magic bytes
+    cmp [0x000009FC], 0x523C334C
+    ifnz ret
 
     ; now clean up and jump to the loaded binary
     call boot_cleanup
+    mov rsp, SYSTEM_STACK ; reset stack pointer
+    mov r0, 4             ; booting from disk id 4
     jmp 0x00000800
 
 ; clean up the system's state before jumping to the loaded binary
