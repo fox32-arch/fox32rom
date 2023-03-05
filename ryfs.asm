@@ -19,6 +19,20 @@ ryfs_open:
     push r10
     push r31
 
+    ; check if the requested disk id is inserted
+    cmp r1, 4
+    ifnz jmp ryfs_open_check_disk
+    ifz call is_romdisk_available
+    ifnz jmp ryfs_open_fail
+    cmp r1, 4
+    ifz jmp ryfs_open_continue
+ryfs_open_check_disk:
+    mov r10, r1
+    or r10, 0x80001000
+    in r10, r10
+    cmp r10, 0
+    ifz jmp ryfs_open_fail
+ryfs_open_continue:
     ; r10: pointer to file struct entry
     mov r10, r2
     mov.8 [r10], r1 ; write file_disk
@@ -41,8 +55,7 @@ ryfs_open_find_dir_entry_loop:
     add r1, 16 ; point to the file name in the next directory entry
     loop ryfs_open_find_dir_entry_loop
     ; if we reach this point, the file wasn't found
-    mov r0, 0
-    jmp ryfs_open_end
+    jmp ryfs_open_fail
 ryfs_open_found_dir_entry:
     sub r1, 4          ; point to first sector of this file
     mov.16 [r10], [r1] ; write file_first_sector
@@ -57,6 +70,9 @@ ryfs_open_end:
     pop r2
     pop r1
     ret
+ryfs_open_fail:
+    mov r0, 0
+    jmp ryfs_open_end
 
 ; seek specified file to the specified offset
 ; inputs:
