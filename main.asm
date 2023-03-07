@@ -6,6 +6,8 @@ const FOX32ROM_VERSION_MAJOR: 0
 const FOX32ROM_VERSION_MINOR: 7
 const FOX32ROM_VERSION_PATCH: 0
 
+const FOX32ROM_API_VERSION: 1
+
 const SYSTEM_STACK:     0x01FFF800
 const BACKGROUND_COLOR: 0xFF674764
 const TEXT_COLOR:       0xFFFFFFFF
@@ -172,6 +174,10 @@ get_rom_version:
     mov r2, FOX32ROM_VERSION_PATCH
     ret
 
+get_rom_api_version:
+    mov r0, FOX32ROM_API_VERSION
+    ret
+
 poweroff:
     mov r0, 0x80010000
     mov r1, 0
@@ -227,6 +233,7 @@ poweroff_wait:
     data.32 shift_released
     data.32 caps_pressed
     data.32 poweroff
+    data.32 get_rom_api_version
 
     ; generic drawing jump table
     org.pad 0xF0041000
