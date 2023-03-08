@@ -54,6 +54,9 @@ boot_cleanup:
     mov r0, BACKGROUND_COLOR
     call fill_background
 
+    ; disable the blinking disk icon
+    call cleanup_icon
+
     movz.8 r0, 0
     movz.8 r1, 0
     movz.8 r2, 0

@@ -120,43 +120,9 @@ draw_bottom_bar_loop:
     mov r12, FOX32ROM_VERSION_PATCH
     call draw_format_str_to_background
 
-    ; draw the box in the middle of the screen
-    ;mov r0, 242
-    ;mov r1, 203
-    ;mov r2, 156
-    ;mov r3, 60
-    ;mov r4, 0xFFFFFFFF
-    ;call draw_filled_rectangle_to_background
-    ;mov r0, 243
-    ;mov r1, 204
-    ;mov r2, 154
-    ;mov r3, 58
-    ;mov r4, 0xFF000000
-    ;call draw_filled_rectangle_to_background
-    ;mov r0, 244
-    ;mov r1, 205
-    ;mov r2, 152
-    ;mov r3, 56
-    ;mov r4, 0xFFFFFFFF
-    ;call draw_filled_rectangle_to_background
-
-    ; draw the text inside the box
-    ; mov r0, startup_str_0
-    ; mov r1, 256
-    ; mov r2, 216
-    ; mov r3, 0xFF000000
-    ; mov r4, 0x00000000
-    ; call draw_str_to_background
-    ; mov r0, startup_str_1
-    ;  mov r1, 256
-    ; mov r2, 232
-    ; call draw_str_to_background
-
     mov r0, disk_icon_q
     call change_icon
     call setup_icon
-
-    mov r0, bottom_bar_patterns
 
 event_loop:
     call get_next_event
@@ -220,7 +186,13 @@ poweroff_wait:
     #include "vsync.asm"
 
 
-
+; TODO: convert these icons to 1 bit bitmaps and move
+;       them down to the data section at 0xF004F000,
+;       once 1 bit drawing routines are implemented
+disk_icon:
+    #include_bin "font/disk1.raw"
+disk_icon_q:
+    #include_bin "font/disk2.raw"
 
 
     ; data
@@ -348,11 +320,6 @@ standard_font_data:
 mouse_cursor:
     #include_bin "font/cursor2.raw"
 
-disk_icon:
-    #include_bin "font/disk1.raw"
-disk_icon_q:
-    #include_bin "font/disk2.raw"
-
 ; icon overlay struct:
 const ICON_WIDTH:           32
 const ICON_HEIGHT:          32
@@ -372,13 +339,6 @@ const MENU_BAR_POSITION_X:      0
 const MENU_BAR_POSITION_Y:      0
 const MENU_BAR_FRAMEBUFFER_PTR: 0x0214C180
 
-; menu bar overlay struct:
-const MENU_BAR_WIDTH:           640
-const MENU_BAR_HEIGHT:          16
-const MENU_BAR_POSITION_X:      0
-const MENU_BAR_POSITION_Y:      0
-const MENU_BAR_FRAMEBUFFER_PTR: 0x0214D180
-
 ; menu overlay struct:
 ; this struct must be writable, so these are hard-coded addresses in ram
 const MENU_WIDTH:           0x02156180 ; 2 bytes
@@ -387,9 +347,6 @@ const MENU_POSITION_X:      0x02156184 ; 2 bytes
 const MENU_POSITION_Y:      0x02156186 ; 2 bytes
 const MENU_FRAMEBUFFER_PTR: 0x0215618A ; 4 bytes
 const MENU_FRAMEBUFFER:     0x0215618E ; max 640x480x4 = end address at 0x0228218E
-
-; startup_str_0: data.strz "Welcome to fox32"
-; startup_str_1: data.strz "Insert boot disk"
 
 bottom_bar_str_0: data.strz "FOX"
 bottom_bar_str_1: data.strz "32"

@@ -13,7 +13,8 @@ system_vsync_handler:
 
     call mouse_update
     call keyboard_update
-    call icon_update
+    cmp.8 [UPDATE_ICON], 0
+    ifnz call icon_update
 
     pop r7
     pop r6
