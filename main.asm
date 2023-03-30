@@ -59,6 +59,10 @@ entry_seed_done:
     ; ensure the event queue gets initialized properly
     mov [EVENT_QUEUE_POINTER], 0
 
+    ; initialize the monitor X and Y coordinates
+    mov.8 [MONITOR_CONSOLE_X], 0
+    mov.8 [MONITOR_CONSOLE_Y], 28
+
     ; enable interrupts
     ise
 
