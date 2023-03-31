@@ -15,5 +15,6 @@ monitor_shell_help_text:
     data.str "help    | display this help text" data.8 10
     data.str "jump    | jump to address $0" data.8 10
     data.str "list    | list memory contents starting at address $0" data.8 10
+    data.str "load    | load disk $0's sector $1 to buffer at address $2 of size $3 sectors" data.8 10
     data.str "set.SZ  | set [$0] to $1; equivalent to `mov.SZ [$0], $1`" data.8 10
     data.8 0
