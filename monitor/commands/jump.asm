@@ -9,8 +9,4 @@ monitor_shell_jump_command:
 
     ; r0: address
 
-    call r0
-
-    call redraw_monitor_console
-
-    ret
+    jmp exit_monitor_and_jump

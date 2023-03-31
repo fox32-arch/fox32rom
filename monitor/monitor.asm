@@ -129,6 +129,52 @@ exit_monitor:
 
     ret
 
+exit_monitor_and_jump:
+    ; restore the old RSP and vsync handler
+    mov rsp, [MONITOR_OLD_RSP]
+    mov [0x000003FC], [MONITOR_OLD_VSYNC_HANDLER]
+
+    ; reset the cursor
+    call enable_cursor
+
+    ; save the jump address in a temporary location
+    mov [MONITOR_OLD_RSP], r0
+
+    pop r0
+    pop r1
+    pop r2
+    pop r3
+    pop r4
+    pop r5
+    pop r6
+    pop r7
+    pop r8
+    pop r9
+    pop r10
+    pop r11
+    pop r12
+    pop r13
+    pop r14
+    pop r15
+    pop r16
+    pop r17
+    pop r18
+    pop r19
+    pop r20
+    pop r21
+    pop r22
+    pop r23
+    pop r24
+    pop r25
+    pop r26
+    pop r27
+    pop r28
+    pop r29
+    pop r30
+    pop r31
+
+    jmp [MONITOR_OLD_RSP]
+
 invoke_monitor_aleady_in_monitor:
     call redraw_monitor_console
     ret
