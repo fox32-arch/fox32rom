@@ -1,0 +1,37 @@
+(* fox32rom routine definitions for Okameron *)
+
+MODULE Fox32ROM;
+    ASM "fox32rom.def";
+    ASM "fox32rom_okm.asm";
+
+    TYPE ROMFile = RECORD
+        disk: CHAR;
+        firstSector: SHORT;
+        seekOffset: INT;
+        reserved: CHAR;
+    END;
+
+    EXTERN PROCEDURE NewEvent: INT;
+    EXTERN PROCEDURE GetNextEvent: INT;
+
+    EXTERN PROCEDURE FillBackground: INT;
+    EXTERN PROCEDURE DrawStrToBackground: INT;
+    EXTERN PROCEDURE DrawFormatStrToBackground: INT;
+
+    EXTERN PROCEDURE RYFSOpen: INT;
+    EXTERN PROCEDURE RYFSSeek: INT;
+    EXTERN PROCEDURE RYFSTell: INT;
+    EXTERN PROCEDURE RYFSRead: INT;
+    EXTERN PROCEDURE RYFSReadWholeFile: INT;
+    EXTERN PROCEDURE RYFSGetSize: INT;
+    EXTERN PROCEDURE RYFSGetFileList: INT;
+    EXTERN PROCEDURE RYFSWrite: INT;
+
+    EXTERN PROCEDURE CopyMemoryChar: INT;
+    EXTERN PROCEDURE CopyMemoryInt: INT;
+    EXTERN PROCEDURE CopyString: INT;
+    EXTERN PROCEDURE CompareMemoryChar: INT;
+    EXTERN PROCEDURE CompareMemoryInt: INT;
+    EXTERN PROCEDURE CompareString: INT;
+    EXTERN PROCEDURE StringLength: INT;
+END.
