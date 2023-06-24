@@ -18,6 +18,11 @@ MODULE Fox32ROM;
     EXTERN PROCEDURE DrawStrToBackground: INT;
     EXTERN PROCEDURE DrawFormatStrToBackground: INT;
 
+    EXTERN PROCEDURE FillOverlay: INT;
+    EXTERN PROCEDURE DrawStrToOverlay: INT;
+    EXTERN PROCEDURE DrawFormatStrToOverlay: INT;
+    EXTERN PROCEDURE DrawFilledRectangleToOverlay: INT;
+
     EXTERN PROCEDURE RYFSOpen: INT;
     EXTERN PROCEDURE RYFSSeek: INT;
     EXTERN PROCEDURE RYFSTell: INT;

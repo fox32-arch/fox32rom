@@ -78,6 +78,50 @@ DrawFormatStrToBackground:
     pop r10
     ret
 
+; PROCEDURE FillOverlay(color, overlay: INT;);
+FillOverlay:
+    jmp fill_overlay
+
+; PROCEDURE DrawStrToOverlay(
+;    str: POINTER TO CHAR;
+;    x, y, fgColor, bgColor, overlay: INT;
+; );
+DrawStrToOverlay:
+    jmp draw_str_to_overlay
+
+; PROCEDURE DrawFormatStrToBackground(
+;    str: POINTER TO CHAR;
+;    x, y, fgColor, bgColor, overlay,
+;    format0, format1: INT;
+; );
+DrawFormatStrToOverlay:
+    push r10
+    push r11
+    push r12
+    push r13
+    push r14
+    push r15
+    mov r10, r5
+    mov r11, r6
+    mov r12, r7
+    mov r13, 0
+    mov r14, 0
+    mov r15, 0
+    call draw_format_str_to_overlay
+    pop r15
+    pop r14
+    pop r13
+    pop r12
+    pop r11
+    pop r10
+    ret
+
+; PROCEDURE DrawFilledRectangleToOverlay(
+;    x, y, width, height, color, overlay: INT;
+; );
+DrawFilledRectangleToOverlay:
+    jmp draw_filled_rectangle_to_overlay
+
 ; PROCEDURE RYFSOpen(
 ;    name: POINTER TO CHAR;
 ;    id: INT;
