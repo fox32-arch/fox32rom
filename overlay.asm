@@ -515,7 +515,7 @@ get_unused_overlay:
     push r1
     push r31
 
-    mov r0, 0x80000000
+    mov r0, 0x80000300
     mov r31, 31
 get_unused_overlay_loop:
     in r1, r0
