@@ -185,9 +185,10 @@ poweroff_wait:
     #include "overlay.asm"
     #include "panic.asm"
     #include "random.asm"
-    #include "ryfs.asm"
     #include "string.asm"
     #include "vsync.asm"
+
+    #include "okameron.asm"
 
 
 ; TODO: convert these icons to 1 bit bitmaps and move
@@ -284,9 +285,11 @@ disk_icon_q:
     data.32 ryfs_read
     data.32 ryfs_read_whole_file
     data.32 ryfs_get_size
-    data.32 ryfs_get_file_list
+    ;data.32 ryfs_get_file_list
+    data.32 0
     data.32 ryfs_tell
-    data.32 ryfs_write
+    ;data.32 ryfs_write
+    data.32 0
     data.32 is_romdisk_available
 
     ; memory copy/compare jump table

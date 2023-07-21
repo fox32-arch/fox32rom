@@ -1,0 +1,3 @@
+[submodule "meta/okameron"]
+	path = meta/okameron
+	url = https://github.com/talonfox/okameron

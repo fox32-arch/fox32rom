@@ -1,0 +1,167 @@
+MODULE RYFS;
+    (* NOTE: DO NOT CREATE ANY GLOBAL VARIABLES HERE! *)
+    (* only local variables will work due to them being created on the stack *)
+
+    ASM "RYFS.asm";
+
+    TYPE ROMFile = RECORD
+        diskId: CHAR;
+        firstSector: SHORT;
+        seekOffset: INT;
+        reserved: CHAR;
+    END;
+
+    FileSectorHeader = RECORD
+        magic: CHAR;
+        alignment: CHAR;
+        nextSector: SHORT;
+        sectorSize: SHORT;
+    END;
+
+    EXTERN TEMP_SECTOR_BUF: POINTER TO FileSectorHeader;
+    EXTERN PROCEDURE check_disk: INT;
+    EXTERN PROCEDURE read_sector: INT;
+    EXTERN PROCEDURE write_sector: INT;
+    EXTERN PROCEDURE copy_memory_bytes: INT;
+    EXTERN PROCEDURE compare_memory_bytes_wrapper: INT;
+    EXTERN PROCEDURE brk: INT;
+
+    (* returns first file sector, or zero if file wasn't found *)
+    PROCEDURE ryfs_open(fileName: POINTER TO CHAR; diskId: INT; struct: POINTER TO ROMFile;): INT;
+    VAR i: INT;
+        tempPtr: PTR;
+    BEGIN
+        (* ensure the requested disk is inserted *)
+        IF check_disk(diskId) = 0 THEN
+            RETURN(0);
+        END;
+
+        (* set struct fields *)
+        struct^.diskId := diskId;
+        struct^.seekOffset := 0;
+        struct^.reserved := 0;
+
+        (* read the directory sector into the temporary buffer *)
+        read_sector(1, diskId, PTROF(TEMP_SECTOR_BUF));
+
+        (* look for the requested file name in the directory entries *)
+        (* 20 is the offset of the first firectory entry's file name *)
+        (* there are 31 directory entries in total, but they may not all be filled *)
+        tempPtr := PTROF(TEMP_SECTOR_BUF) + 20;
+        i := 31;
+        WHILE i DO
+            IF compare_memory_bytes_wrapper(fileName, tempPtr, 11) THEN
+                (* we found the file!! set the first sector and return it *)
+                struct^.firstSector := GETSHORT(tempPtr - 4);
+                RETURN(struct^.firstSector);
+            END;
+            tempPtr := tempPtr + 16;
+            i := i - 1;
+        END;
+
+        (* if we reach this point then the file wasn't found *)
+        RETURN(0);
+    END;
+
+    PROCEDURE ryfs_seek(offset: INT; struct: POINTER TO ROMFile;);
+    BEGIN
+        struct^.seekOffset := offset;
+    END;
+
+    PROCEDURE ryfs_tell(struct: POINTER TO ROMFile;): INT;
+    BEGIN
+        RETURN(struct^.seekOffset);
+    END;
+
+    PROCEDURE ryfs_read(size: INT; struct: POINTER TO ROMFile; destination: POINTER TO CHAR;);
+    VAR originalSize: INT;
+        sectorsToLoad: INT;
+        sectorsToTraverse: INT;
+        startSector: SHORT;
+        thisSector: SHORT;
+        bytesToLoad: INT;
+    BEGIN
+        originalSize := size;
+        sectorsToLoad := ryfs_ceil(size, 506) / 506;
+
+        (* get the number of sectors to traverse before we reach our seek offset *)
+        sectorsToTraverse := ryfs_ceil(struct^.seekOffset, 506) / 506;
+
+        (* traverse through linked sectors starting at struct^.firstSector *)
+        thisSector := struct^.firstSector;
+        IF sectorsToTraverse = 0 THEN
+            startSector := thisSector;
+        ELSE WHILE sectorsToTraverse DO
+            read_sector(thisSector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
+            startSector := thisSector;
+            thisSector := PTROF(TEMP_SECTOR_BUF)^.nextSector;
+            sectorsToTraverse := sectorsToTraverse - 1;
+        END; END;
+
+        thisSector := startSector;
+        WHILE sectorsToLoad DO
+            (* load the working sector into the temporary buffer *)
+            read_sector(thisSector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
+
+            IF size >|= 506 THEN
+                bytesToLoad := 506;
+            ELSE
+                bytesToLoad := size;
+            END;
+
+            (* copy from the temporary buffer to the caller's final buffer *)
+            copy_memory_bytes(PTROF(TEMP_SECTOR_BUF) + 6 + (struct^.seekOffset MOD 506), destination, bytesToLoad);
+
+            (* point to the next linked sector *)
+            thisSector := GETSHORT(PTROF(TEMP_SECTOR_BUF) + 2);
+
+            (* point to the next destination block of memory *)
+            destination := destination + bytesToLoad;
+
+            (* subtract from the number of bytes left to load *)
+            size := size - bytesToLoad;
+
+            sectorsToLoad := sectorsToLoad - 1;
+        END;
+
+        (* add to the file's seek offset *)
+        struct^.seekOffset := struct^.seekOffset + originalSize;
+    END;
+
+    PROCEDURE ryfs_read_whole_file(struct: POINTER TO ROMFile; destination: POINTER TO CHAR;);
+    BEGIN
+        ryfs_read(ryfs_get_size(struct), struct, destination);
+    END;
+
+    PROCEDURE ryfs_get_size(struct: POINTER TO ROMFile;): INT;
+    VAR size: INT;
+        nextSector: SHORT;
+    BEGIN
+        size := 0;
+        nextSector := struct^.firstSector;
+
+        WHILE 1 DO
+            read_sector(nextSector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
+            nextSector := GETSHORT(PTROF(TEMP_SECTOR_BUF) + 2);
+            IF nextSector THEN
+                size := size + 506;
+            ELSE
+                size := size + GETSHORT(PTROF(TEMP_SECTOR_BUF) + 4);
+                RETURN(size);
+            END;
+        END;
+    END;
+
+    PROCEDURE ryfs_ceil(number, ceilNumber: INT;): INT;
+    VAR remainder: INT;
+    BEGIN
+        IF number = 0 THEN
+            RETURN(ceilNumber);
+        END;
+        remainder := number MOD ceilNumber;
+        IF remainder = 0 THEN
+            RETURN(number);
+        END;
+        RETURN(number + ceilNumber - remainder);
+    END;
+END.
