@@ -16,6 +16,7 @@ MODULE Fox32ROM;
 
     EXTERN PROCEDURE FillBackground: INT;
     EXTERN PROCEDURE DrawStrToBackground: INT;
+    EXTERN PROCEDURE DrawFontTileToBackground: INT;
     EXTERN PROCEDURE DrawFormatStrToBackground: INT;
 
     EXTERN PROCEDURE FillOverlay: INT;

@@ -51,6 +51,13 @@ FillBackground:
 DrawStrToBackground:
     jmp draw_str_to_background
 
+; PROCEDURE DrawFontTileToBackground(
+;    c: CHAR;
+;    x, y, fgColor, bgColor: INT;
+; );
+DrawFontTileToBackground:
+    jmp draw_font_tile_to_background
+
 ; PROCEDURE DrawFormatStrToBackground(
 ;    str: POINTER TO CHAR;
 ;    x, y, fgColor, bgColor,
