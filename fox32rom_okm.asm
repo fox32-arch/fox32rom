@@ -40,6 +40,10 @@ GetNextEvent:
     pop r8
     ret
 
+; PROCEDURE ScancodeToAscii(scancode: CHAR): CHAR;
+ScancodeToAscii:
+    jmp scancode_to_ascii
+
 ; PROCEDURE FillBackground(color: INT;);
 FillBackground:
     jmp fill_background
