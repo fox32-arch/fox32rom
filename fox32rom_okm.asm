@@ -46,9 +46,21 @@ GetNextEvent:
     pop r8
     ret
 
-; PROCEDURE ScancodeToAscii(scancode: CHAR): CHAR;
+; PROCEDURE ScancodeToAscii(scancode: CHAR;): CHAR;
 ScancodeToAscii:
     jmp scancode_to_ascii
+
+; PROCEDURE ShiftPressed();
+ShiftPressed:
+    jmp shift_pressed
+
+; PROCEDURE ShiftReleased();
+ShiftReleased:
+    jmp shift_released
+
+; PROCEDURE CapsPressed();
+CapsPressed:
+    jmp caps_pressed
 
 ; PROCEDURE FillBackground(color: INT;);
 FillBackground:

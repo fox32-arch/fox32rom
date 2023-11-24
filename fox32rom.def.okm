@@ -26,6 +26,9 @@ MODULE Fox32ROM;
     EXTERN PROCEDURE NewEvent: INT;
     EXTERN PROCEDURE GetNextEvent: INT;
     EXTERN PROCEDURE ScancodeToAscii: INT;
+    EXTERN PROCEDURE ShiftPressed: INT;
+    EXTERN PROCEDURE ShiftReleased: INT;
+    EXTERN PROCEDURE CapsPressed: INT;
 
     EXTERN PROCEDURE FillBackground: INT;
     EXTERN PROCEDURE DrawStrToBackground: INT;
