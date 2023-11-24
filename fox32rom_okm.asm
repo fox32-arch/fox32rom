@@ -1,5 +1,11 @@
 ; fox32rom routine definitions for Okameron
 
+; PROCEDURE Panic(
+;    str: POINTER TO CHAR;
+; );
+Panic:
+    jmp panic
+
 ; PROCEDURE NewEvent(
 ;    eventType,
 ;    eventArg0,
