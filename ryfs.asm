@@ -61,7 +61,7 @@ ryfs_open_found_dir_entry:
     mov.16 [r10], [r1] ; write file_first_sector
     add r10, 2
     mov [r10], 0       ; write file_seek_offset
-    inc r10
+    inc r10, 4
     mov.8 [r10], 0     ; write file_reserved
     movz.16 r0, [r1]
 ryfs_open_end:
