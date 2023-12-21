@@ -208,6 +208,13 @@ RYFSGetFileList:
 RYFSWrite:
     jmp ryfs_write
 
+; PROCEDURE StringToInt(
+;    str: POINTER TO CHAR;
+;    radix: INT;
+; ): INT;
+StringToInt:
+    jmp string_to_int
+
 ; PROCEDURE CopyMemoryChar(
 ;    source, destination: POINTER TO CHAR;
 ;    size: INT;
