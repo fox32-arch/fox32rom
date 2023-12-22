@@ -38,7 +38,7 @@ print_hex_word_to_monitor_loop:
     add r12, r11
     movz.8 r0, [r12]
     call print_character_to_monitor
-    add r1, r6
+    ;add r1, r6
     loop print_hex_word_to_monitor_loop
 
     pop r31
@@ -67,7 +67,7 @@ print_hex_byte_to_monitor_loop:
     add r12, r11
     movz.8 r0, [r12]
     call print_character_to_monitor
-    add r1, r6
+    ;add r1, r6
     loop print_hex_byte_to_monitor_loop
 
     pop r31
