@@ -92,51 +92,6 @@ system_breakpoint_handler:
     call debug_print
     call print_string_to_monitor
 
-    ; print the display containing all of the registers
-    ; r1 - used to store a pointer to the current string
-    ; r2 - stores the current address on the stack
-    ; r3 - loop counter
-    mov r1, system_breakpoint_r0_str
-    mov r2, rsp
-    mov r3, 0
-system_breakpoint_print_loop:
-    ; print the register label
-    mov r0, r1
-    call print_string_to_monitor
-    ; print the register value
-    mov r0, [r2]
-    call print_hex_word_to_monitor
-    ; adjust string pointer, stack address, and loop counter
-    add r1, SYSTEM_BREAKPOINT_R_STR_SIZE
-    inc r2, 4
-    inc r3
-    ; decide whether to print a separator or a newline by checking if the loop
-    ; counter is a multiple of 4
-    mov r0, r3
-    and r0, 0x03
-    ifnz jmp system_breakpoint_print_sep
-system_breakpoint_print_newline:
-    mov r0, 10
-    jmp system_breakpoint_print_last_char
-system_breakpoint_print_sep:
-    mov r0, ' '
-    call print_character_to_monitor
-    mov r0, '|'
-    call print_character_to_monitor
-    mov r0, ' '
-system_breakpoint_print_last_char:
-    call print_character_to_monitor
-    ; loop again if not on last register
-    cmp r3, 35
-    iflt jmp system_breakpoint_print_loop
-    ; print rip
-    mov r0, system_breakpoint_rip_str
-    call print_string_to_monitor
-    mov r0, [r2+1]
-    call print_hex_word_to_monitor
-    mov r0, 10
-    call print_character_to_monitor
-
     call invoke_monitor
 
     pop r0
@@ -177,40 +132,3 @@ system_breakpoint_print_last_char:
     pop rfp
     reti
 system_breakpoint_str:     data.str "Breakpoint reached!" data.8 10 data.8 0
-const SYSTEM_BREAKPOINT_R_STR_SIZE: 7
-system_breakpoint_r0_str:  data.strz "r0:   "
-system_breakpoint_r1_str:  data.strz "r1:   "
-system_breakpoint_r2_str:  data.strz "r2:   "
-system_breakpoint_r3_str:  data.strz "r3:   "
-system_breakpoint_r4_str:  data.strz "r4:   "
-system_breakpoint_r5_str:  data.strz "r5:   "
-system_breakpoint_r6_str:  data.strz "r6:   "
-system_breakpoint_r7_str:  data.strz "r7:   "
-system_breakpoint_r8_str:  data.strz "r8:   "
-system_breakpoint_r9_str:  data.strz "r9:   "
-system_breakpoint_r10_str: data.strz "r10:  "
-system_breakpoint_r11_str: data.strz "r11:  "
-system_breakpoint_r12_str: data.strz "r12:  "
-system_breakpoint_r13_str: data.strz "r13:  "
-system_breakpoint_r14_str: data.strz "r14:  "
-system_breakpoint_r15_str: data.strz "r15:  "
-system_breakpoint_r16_str: data.strz "r16:  "
-system_breakpoint_r17_str: data.strz "r17:  "
-system_breakpoint_r18_str: data.strz "r18:  "
-system_breakpoint_r19_str: data.strz "r19:  "
-system_breakpoint_r20_str: data.strz "r20:  "
-system_breakpoint_r21_str: data.strz "r21:  "
-system_breakpoint_r22_str: data.strz "r22:  "
-system_breakpoint_r23_str: data.strz "r23:  "
-system_breakpoint_r24_str: data.strz "r24:  "
-system_breakpoint_r25_str: data.strz "r25:  "
-system_breakpoint_r26_str: data.strz "r26:  "
-system_breakpoint_r27_str: data.strz "r27:  "
-system_breakpoint_r28_str: data.strz "r28:  "
-system_breakpoint_r29_str: data.strz "r29:  "
-system_breakpoint_r30_str: data.strz "r30:  "
-system_breakpoint_r31_str: data.strz "r31:  "
-system_breakpoint_rsp_str: data.strz "rsp:  "
-system_breakpoint_resp_str: data.strz "resp: "
-system_breakpoint_rfp_str: data.strz "rfp:  "
-system_breakpoint_rip_str: data.strz "rip:  "
