@@ -1,53 +1,20 @@
 ; command parser
 
-; FIXME: thjs is a terrible way to do this
 monitor_shell_parse_command:
     mov r0, MONITOR_SHELL_TEXT_BUF_BOTTOM
 
-    ; exit
-    mov r1, monitor_shell_exit_command_string
+    ; loop over the table of commands
+    mov r2, monitor_shell_command_table
+monitor_shell_parse_command_loop:
+    mov r1, [r2]
     call compare_string
-    ifz jmp monitor_shell_exit_command
-
-    ; help
-    mov r1, monitor_shell_help_command_string
-    call compare_string
-    ifz jmp monitor_shell_help_command
-
-    ; jump
-    mov r1, monitor_shell_jump_command_string
-    call compare_string
-    ifz jmp monitor_shell_jump_command
-
-    ; list
-    mov r1, monitor_shell_list_command_string
-    call compare_string
-    ifz jmp monitor_shell_list_command
-
-    ; load
-    mov r1, monitor_shell_load_command_string
-    call compare_string
-    ifz jmp monitor_shell_load_command
-
-    ; reg
-    mov r1, monitor_shell_reg_command_string
-    call compare_string
-    ifz jmp monitor_shell_reg_command
-
-    ; set.8
-    mov r1, monitor_shell_set8_command_string
-    call compare_string
-    ifz jmp monitor_shell_set8_command
-
-    ; set.16
-    mov r1, monitor_shell_set16_command_string
-    call compare_string
-    ifz jmp monitor_shell_set16_command
-
-    ; set.32
-    mov r1, monitor_shell_set32_command_string
-    call compare_string
-    ifz jmp monitor_shell_set32_command
+    ; if the string matches, jump to the corresponding address in the table
+    ifz jmp [r2+4]
+    ; otherwise, move to the next entry
+    add r2, 8
+    ; if the entry is zero, then we have reached the end of the table
+    cmp [r2], 0
+    ifnz jmp monitor_shell_parse_command_loop
 
     ; invalid command
     mov r0, monitor_shell_invalid_command_string
@@ -56,6 +23,26 @@ monitor_shell_parse_command:
 
     ret
 
+monitor_shell_command_table:
+    data.32 monitor_shell_exit_command_string
+    data.32 monitor_shell_exit_command
+    data.32 monitor_shell_help_command_string
+    data.32 monitor_shell_help_command
+    data.32 monitor_shell_jump_command_string
+    data.32 monitor_shell_jump_command
+    data.32 monitor_shell_list_command_string
+    data.32 monitor_shell_list_command
+    data.32 monitor_shell_load_command_string
+    data.32 monitor_shell_load_command
+    data.32 monitor_shell_reg_command_string
+    data.32 monitor_shell_reg_command
+    data.32 monitor_shell_set8_command_string
+    data.32 monitor_shell_set8_command
+    data.32 monitor_shell_set16_command_string
+    data.32 monitor_shell_set16_command
+    data.32 monitor_shell_set32_command_string
+    data.32 monitor_shell_set32_command
+    data.32 0 data.32 0
 monitor_shell_invalid_command_string: data.str "invalid command" data.8 10 data.8 0
 
     ; all commands
