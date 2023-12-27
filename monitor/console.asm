@@ -76,6 +76,23 @@ print_hex_byte_to_monitor_loop:
     pop r10
     ret
 
+; print a hex digit to the monitor
+; inputs:
+; r0: number of digit to print
+; outputs:
+; none
+print_hex_digit_to_monitor:
+    push r0
+    push r1
+    cmp r0, 0x0a
+    iflt mov r1, '0'
+    ifgteq mov r1, '7' ; '7' = 'A' - 10
+    add r0, r1
+    call print_character_to_monitor
+    pop r1
+    pop r0
+    ret
+
 ; print a single character to the monitor
 ; inputs:
 ; r0: character

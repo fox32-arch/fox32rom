@@ -1,5 +1,7 @@
 ; command parser
 
+; TODO: all commands need to check for invalid arguments
+
 monitor_shell_parse_command:
     mov r0, MONITOR_SHELL_TEXT_BUF_BOTTOM
 
@@ -24,6 +26,10 @@ monitor_shell_parse_command_loop:
     ret
 
 monitor_shell_command_table:
+    data.32 monitor_shell_brk_command_string
+    data.32 monitor_shell_brk_command
+    data.32 monitor_shell_brkrm_command_string
+    data.32 monitor_shell_brkrm_command
     data.32 monitor_shell_exit_command_string
     data.32 monitor_shell_exit_command
     data.32 monitor_shell_help_command_string
@@ -46,6 +52,8 @@ monitor_shell_command_table:
 monitor_shell_invalid_command_string: data.str "invalid command" data.8 10 data.8 0
 
     ; all commands
+    #include "monitor/commands/brk.asm"
+    #include "monitor/commands/brkrm.asm"
     #include "monitor/commands/exit.asm"
     #include "monitor/commands/help.asm"
     #include "monitor/commands/jump.asm"

@@ -11,6 +11,9 @@ monitor_shell_help_command:
 monitor_shell_help_text:
     data.str "command | description" data.8 10
     data.str "------- | -----------" data.8 10
+    data.str "brk     | add breakpoint $1 (optional) at address $0;" data.8 10
+    data.str "        | list breakpoints if no arguments provided" data.8 10
+    data.str "brkrm   | remove breakpoint $0" data.8 10
     data.str "exit    | exit the monitor" data.8 10
     data.str "help    | display this help text" data.8 10
     data.str "jump    | jump to address $0" data.8 10
