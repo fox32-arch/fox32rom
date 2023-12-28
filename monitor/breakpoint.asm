@@ -207,6 +207,45 @@ monitor_breakpoint_find_addr_found:
 
 ; called when the monitor starts; checks if a breakpoint needs to be removed
 monitor_breakpoint_update:
+    ; loop over each breakpoint in the table and check if the corresponding
+    ; brk instruction is still present
+    mov r1, MONITOR_BREAKPOINT_TABLE
+    mov r2, 0
+monitor_breakpoint_update_check_opcode_loop:
+    ; check if this breakpoint is set
+    cmp [r1], 0
+    ifz jmp monitor_breakpoint_update_check_opcode_loop_skip
+    ; if the breakpoint is set, check whether the opcode still corresponds to
+    ; a brk instruction, and if so, do nothing
+    mov r3, [r1]
+    cmp.16 [r3], MONITOR_BREAKPOINT_BRK_INSTR
+    ifz jmp monitor_breakpoint_update_check_opcode_loop_skip
+    ; if the brk instruction has been removed, remove the breakpoint from
+    ; the table manually, as calling monitor_breakpoint_remove would attempt
+    ; to restore the instruction from the now-invalid value in
+    ; MONITOR_SAVED_INSTR_TABLE
+    mov [r1], 0
+    ; print a message indicating that the breakpoint has been removed because
+    ; the instruction was modified
+    mov r0, monitor_breakpoint_instr_modified_str
+    call print_string_to_monitor
+    mov r0, r2
+    call print_hex_digit_to_monitor
+    mov r0, monitor_breakpoint_at_str
+    call print_string_to_monitor
+    mov r0, r3
+    call print_hex_word_to_monitor
+    mov r0, 10
+    call print_character_to_monitor
+    call redraw_monitor_console
+monitor_breakpoint_update_check_opcode_loop_skip:
+    ; adjust registers for next iteration
+    inc r1, 4
+    inc r2
+    ; loop again if breakpoint number is in range
+    cmp r2, 0x10
+    iflt jmp monitor_breakpoint_update_check_opcode_loop
+
     ; get the ip when the breakpoint occurred
     mov r2, [MONITOR_OLD_RSP]
     ;   4 byte monitor return address
@@ -244,8 +283,12 @@ monitor_breakpoint_init_loop:
     pop r1
     pop r0
     ret
-
     
+
+monitor_breakpoint_instr_modified_str:
+    data.strz "brk instruction modified; removing breakpoint "
+monitor_breakpoint_at_str:
+    data.strz " at "
 
 ; breakpoint table; contains the addresses of breakpoints
 ; zero indicates an unused entry
