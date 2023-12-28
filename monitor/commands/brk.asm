@@ -161,12 +161,14 @@ monitor_shell_brk_command_print_fail_msg:
     push r0
     mov r0, monitor_shell_brk_command_fail_str
     call print_string_to_monitor
+    mov r0, ' '
+    call print_character_to_monitor
     pop r0
     call monitor_shell_brk_command_print_num_at_addr
     ret
 
 ; print a message stating that the breakpoint couldn't be added
-; 'Failed to add breakpoint  at XXXXXXXX'
+; 'Failed to add breakpoint at XXXXXXXX'
 ; inputs:
 ; r0: address of breakpoint
 ; r1: breakpoint number
@@ -228,7 +230,7 @@ monitor_shell_brk_command_print_num_at_addr:
 monitor_shell_brk_command_add_str:
     data.strz "Added breakpoint "
 monitor_shell_brk_command_fail_str:
-    data.strz "Failed to add breakpoint "
+    data.strz "Failed to add breakpoint"
 monitor_shell_brk_command_invalid_str:
     data.strz "Invalid breakpoint number "
 monitor_shell_brk_command_at_str:
