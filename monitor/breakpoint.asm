@@ -14,9 +14,11 @@
 monitor_breakpoint_add:
     ; check if the address is a valid location for a breakpoint
     ; if the address is not in RAM, a breakpoint cannot be added
-    cmp r0, 0x04000000
-    ifgteq mov r0, 0xFFFFFFFF
-    ifgteq ret
+    ; (maximum possible address is 0x03fffffe, because the brk opcode is two
+    ; bytes)
+    cmp r0, 0x03fffffe
+    ifgt mov r0, 0xFFFFFFFF
+    ifgt ret
     ; check if breakpoint is already defined at this address, and fail if so
     push r1
     mov r1, r0
