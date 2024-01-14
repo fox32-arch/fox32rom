@@ -285,8 +285,7 @@ disk_icon_q:
     data.32 ryfs_read
     data.32 ryfs_read_whole_file
     data.32 ryfs_get_size
-    ;data.32 ryfs_get_file_list
-    data.32 0
+    data.32 ryfs_get_file_list
     data.32 ryfs_tell
     ;data.32 ryfs_write
     data.32 0

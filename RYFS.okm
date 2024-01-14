@@ -19,6 +19,7 @@ MODULE RYFS;
     END;
 
     EXTERN TEMP_SECTOR_BUF: POINTER TO FileSectorHeader;
+
     EXTERN PROCEDURE check_disk: INT;
     EXTERN PROCEDURE read_sector: INT;
     EXTERN PROCEDURE write_sector: INT;
@@ -150,6 +151,36 @@ MODULE RYFS;
                 RETURN(size);
             END;
         END;
+    END;
+
+    (* `buffer` is a pointer to a 341 byte block of memory *)
+    (* format: "file1   extfile2   ext", etc. *)
+    (* each file name is exactly 11 characters long, the buffer is not null-terminated *)
+    (* returns the number of files found *)
+    PROCEDURE ryfs_get_file_list(buffer: POINTER TO CHAR; diskId: INT;): INT;
+    VAR i: INT;
+        bufferOffset: INT;
+        sectorOffset: INT;
+        fileCounter: INT;
+    BEGIN
+        (* load directory sector into temp buffer *)
+        read_sector(1, diskId, TEMP_SECTOR_BUF);
+
+        i := 31;
+        bufferOffset := 0;
+        sectorOffset := 20; (* point to first file name *)
+        fileCounter := 0;
+        WHILE i DO
+            IF GETCHAR(TEMP_SECTOR_BUF + sectorOffset) # 0 THEN
+                copy_memory_bytes(TEMP_SECTOR_BUF + sectorOffset, buffer + bufferOffset, 11);
+                fileCounter := fileCounter + 1;
+                bufferOffset := bufferOffset + 11;
+            END;
+            sectorOffset := sectorOffset + 16;
+            i := i - 1;
+        END;
+
+        RETURN(fileCounter);
     END;
 
     PROCEDURE ryfs_ceil(number, ceilNumber: INT;): INT;
