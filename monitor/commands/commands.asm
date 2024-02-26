@@ -3,6 +3,10 @@
 ; TODO: all commands need to check for invalid arguments
 
 monitor_shell_parse_command:
+    ; push the address of monitor_breakpoint_update to the stack so that it
+    ; will be called as soon as the command returns
+    push monitor_breakpoint_update
+
     mov r0, MONITOR_SHELL_TEXT_BUF_BOTTOM
 
     ; loop over the table of commands
