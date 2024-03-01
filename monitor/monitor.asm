@@ -54,6 +54,7 @@ invoke_monitor:
     call redraw_monitor_console
 
     mov [MONITOR_OLD_RSP], rsp
+    call monitor_breakpoint_update
     jmp monitor_shell_start
 exit_monitor:
     ; restore the old RSP and vsync handler, reset the cursor, and exit
@@ -83,6 +84,7 @@ invoke_monitor_aleady_in_monitor:
 
 info_str: data.str "fox32rom monitor" data.8 0x00
 
+    #include "monitor/breakpoint.asm"
     #include "monitor/commands/commands.asm"
     #include "monitor/console.asm"
     #include "monitor/keyboard.asm"

@@ -62,6 +62,8 @@ entry_seed_done:
     ; initialize the monitor X and Y coordinates
     mov.8 [MONITOR_CONSOLE_X], 0
     mov.8 [MONITOR_CONSOLE_Y], 28
+    ; initialize the breakpoint table
+    call monitor_breakpoint_init
 
     ; enable interrupts
     ise
