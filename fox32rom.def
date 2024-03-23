@@ -81,6 +81,7 @@ ryfs_get_file_list:                       jmp [0xF004501C]
 ryfs_tell:                                jmp [0xF0045020]
 ryfs_write:                               jmp [0xF0045024]
 is_romdisk_available:                     jmp [0xF0045028]
+ryfs_create:                              jmp [0xF004502C]
 
 ; memory copy/compare jump table
 copy_memory_bytes:                        jmp [0xF0046000]

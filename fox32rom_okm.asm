@@ -208,6 +208,15 @@ RYFSGetFileList:
 RYFSWrite:
     jmp ryfs_write
 
+; PROCEDURE RYFSCreate(
+;    name: POINTER TO CHAR;
+;    id: INT;
+;    struct: POINTER TO ROMFile;
+;    sizeInBytes: INT;
+; ): INT;
+RYFSCreate:
+    jmp ryfs_create
+
 ; PROCEDURE StringToInt(
 ;    str: POINTER TO CHAR;
 ;    radix: INT;
