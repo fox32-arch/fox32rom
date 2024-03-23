@@ -64,6 +64,73 @@ MODULE RYFS;
         RETURN(0);
     END;
 
+    PROCEDURE ryfs_create(fileName: POINTER TO CHAR; diskId: INT; struct: POINTER TO ROMFile; sizeInBytes: INT;): INT;
+    VAR firstFreeEntry: INT;
+        firstFreeSector: INT;
+        sizeInSectors: INT;
+        sector: INT;
+        nextFreeSector: INT;
+        i: INT;
+    BEGIN
+        firstFreeEntry := ryfs_find_free_entry(diskId);
+        firstFreeSector := ryfs_find_free_sector(diskId);
+        IF (firstFreeEntry = 0) OR (firstFreeSector = 0) THEN
+            RETURN(0);
+        END;
+
+        (* read the directory sector from disk *)
+        read_sector(1, diskId, TEMP_SECTOR_BUF);
+
+        (* write first file sector number *)
+        PUTSHORT(TEMP_SECTOR_BUF + firstFreeEntry, firstFreeSector);
+
+        (* write file size in sectors *)
+        sizeInSectors := ryfs_ceil(sizeInBytes, 506) /| 506;
+        PUTSHORT(TEMP_SECTOR_BUF + firstFreeEntry + 2, sizeInSectors);
+
+        (* write filename *)
+        copy_memory_bytes(fileName, TEMP_SECTOR_BUF + firstFreeEntry + 4, 11);
+        PUTCHAR(TEMP_SECTOR_BUF + firstFreeEntry + 4 + 11, 0);
+
+        (* write the directory sector back out to disk *)
+        write_sector(1, diskId, TEMP_SECTOR_BUF);
+
+        sector := 0;
+        WHILE sector <| sizeInSectors DO
+            nextFreeSector := ryfs_find_free_sector(diskId);
+            ryfs_mark_used(nextFreeSector);
+            read_sector(nextFreeSector, diskId, TEMP_SECTOR_BUF);
+
+            (* file magic byte and alignment *)
+            PUTCHAR(TEMP_SECTOR_BUF, 0FFH);
+            PUTCHAR(TEMP_SECTOR_BUF + 1, 0);
+            IF sector # sizeInSectors - 1 THEN
+                (* write a link to the next free sector coming up *)
+                PUTSHORT(TEMP_SECTOR_BUF + 2, ryfs_find_free_sector(diskId));
+                (* this is not the last sector in the file, write a zero to the "sector size" field *)
+                PUTSHORT(TEMP_SECTOR_BUF + 4, 0);
+            ELSE
+                (* this is the last sector in the file, write a zero as the link and set the size of the last sector *)
+                PUTSHORT(TEMP_SECTOR_BUF + 2, 0);
+                PUTSHORT(TEMP_SECTOR_BUF + 4, sizeInBytes MOD 506);
+            END;
+
+            (* clear the file data *)
+            i := 6;
+            WHILE i <| 512 DO
+                PUTCHAR(TEMP_SECTOR_BUF + i, 0);
+                i := i + 1;
+            END;
+
+            (* write the sector out to disk *)
+            write_sector(nextFreeSector, diskId, TEMP_SECTOR_BUF);
+
+            sector := sector + 1;
+        END;
+
+        RETURN(ryfs_open(fileName, diskId, struct));
+    END;
+
     PROCEDURE ryfs_seek(offset: INT; struct: POINTER TO ROMFile;);
     BEGIN
         struct^.seekOffset := offset;
@@ -118,6 +185,64 @@ MODULE RYFS;
 
             (* point to the next destination block of memory *)
             destination := destination + bytesToLoad;
+
+            (* subtract from the number of bytes left to load *)
+            size := size - bytesToLoad;
+
+            sectorsToLoad := sectorsToLoad - 1;
+        END;
+
+        (* add to the file's seek offset *)
+        struct^.seekOffset := struct^.seekOffset + originalSize;
+    END;
+
+    PROCEDURE ryfs_write(size: INT; struct: POINTER TO ROMFile; source: POINTER TO CHAR;);
+    VAR originalSize: INT;
+        sectorsToLoad: INT;
+        sectorsToTraverse: INT;
+        startSector: SHORT;
+        thisSector: SHORT;
+        bytesToLoad: INT;
+    BEGIN
+        originalSize := size;
+        sectorsToLoad := ryfs_ceil(size, 506) / 506;
+
+        (* get the number of sectors to traverse before we reach our seek offset *)
+        sectorsToTraverse := ryfs_ceil(struct^.seekOffset, 506) / 506;
+
+        (* traverse through linked sectors starting at struct^.firstSector *)
+        thisSector := struct^.firstSector;
+        IF sectorsToTraverse = 0 THEN
+            startSector := thisSector;
+        ELSE WHILE sectorsToTraverse DO
+            read_sector(thisSector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
+            startSector := thisSector;
+            thisSector := PTROF(TEMP_SECTOR_BUF)^.nextSector;
+            sectorsToTraverse := sectorsToTraverse - 1;
+        END; END;
+
+        thisSector := startSector;
+        WHILE sectorsToLoad DO
+            (* load the working sector into the temporary buffer *)
+            read_sector(thisSector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
+
+            IF size >|= 506 THEN
+                bytesToLoad := 506;
+            ELSE
+                bytesToLoad := size;
+            END;
+
+            (* copy from the temporary buffer to the caller's final buffer *)
+            copy_memory_bytes(source, PTROF(TEMP_SECTOR_BUF) + 6 + (struct^.seekOffset MOD 506), bytesToLoad);
+
+            (* write the sector back out to disk *)
+            write_sector(thisSector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
+
+            (* point to the next linked sector *)
+            thisSector := GETSHORT(PTROF(TEMP_SECTOR_BUF) + 2);
+
+            (* point to the next source block of memory *)
+            source := source + bytesToLoad;
 
             (* subtract from the number of bytes left to load *)
             size := size - bytesToLoad;
@@ -194,5 +319,104 @@ MODULE RYFS;
             RETURN(number);
         END;
         RETURN(number + ceilNumber - remainder);
+    END;
+
+    (* returns zero on failure *)
+    (* clobbers sector buffer!! *)
+    PROCEDURE ryfs_find_free_sector(diskId: INT;): INT;
+    VAR bitmapSector: INT;
+        bitmapByte: INT;
+        totalBitmapSectors: CHAR;
+        firstClearBit: CHAR;
+        firstFreeSector: INT;
+    BEGIN
+        read_sector(1, diskId, TEMP_SECTOR_BUF);
+        totalBitmapSectors := GETCHAR(TEMP_SECTOR_BUF);
+        bitmapSector := 0;
+        WHILE bitmapSector <| totalBitmapSectors DO
+            bitmapByte := 0;
+            read_sector(bitmapSector + 2, diskId, TEMP_SECTOR_BUF);
+            WHILE bitmapByte <| 512 DO
+                firstClearBit := ryfs_find_first_clear_in_byte(GETCHAR(TEMP_SECTOR_BUF + bitmapByte));
+                IF firstClearBit # 0FFH THEN
+                    firstFreeSector := (bitmapSector * 4096) + (bitmapByte * 8) + firstClearBit;
+                    RETURN(firstFreeSector);
+                END;
+                bitmapByte := bitmapByte + 1;
+            END;
+            bitmapSector := bitmapSector + 1;
+        END;
+        RETURN(0);
+    END;
+
+    (* returns zero on failure *)
+    (* clobbers sector buffer!! *)
+    PROCEDURE ryfs_find_free_entry(diskId: INT;): INT;
+    VAR i: INT;
+        offset: INT;
+    BEGIN
+        read_sector(1, diskId, TEMP_SECTOR_BUF);
+        i := 0;
+        offset := 16; (* point to first entry *)
+        WHILE i <| 30 DO
+            IF GETSHORT(TEMP_SECTOR_BUF + offset) = 0 THEN
+                RETURN(offset);
+            END;
+            offset := offset + 16;
+            i := i + 1;
+        END;
+        RETURN(0);
+    END;
+
+    (* returns 255 (0xFF) on none *)
+    PROCEDURE ryfs_find_first_clear_in_byte(byte: CHAR;): CHAR;
+    VAR firstClear: CHAR;
+    BEGIN
+        IF byte = 0FFH THEN
+            RETURN(0FFH);
+        END;
+
+        firstClear := 0;
+        WHILE (byte MOD 2) = 1 DO
+            firstClear := firstClear + 1;
+            byte := RSH(byte, 1);
+        END;
+        RETURN(firstClear);
+    END;
+
+    (* clobbers sector buffer!! *)
+    PROCEDURE ryfs_mark_used(sector, diskId: INT;);
+    VAR bitmapSector: INT;
+        bitmapByte: INT;
+        bitmapBit: CHAR;
+        bitmap: CHAR;
+    BEGIN
+        bitmapSector := (ryfs_ceil(sector + 1, 4096) /| 4096) + 1;
+        bitmapByte := ((ryfs_ceil(sector + 1, 8) /| 8) - 1) MOD 512;
+        bitmapBit := sector MOD 8;
+
+        read_sector(bitmapSector, diskId, TEMP_SECTOR_BUF);
+        bitmap := GETCHAR(TEMP_SECTOR_BUF + bitmapByte);
+        bitmap := bitmap OR LSH(1, bitmapBit);
+        PUTCHAR(TEMP_SECTOR_BUF + bitmapByte, bitmap);
+        write_sector(bitmapSector, diskId, TEMP_SECTOR_BUF);
+    END;
+
+    (* clobbers sector buffer!! *)
+    PROCEDURE ryfs_mark_free(sector, diskId: INT;);
+    VAR bitmapSector: INT;
+        bitmapByte: INT;
+        bitmapBit: CHAR;
+        bitmap: CHAR;
+    BEGIN
+        bitmapSector := (ryfs_ceil(sector + 1, 4096) /| 4096) + 1;
+        bitmapByte := ((ryfs_ceil(sector + 1, 8) /| 8) - 1) MOD 512;
+        bitmapBit := sector MOD 8;
+
+        read_sector(bitmapSector, diskId, TEMP_SECTOR_BUF);
+        bitmap := GETCHAR(TEMP_SECTOR_BUF + bitmapByte);
+        bitmap := bitmap & ~(LSH(1, bitmapBit));
+        PUTCHAR(TEMP_SECTOR_BUF + bitmapByte, bitmap);
+        write_sector(bitmapSector, diskId, TEMP_SECTOR_BUF);
     END;
 END.
