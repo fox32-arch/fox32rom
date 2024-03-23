@@ -38,7 +38,7 @@ print_hex_word_to_monitor_loop:
     add r12, r11
     movz.8 r0, [r12]
     call print_character_to_monitor
-    add r1, r6
+    ;add r1, r6
     loop print_hex_word_to_monitor_loop
 
     pop r31
@@ -67,13 +67,30 @@ print_hex_byte_to_monitor_loop:
     add r12, r11
     movz.8 r0, [r12]
     call print_character_to_monitor
-    add r1, r6
+    ;add r1, r6
     loop print_hex_byte_to_monitor_loop
 
     pop r31
     pop r12
     pop r11
     pop r10
+    ret
+
+; print a hex digit to the monitor
+; inputs:
+; r0: number of digit to print
+; outputs:
+; none
+print_hex_digit_to_monitor:
+    push r0
+    push r1
+    cmp r0, 0x0a
+    iflt mov r1, '0'
+    ifgteq mov r1, '7' ; '7' = 'A' - 10
+    add r0, r1
+    call print_character_to_monitor
+    pop r1
+    pop r0
     ret
 
 ; print a single character to the monitor

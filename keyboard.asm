@@ -2,6 +2,10 @@
 
 ; add events to the event queue if a key was pressed or released
 ; this should only be called by system_vsync_handler
+; inputs:
+; none
+; outputs:
+; r0: non-zero if F12 was pressed, zero otherwise
 keyboard_update:
     ; pop a key from the keyboard queue
     in r0, 0x80000500
@@ -10,7 +14,7 @@ keyboard_update:
 
     ; invoke the debug monitor if F12 was pressed
     cmp r0, 0x58
-    ifz jmp invoke_monitor
+    ifz jmp keyboard_update_end
 
     ; check if this is a make or break scancode
     bts r0, 7
@@ -25,6 +29,7 @@ keyboard_update:
     mov r6, 0
     mov r7, 0
     call new_event
+    mov r0, 0
     jmp keyboard_update_end
 keyboard_update_break_scancode:
     and r0, 0x7F
@@ -37,5 +42,6 @@ keyboard_update_break_scancode:
     mov r6, 0
     mov r7, 0
     call new_event
+    mov r0, 0
 keyboard_update_end:
     ret

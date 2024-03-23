@@ -1,5 +1,11 @@
 ; fox32rom routine definitions for Okameron
 
+; PROCEDURE Panic(
+;    str: POINTER TO CHAR;
+; );
+Panic:
+    jmp panic
+
 ; PROCEDURE NewEvent(
 ;    eventType,
 ;    eventArg0,
@@ -40,6 +46,22 @@ GetNextEvent:
     pop r8
     ret
 
+; PROCEDURE ScancodeToAscii(scancode: CHAR;): CHAR;
+ScancodeToAscii:
+    jmp scancode_to_ascii
+
+; PROCEDURE ShiftPressed();
+ShiftPressed:
+    jmp shift_pressed
+
+; PROCEDURE ShiftReleased();
+ShiftReleased:
+    jmp shift_released
+
+; PROCEDURE CapsPressed();
+CapsPressed:
+    jmp caps_pressed
+
 ; PROCEDURE FillBackground(color: INT;);
 FillBackground:
     jmp fill_background
@@ -50,6 +72,13 @@ FillBackground:
 ; );
 DrawStrToBackground:
     jmp draw_str_to_background
+
+; PROCEDURE DrawFontTileToBackground(
+;    c: CHAR;
+;    x, y, fgColor, bgColor: INT;
+; );
+DrawFontTileToBackground:
+    jmp draw_font_tile_to_background
 
 ; PROCEDURE DrawFormatStrToBackground(
 ;    str: POINTER TO CHAR;
@@ -187,6 +216,13 @@ RYFSWrite:
 ; ): INT;
 RYFSCreate:
     jmp ryfs_create
+
+; PROCEDURE StringToInt(
+;    str: POINTER TO CHAR;
+;    radix: INT;
+; ): INT;
+StringToInt:
+    jmp string_to_int
 
 ; PROCEDURE CopyMemoryChar(
 ;    source, destination: POINTER TO CHAR;

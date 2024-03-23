@@ -15,6 +15,9 @@ system_vsync_handler:
     call keyboard_update
     cmp.8 [UPDATE_ICON], 0
     ifnz call icon_update
+    ; check if monitor should be started
+    cmp r0, 0
+    ifnz jmp system_vsync_handler_breakpoint
 
     pop r7
     pop r6
@@ -25,3 +28,16 @@ system_vsync_handler:
     pop r1
     pop r0
     reti
+
+system_vsync_handler_breakpoint:
+    pop r7
+    pop r6
+    pop r5
+    pop r4
+    pop r3
+    pop r2
+    pop r1
+    pop r0
+    ; breakpoint handler expects that there is an extra 4 bytes on the stack
+    sub rsp, 4
+    jmp system_breakpoint_handler
