@@ -12,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          submodules: recursive
 
       - name: Download latest fox32asm artifact
         uses: dawidd6/action-download-artifact@v2
@@ -19,6 +21,11 @@ jobs:
           repo: fox32-arch/fox32asm
           workflow: fox32asm-unstable-linux.yml
           workflow_conclusion: success
+
+      - name: Install lua5.4
+        run: |
+          sudo apt update
+          sudo apt install -y lua5.4
 
       - name: Build
         run: |
