@@ -382,6 +382,9 @@ MODULE RYFS;
                 i := i + 1;
             END;
 
+            (* write out the changes to disk *)
+            write_sector(temp, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
+
             (* return the new sector *)
             RETURN(temp);
         ELSE
