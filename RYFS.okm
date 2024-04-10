@@ -65,6 +65,11 @@ MODULE RYFS;
         nextFreeSector: INT;
         i: INT;
     BEGIN
+        i := ryfs_open(fileName, diskId, struct);
+        IF i # 0 THEN
+            RETURN(i);
+        END;
+
         firstFreeEntry := ryfs_find_free_entry(diskId);
         firstFreeSector := ryfs_find_free_sector(diskId);
         IF (firstFreeEntry = 0) OR (firstFreeSector = 0) THEN
