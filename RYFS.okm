@@ -67,7 +67,7 @@ MODULE RYFS;
     BEGIN
         i := ryfs_open(fileName, diskId, struct);
         IF i # 0 THEN
-            RETURN(i);
+            ryfs_delete(struct);
         END;
 
         firstFreeEntry := ryfs_find_free_entry(diskId);
@@ -127,6 +127,52 @@ MODULE RYFS;
         END;
 
         RETURN(ryfs_open(fileName, diskId, struct));
+    END;
+
+    PROCEDURE ryfs_delete(struct: POINTER TO ROMFile;);
+    VAR i: INT;
+        j: INT;
+        sector: SHORT;
+        nextSector: SHORT;
+        sizeInSectors: SHORT;
+    BEGIN
+        (* read the directory sector from disk *)
+        read_sector(1, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
+
+        (* reverse-find the directory sector entry from the passed struct *)
+        i := 1;
+        WHILE i <| 32 DO
+            IF GETSHORT(PTROF(TEMP_SECTOR_BUF) + (i * 16)) = struct^.firstSector THEN
+                (* we found it!! *)
+                sector := GETSHORT(PTROF(TEMP_SECTOR_BUF) + (i * 16));
+                sizeInSectors := GETSHORT(PTROF(TEMP_SECTOR_BUF) + (i * 16) + 2);
+                BREAK();
+            END;
+            i := i + 1;
+        END;
+
+        (* clear directory entry *)
+        j := 0;
+        WHILE j <| 16 DO
+            PUTCHAR(PTROF(TEMP_SECTOR_BUF) + (i * 16) + j, 0);
+            j := j + 1;
+        END;
+        write_sector(1, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
+
+        i := 0;
+        WHILE i <| sizeInSectors DO
+            read_sector(sector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
+            nextSector := GETSHORT(PTROF(TEMP_SECTOR_BUF) + 2);
+            ryfs_mark_free(sector);
+            j := 0;
+            WHILE j <| 512 DO
+                PUTCHAR(PTROF(TEMP_SECTOR_BUF) + j, 0);
+                j := j + 1;
+            END;
+            write_sector(sector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
+            sector := nextSector;
+            i := i + 1;
+        END;
     END;
 
     PROCEDURE ryfs_seek(offset: INT; struct: POINTER TO ROMFile;);
