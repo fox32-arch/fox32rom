@@ -150,6 +150,9 @@ MODULE RYFS;
             END;
             i := i + 1;
         END;
+        IF i = 32 THEN
+            RETURN();
+        END;
 
         (* clear directory entry *)
         j := 0;
@@ -555,7 +558,7 @@ MODULE RYFS;
 
         read_sector(bitmapSector, diskId, PTROF(TEMP_SECTOR_BUF));
         bitmap := GETCHAR(PTROF(TEMP_SECTOR_BUF) + bitmapByte);
-        bitmap := bitmap & ~(LSH(1, bitmapBit));
+        bitmap := bitmap & (LSH(1, bitmapBit))~;
         PUTCHAR(PTROF(TEMP_SECTOR_BUF) + bitmapByte, bitmap);
         write_sector(bitmapSector, diskId, PTROF(TEMP_SECTOR_BUF));
     END;
