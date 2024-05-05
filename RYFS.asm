@@ -3,11 +3,12 @@
 ; ): INT;
 check_disk:
     cmp r0, 4
-    ifnz jmp check_disk_1
+    ifnz jmp check_disk_0
     ifz call is_romdisk_available
     ifnz jmp check_disk_fail
     cmp r0, 4
     ifz jmp check_disk_continue
+check_disk_0:
     cmp r0, 5
     ifnz jmp check_disk_1
     ifz call is_ramdisk_formatted
