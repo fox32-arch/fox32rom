@@ -130,6 +130,11 @@ draw_bottom_bar_loop:
     call change_icon
     call setup_icon
 
+    call is_ramdisk_formatted
+    ifnz mov r0, 5
+    ifnz mov r1, 0x00800000
+    ifnz call ryfs_format
+
 event_loop:
     call get_next_event
 
@@ -293,6 +298,8 @@ disk_icon_q:
     data.32 is_romdisk_available
     data.32 ryfs_create
     data.32 ryfs_delete
+    data.32 ryfs_format
+    data.32 is_ramdisk_formatted
 
     ; memory copy/compare jump table
     org.pad 0xF0046000

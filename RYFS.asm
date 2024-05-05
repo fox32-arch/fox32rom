@@ -8,6 +8,12 @@ check_disk:
     ifnz jmp check_disk_fail
     cmp r0, 4
     ifz jmp check_disk_continue
+    cmp r0, 5
+    ifnz jmp check_disk_1
+    ifz call is_ramdisk_formatted
+    ifnz jmp check_disk_fail
+    cmp r0, 5
+    ifz jmp check_disk_continue
 check_disk_1:
     or r0, 0x80001000
     in r0, r0

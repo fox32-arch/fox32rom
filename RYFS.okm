@@ -17,6 +17,7 @@ MODULE RYFS;
     EXTERN PROCEDURE read_sector: INT;
     EXTERN PROCEDURE write_sector: INT;
     EXTERN PROCEDURE copy_memory_bytes: INT;
+    EXTERN PROCEDURE copy_string: INT;
     EXTERN PROCEDURE compare_memory_bytes_wrapper: INT;
     EXTERN PROCEDURE brk: INT;
 
@@ -174,6 +175,61 @@ MODULE RYFS;
             END;
             write_sector(sector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
             sector := nextSector;
+            i := i + 1;
+        END;
+    END;
+
+    PROCEDURE ryfs_format(diskId: INT; diskSizeInSectors: INT;);
+    VAR i: INT;
+        bitmapSectors: CHAR;
+    BEGIN
+        (* clear the sector data *)
+        i := 0;
+        WHILE i <| 512 DO
+            PUTCHAR(PTROF(TEMP_SECTOR_BUF) + i, 0);
+            i := i + 1;
+        END;
+
+        (* write the number of bitmap sectors *)
+        bitmapSectors := ryfs_ceil(diskSizeInSectors, 4096) /| 4096;
+        PUTCHAR(PTROF(TEMP_SECTOR_BUF), bitmapSectors);
+
+        (* write version number and magic bytes *)
+        PUTCHAR(PTROF(TEMP_SECTOR_BUF) + 1, 1);
+        PUTCHAR(PTROF(TEMP_SECTOR_BUF) + 2, 82);
+        PUTCHAR(PTROF(TEMP_SECTOR_BUF) + 3, 89);
+
+        (* write disk size *)
+        PUTSHORT(PTROF(TEMP_SECTOR_BUF) + 4, diskSizeInSectors);
+
+        (* write directory label *)
+        copy_string("ramdisk", PTROF(TEMP_SECTOR_BUF) + 6);
+
+        (* write the directory sector out to disk *)
+        write_sector(1, diskId, PTROF(TEMP_SECTOR_BUF));
+
+        (* clear the sector data *)
+        i := 0;
+        WHILE i <| 512 DO
+            PUTCHAR(PTROF(TEMP_SECTOR_BUF) + i, 0);
+            i := i + 1;
+        END;
+
+        (* zero the bitmap sectors *)
+        i := 0;
+        WHILE i <| bitmapSectors DO
+            write_sector(i + 2, diskId, PTROF(TEMP_SECTOR_BUF));
+            i := i + 1;
+        END;
+
+        (* mark the boot sector and directory sector as used *)
+        ryfs_mark_used(0, diskId);
+        ryfs_mark_used(1, diskId);
+
+        (* mark the bitmap sectors as used *)
+        i := 0;
+        WHILE i <| bitmapSectors DO
+            ryfs_mark_used(i + 2, diskId);
             i := i + 1;
         END;
     END;

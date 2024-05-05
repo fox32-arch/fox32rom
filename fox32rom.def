@@ -83,6 +83,8 @@ ryfs_write:                               jmp [0xF0045024]
 is_romdisk_available:                     jmp [0xF0045028]
 ryfs_create:                              jmp [0xF004502C]
 ryfs_delete:                              jmp [0xF0045030]
+ryfs_format:                              jmp [0xF0045034]
+is_ramdisk_formatted:                     jmp [0xF0045038]
 
 ; memory copy/compare jump table
 copy_memory_bytes:                        jmp [0xF0046000]

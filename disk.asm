@@ -1,6 +1,7 @@
 ; disk routines
 
 const TEMP_SECTOR_BUF: 0x01FFF808
+const RAMDISK_START: 0x03800000
 
 ; read a sector into the specified memory buffer
 ; inputs:
@@ -12,6 +13,8 @@ const TEMP_SECTOR_BUF: 0x01FFF808
 read_sector:
     cmp.8 r1, 4
     ifz jmp read_romdisk_sector
+    cmp.8 r1, 5
+    ifz jmp read_ramdisk_sector
 
     push r3
     push r4
@@ -54,6 +57,34 @@ read_romdisk_sector:
     pop r0
     ret
 
+; read a sector from the ramdisk into the specified memory buffer
+; inputs:
+; r0: sector number
+; r2: sector buffer (512 bytes)
+; outputs:
+; none
+read_ramdisk_sector:
+    push r0
+    push r1
+    push r2
+
+    ; source pointer
+    mul r0, 512
+    add r0, RAMDISK_START
+
+    ; destination pointer
+    mov r1, r2
+
+    ; copy 512 bytes
+    mov r2, 512
+
+    call copy_memory_bytes
+
+    pop r2
+    pop r1
+    pop r0
+    ret
+
 ; check if a RYFS image is included as a romdisk
 ; inputs:
 ; none
@@ -63,6 +94,21 @@ is_romdisk_available:
     push r0
 
     mov r0, romdisk_image
+    add r0, 514
+    cmp.16 [r0], 0x5952
+
+    pop r0
+    ret
+
+; check if a RYFS filesystem is initialized on the ramdisk
+; inputs:
+; none
+; outputs:
+; Z flag: set if available, reset if not
+is_ramdisk_formatted:
+    push r0
+
+    mov r0, RAMDISK_START
     add r0, 514
     cmp.16 [r0], 0x5952
 
@@ -79,6 +125,8 @@ is_romdisk_available:
 write_sector:
     cmp.8 r1, 4
     ifz ret
+    cmp.8 r1, 5
+    ifz jmp write_ramdisk_sector
 
     push r3
     push r4
@@ -91,4 +139,33 @@ write_sector:
 
     pop r4
     pop r3
+    ret
+
+; write a sector to ramdisk from the specified memory buffer
+; inputs:
+; r0: sector number
+; r2: sector buffer (512 bytes)
+; outputs:
+; none
+write_ramdisk_sector:
+    push r0
+    push r1
+    push r2
+
+    ; destination pointer
+    mov r1, r0
+    mul r1, 512
+    add r1, RAMDISK_START
+
+    ; source pointer
+    mov r0, r2
+
+    ; copy 512 bytes
+    mov r2, 512
+
+    call copy_memory_bytes
+
+    pop r2
+    pop r1
+    pop r0
     ret
