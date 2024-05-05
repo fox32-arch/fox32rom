@@ -132,7 +132,7 @@ draw_bottom_bar_loop:
 
     call is_ramdisk_formatted
     ifnz mov r0, 5
-    ifnz mov r1, 0x00800000
+    ifnz mov r1, 16384 ; 8 MiB = 16384 sectors
     ifnz call ryfs_format
 
 event_loop:
