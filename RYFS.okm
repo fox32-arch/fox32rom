@@ -470,6 +470,7 @@ MODULE RYFS;
 
         (* traverse through linked sectors starting at struct^.firstSector *)
         thisSector := struct^.firstSector;
+        oldThisSector := thisSector;
         WHILE sectorsToTraverse DO
             read_sector(thisSector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
             oldThisSector := thisSector;
