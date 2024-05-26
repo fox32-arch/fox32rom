@@ -251,9 +251,10 @@ MODULE RYFS;
         startSector: SHORT;
         thisSector: SHORT;
         bytesToLoad: INT;
+        modulo: INT;
     BEGIN
         originalSize := size;
-        sectorsToLoad := ryfs_ceil(size, 506) / 506;
+        sectorsToLoad := ((struct^.seekOffset MOD 506) + size + 505) /| 506;
 
         (* get the number of sectors to traverse before we reach our seek offset *)
         sectorsToTraverse := ryfs_ceil(struct^.seekOffset, 506) / 506;
@@ -273,18 +274,19 @@ MODULE RYFS;
         END; END;
 
         thisSector := startSector;
+        modulo := struct^.seekOffset MOD 506;
         WHILE sectorsToLoad DO
             (* load the working sector into the temporary buffer *)
             read_sector(thisSector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
 
-            IF size >|= 506 THEN
-                bytesToLoad := 506;
-            ELSE
+            bytesToLoad := 506 - modulo;
+
+            IF bytesToLoad >|= size THEN
                 bytesToLoad := size;
             END;
 
             (* copy from the temporary buffer to the caller's final buffer *)
-            copy_memory_bytes(PTROF(TEMP_SECTOR_BUF) + 6 + (struct^.seekOffset MOD 506), destination, bytesToLoad);
+            copy_memory_bytes(PTROF(TEMP_SECTOR_BUF) + 6 + modulo, destination, bytesToLoad);
 
             (* point to the next linked sector *)
             thisSector := GETSHORT(PTROF(TEMP_SECTOR_BUF) + 2);
@@ -296,6 +298,7 @@ MODULE RYFS;
             size := size - bytesToLoad;
 
             sectorsToLoad := sectorsToLoad - 1;
+            modulo := 0;
         END;
 
         (* add to the file's seek offset *)
@@ -309,8 +312,9 @@ MODULE RYFS;
         thisSector: SHORT;
         bytesToLoad: INT;
         temp: INT;
+        modulo: INT;
     BEGIN
-        sectorsToLoad := ryfs_ceil(size, 506) / 506;
+        sectorsToLoad := ((struct^.seekOffset MOD 506) + size + 505) /| 506;
 
         (* get the number of sectors to traverse before we reach our seek offset *)
         sectorsToTraverse := ryfs_ceil(struct^.seekOffset, 506) / 506;
@@ -330,10 +334,11 @@ MODULE RYFS;
         END; END;
 
         thisSector := startSector;
+        modulo := struct^.seekOffset MOD 506;
         WHILE sectorsToLoad DO
-            IF size >|= 506 THEN
-                bytesToLoad := 506;
-            ELSE
+            bytesToLoad := 506 - modulo;
+
+            IF bytesToLoad >|= size THEN
                 bytesToLoad := size;
             END;
 
@@ -346,7 +351,7 @@ MODULE RYFS;
             read_sector(thisSector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
 
             (* copy from the caller's buffer to the temporary buffer *)
-            copy_memory_bytes(source, PTROF(TEMP_SECTOR_BUF) + 6 + (struct^.seekOffset MOD 506), bytesToLoad);
+            copy_memory_bytes(source, PTROF(TEMP_SECTOR_BUF) + 6 + modulo, bytesToLoad);
 
             (* write the sector back out to disk *)
             write_sector(thisSector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
@@ -364,6 +369,8 @@ MODULE RYFS;
 
             (* add to the file's seek offset *)
             struct^.seekOffset := struct^.seekOffset + bytesToLoad;
+
+            modulo := 0;
         END;
     END;
 
@@ -456,7 +463,10 @@ MODULE RYFS;
         END;
 
         (* get the number of sectors to traverse before we reach the end *)
-        sectorsToTraverse := ryfs_ceil(sizeInBytesBefore, 506) / 506;
+        sectorsToTraverse := sizeInSectorsBefore;
+        IF (struct^.seekOffset >| 0) & (struct^.seekOffset MOD 506 = 0) THEN
+            sectorsToTraverse := sectorsToTraverse + 1;
+        END;
 
         (* traverse through linked sectors starting at struct^.firstSector *)
         thisSector := struct^.firstSector;
@@ -478,8 +488,14 @@ MODULE RYFS;
             (* link the newly-found sector to the end of the file *)
             PUTSHORT(PTROF(TEMP_SECTOR_BUF) + 2, temp);
 
+            (* clear the "last sector size" field *)
+            PUTSHORT(PTROF(TEMP_SECTOR_BUF) + 4, 0);
+
             (* write out the changes to disk *)
             write_sector(oldThisSector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
+
+            (* mark the sector as used *)
+            ryfs_mark_used(temp, struct^.diskId);
 
             (* prepare an empty sector of remaining size for the file *)
             PUTCHAR(PTROF(TEMP_SECTOR_BUF), 0FFH);   (* magic *)
@@ -511,7 +527,7 @@ MODULE RYFS;
     VAR remainder: INT;
     BEGIN
         IF number = 0 THEN
-            RETURN(ceilNumber);
+            RETURN(0);
         END;
         remainder := number MOD ceilNumber;
         IF remainder = 0 THEN
