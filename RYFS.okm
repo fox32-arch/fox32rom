@@ -343,7 +343,7 @@ MODULE RYFS;
             END;
 
             temp := ryfs_get_size(struct);
-            IF struct^.seekOffset + bytesToLoad >|= temp THEN
+            IF struct^.seekOffset + bytesToLoad >| temp THEN
                 thisSector := ryfs_add_size_to_file(struct^.seekOffset - temp + bytesToLoad, struct);
             END;
 
