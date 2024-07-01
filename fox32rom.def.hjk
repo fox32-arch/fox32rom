@@ -1,0 +1,74 @@
+EXTERN FN ScancodeToAscii(
+    IN scancode: UBYTE,
+): UBYTE
+EXTERN FN ShiftPressed()
+EXTERN FN ShiftReleased()
+EXTERN FN CapsPressed()
+
+EXTERN FN FillOverlay(
+    IN color: UWORD,
+    IN overlay: UBYTE,
+)
+EXTERN FN DrawStrToOverlay(
+    IN str: ^UBYTE,
+    IN x: UWORD,
+    IN y: UWORD,
+    IN fgColor: UWORD,
+    IN bgColor: UWORD,
+    IN overlay: UBYTE,
+)
+
+EXTERN FN MenuBarClickEvent(
+    IN rootStruct: ^VOID,
+    IN x: UWORD,
+)
+EXTERN FN CloseMenu(
+    IN rootStruct: ^VOID,
+)
+EXTERN FN MenuUpdateEvent(
+    IN rootStruct: ^VOID,
+    IN selectedRootItem: UWORD,
+    IN hoveringItem: UWORD,
+)
+
+EXTERN FN CopyMemory(
+    IN source: ^VOID,
+    IN destination: ^VOID,
+    IN length: UWORD,
+)
+EXTERN FN CopyString(
+    IN source: ^VOID,
+    IN destination: ^VOID,
+)
+EXTERN FN CompareMemory(
+    IN source: ^VOID,
+    IN destination: ^VOID,
+    IN length: UWORD,
+): UBYTE
+EXTERN FN CompareString(
+    IN source: ^UBYTE,
+    IN destination: ^UBYTE,
+): UBYTE
+EXTERN FN StringLength(
+    IN str: ^UBYTE,
+): UWORD
+
+EXTERN FN IsRomDiskAvailable(): UBYTE
+EXTERN FN IsRamDiskFormatted(): UBYTE
+
+// event types
+#DEFINE EVENT_TYPE_MOUSE_CLICK     0x00000000
+#DEFINE EVENT_TYPE_MOUSE_RELEASE   0x00000001
+#DEFINE EVENT_TYPE_KEY_DOWN        0x00000002
+#DEFINE EVENT_TYPE_KEY_UP          0x00000003
+#DEFINE EVENT_TYPE_MENU_BAR_CLICK  0x00000004
+#DEFINE EVENT_TYPE_MENU_UPDATE     0x00000005
+#DEFINE EVENT_TYPE_MENU_CLICK      0x00000006
+#DEFINE EVENT_TYPE_MENU_ACK        0x00000007
+#DEFINE EVENT_TYPE_EMPTY           0xFFFFFFFF
+
+// keys
+#DEFINE KEY_CTRL    0x1D
+#DEFINE KEY_LSHIFT  0x2A
+#DEFINE KEY_RSHIFT  0x36
+#DEFINE KEY_CAPS    0x3A
