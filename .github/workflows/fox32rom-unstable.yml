@@ -29,8 +29,8 @@ jobs:
 
       - name: Build
         run: |
-          chmod +x fox32asm/fox32asm-linux-x86_64
-          make FOX32ASM=fox32asm/fox32asm-linux-x86_64
+          chmod +x fox32asm-linux-x86_64/fox32asm-linux-x86_64
+          make FOX32ASM=fox32asm-linux-x86_64/fox32asm-linux-x86_64
 
       - name: Upload fox32.rom
         uses: actions/upload-artifact@v3
