@@ -29,7 +29,7 @@ jobs:
 
       - name: Build
         run: |
-          unzip fox32asm-linux-x86_64/fox32asm-*-linux-x86_64.zip
+          unzip fox32asm-linux-x86_64/fox32asm-*-x86_64-linux.zip
           chmod +x fox32asm
           make FOX32ASM=fox32asm
 
