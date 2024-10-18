@@ -27,6 +27,7 @@ set_tilemap:                              jmp [0xF0041018]
 draw_pixel_generic:                       jmp [0xF004101C]
 draw_filled_rectangle_generic:            jmp [0xF0041020]
 get_tilemap:                              jmp [0xF0041024]
+set_font:                                 jmp [0xF0041028]
 
 ; background jump table
 fill_background:                          jmp [0xF0042000]

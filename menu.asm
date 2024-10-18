@@ -73,7 +73,6 @@ draw_menu_items_calculate_x_skip:
 
     ; set properties of overlay 29
     mov.16 [MENU_POSITION_Y], 16
-    mov [MENU_FRAMEBUFFER_PTR], MENU_FRAMEBUFFER
     mov r0, 0x8000001D ; overlay 29: position
     mov.16 r1, [MENU_POSITION_Y]
     sla r1, 16
@@ -85,7 +84,7 @@ draw_menu_items_calculate_x_skip:
     mov.16 r1, [MENU_WIDTH]
     out r0, r1
     mov r0, 0x8000021D ; overlay 29: framebuffer pointer
-    mov r1, [MENU_FRAMEBUFFER_PTR]
+    mov r1, MENU_FRAMEBUFFER
     out r0, r1
     mov r0, 0x8000031D
     out r0, 1

@@ -3,10 +3,10 @@
     org 0xF0000000
 
 const FOX32ROM_VERSION_MAJOR: 0
-const FOX32ROM_VERSION_MINOR: 8
+const FOX32ROM_VERSION_MINOR: 9
 const FOX32ROM_VERSION_PATCH: 0
 
-const FOX32ROM_API_VERSION: 2
+const FOX32ROM_API_VERSION: 3
 
 const SYSTEM_STACK:     0x01FFF800
 const BACKGROUND_COLOR: 0xFF674764
@@ -23,6 +23,10 @@ entry:
     ; disable audio playback
     mov r0, 0x80000600
     out r0, 0
+
+    ; set the default font
+    mov r0, standard_font
+    call set_font
 
     ; seed the random number generator
 entry_seed:
@@ -238,6 +242,7 @@ disk_icon_q:
     data.32 draw_pixel_generic
     data.32 draw_filled_rectangle_generic
     data.32 get_tilemap
+    data.32 set_font
 
     ; background jump table
     org.pad 0xF0042000
@@ -326,6 +331,7 @@ disk_icon_q:
     data.32 random_range
 
     org.pad 0xF004F000
+standard_font:
 standard_font_width:
     data.16 8
 standard_font_height:
@@ -361,7 +367,9 @@ const MENU_WIDTH:           0x02156180 ; 2 bytes
 const MENU_HEIGHT:          0x02156182 ; 2 bytes
 const MENU_POSITION_X:      0x02156184 ; 2 bytes
 const MENU_POSITION_Y:      0x02156186 ; 2 bytes
-const MENU_FRAMEBUFFER_PTR: 0x0215618A ; 4 bytes
+; --- reusing unused memory here
+const FONT_PTR: 0x0215618A ; 4 bytes, contains address of the current font data
+; ---
 const MENU_FRAMEBUFFER:     0x0215618E ; max 640x480x4 = end address at 0x0228218E
 
 bottom_bar_str_0: data.strz "FOX"

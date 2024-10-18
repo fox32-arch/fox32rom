@@ -1,5 +1,14 @@
 ; generic text drawing routines
 
+; set the font to be used by future text drawing calls
+; inputs:
+; r0: pointer to [width[2], height[2], data[...]]
+; outputs:
+; none
+set_font:
+    mov [FONT_PTR], r0
+    ret
+
 ; draw a single font tile to a framebuffer
 ; inputs:
 ; r0: tile number

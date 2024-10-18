@@ -212,9 +212,10 @@ draw_font_tile_to_overlay:
     in r9, r6
     and r9, 0x0000FFFF       ; r9: overlay width
 
-    mov r5, standard_font_data
-    movz.16 r6, [standard_font_width]
-    movz.16 r7, [standard_font_height]
+    mov r5, [FONT_PTR]
+    movz.16 r6, [r5]
+    movz.16 r7, [r5+2]
+    inc r5, 4
     call draw_font_tile_generic
 
     pop r9
@@ -249,9 +250,10 @@ draw_format_str_to_overlay:
     in r9, r6
     and r9, 0x0000FFFF       ; r9: overlay width
 
-    mov r5, standard_font_data
-    movz.16 r6, [standard_font_width]
-    movz.16 r7, [standard_font_height]
+    mov r5, [FONT_PTR]
+    movz.16 r6, [r5]
+    movz.16 r7, [r5+2]
+    inc r5, 4
     call draw_format_str_generic
 
     pop r9
@@ -310,9 +312,10 @@ draw_decimal_to_overlay:
     in r9, r6
     and r9, 0x0000FFFF       ; r9: overlay width
 
-    mov r5, standard_font_data
-    movz.16 r6, [standard_font_width]
-    movz.16 r7, [standard_font_height]
+    mov r5, [FONT_PTR]
+    movz.16 r6, [r5]
+    movz.16 r7, [r5+2]
+    inc r5, 4
     call draw_decimal_generic
 
     pop r9
@@ -346,9 +349,10 @@ draw_hex_to_overlay:
     in r9, r6
     and r9, 0x0000FFFF       ; r9: overlay width
 
-    mov r5, standard_font_data
-    movz.16 r6, [standard_font_width]
-    movz.16 r7, [standard_font_height]
+    mov r5, [FONT_PTR]
+    movz.16 r6, [r5]
+    movz.16 r7, [r5+2]
+    inc r5, 4
     call draw_hex_generic
 
     pop r9

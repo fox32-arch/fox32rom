@@ -1,6 +1,6 @@
 ; background routines
 
-const BACKGROUND_FRAMEBUFFER: 0x02000000 ; pointer to background framebuffer
+const BACKGROUND_FRAMEBUFFER: 0x02000000 ; base address of background framebuffer
 
 ; fill the whole background with a color
 ; inputs:
@@ -97,9 +97,10 @@ draw_font_tile_to_background:
     push r8
     push r9
 
-    mov r5, standard_font_data
-    movz.16 r6, [standard_font_width]
-    movz.16 r7, [standard_font_height]
+    mov r5, [FONT_PTR]
+    movz.16 r6, [r5]
+    movz.16 r7, [r5+2]
+    inc r5, 4
     mov r8, BACKGROUND_FRAMEBUFFER
     mov r9, 640
     call draw_font_tile_generic
@@ -128,9 +129,10 @@ draw_format_str_to_background:
     push r8
     push r9
 
-    mov r5, standard_font_data
-    movz.16 r6, [standard_font_width]
-    movz.16 r7, [standard_font_height]
+    mov r5, [FONT_PTR]
+    movz.16 r6, [r5]
+    movz.16 r7, [r5+2]
+    inc r5, 4
     mov r8, BACKGROUND_FRAMEBUFFER
     mov r9, 640
     call draw_format_str_generic
@@ -182,9 +184,10 @@ draw_decimal_to_background:
     push r8
     push r9
 
-    mov r5, standard_font_data
-    movz.16 r6, [standard_font_width]
-    movz.16 r7, [standard_font_height]
+    mov r5, [FONT_PTR]
+    movz.16 r6, [r5]
+    movz.16 r7, [r5+2]
+    inc r5, 4
     mov r8, BACKGROUND_FRAMEBUFFER
     mov r9, 640
     call draw_decimal_generic
@@ -212,9 +215,10 @@ draw_hex_to_background:
     push r8
     push r9
 
-    mov r5, standard_font_data
-    movz.16 r6, [standard_font_width]
-    movz.16 r7, [standard_font_height]
+    mov r5, [FONT_PTR]
+    movz.16 r6, [r5]
+    movz.16 r7, [r5+2]
+    inc r5, 4
     mov r8, BACKGROUND_FRAMEBUFFER
     mov r9, 640
     call draw_hex_generic
