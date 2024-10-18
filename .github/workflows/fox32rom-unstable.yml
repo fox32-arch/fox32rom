@@ -25,12 +25,13 @@ jobs:
       - name: Install lua5.4
         run: |
           sudo apt update
-          sudo apt install -y lua5.4
+          sudo apt install -y lua5.4 unzip
 
       - name: Build
         run: |
-          chmod +x fox32asm-linux-x86_64/fox32asm
-          make FOX32ASM=fox32asm-linux-x86_64/fox32asm
+          unzip fox32asm-linux-x86_64/fox32asm-*-linux-x86_64.zip
+          chmod +x fox32asm
+          make FOX32ASM=fox32asm
 
       - name: Upload fox32.rom
         uses: actions/upload-artifact@v3
