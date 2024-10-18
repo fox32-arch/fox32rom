@@ -42,6 +42,12 @@ entry_seed_done:
     ; set the stack pointer again to pop the return address and flags off the stack
     mov rsp, SYSTEM_STACK
 
+    ; poke two `nop.8`s and a `brk` at address 0 to catch jmps/calls to 0.
+    ;   there is currently a known issue with certain fox32os programs (Fetcher in particular?) where any
+    ;   32-bit value other than 0 at address 0 will cause strange issues. the cause of this is currently unknown.
+    mov [0x00000000], 0x00000000
+    mov.16 [0x00000004], 0xA000
+
     ; set the interrupt vector for interrupt 0xFF - vsync
     mov [0x000003FC], system_vsync_handler
 
