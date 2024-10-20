@@ -216,6 +216,10 @@ disk_icon:
 disk_icon_q:
     #include_bin "font/disk2.raw"
 
+    org.pad 0xF000F000
+romdisk_image:
+    #include_bin_optional "romdisk.img"
+romdisk_image_end:
 
     ; data
 
@@ -417,10 +421,6 @@ bottom_bar_patterns:
     data.32 0xFF674764
     data.32 0xFFFFFFFF
     data.32 0xFF674764
-
-romdisk_image:
-    #include_bin_optional "romdisk.img"
-romdisk_image_end:
 
     ; pad out to 512 KiB
     org.pad 0xF0080000
