@@ -86,6 +86,7 @@ ryfs_create:                              jmp [0xF004502C]
 ryfs_delete:                              jmp [0xF0045030]
 ryfs_format:                              jmp [0xF0045034]
 is_ramdisk_formatted:                     jmp [0xF0045038]
+ryfs_get_dir_name:                        jmp [0xF004503C]
 
 ; memory copy/compare jump table
 copy_memory_bytes:                        jmp [0xF0046000]

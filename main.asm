@@ -6,7 +6,7 @@ const FOX32ROM_VERSION_MAJOR: 0
 const FOX32ROM_VERSION_MINOR: 9
 const FOX32ROM_VERSION_PATCH: 0
 
-const FOX32ROM_API_VERSION: 3
+const FOX32ROM_API_VERSION: 4
 
 const SYSTEM_STACK:     0x01FFF800
 const BACKGROUND_COLOR: 0xFF674764
@@ -315,6 +315,7 @@ romdisk_image_end:
     data.32 ryfs_delete
     data.32 ryfs_format
     data.32 is_ramdisk_formatted
+    data.32 ryfs_get_dir_name
 
     ; memory copy/compare jump table
     org.pad 0xF0046000
