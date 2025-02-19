@@ -316,6 +316,7 @@ romdisk_image_end:
     data.32 ryfs_format
     data.32 is_ramdisk_formatted
     data.32 ryfs_get_dir_name
+    data.32 ryfs_get_parent_dir
 
     ; memory copy/compare jump table
     org.pad 0xF0046000

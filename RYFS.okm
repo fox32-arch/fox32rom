@@ -424,6 +424,15 @@ MODULE RYFS;
         copy_memory_bytes(PTROF(TEMP_SECTOR_BUF) + 6, buffer, 8);
     END;
 
+    PROCEDURE ryfs_get_parent_dir(struct: POINTER TO ROMFile;): INT;
+    VAR sector: INT;
+    BEGIN
+        read_sector(struct^.firstSector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
+        IF GETINT(PTROF(TEMP_SECTOR_BUF)) # 05952AAFFH THEN RETURN(1); END;
+        sector := GETSHORT(PTROF(TEMP_SECTOR_BUF) + 4);
+        RETURN(sector);
+    END;
+
     (* `buffer` is a pointer to a 341 byte block of memory *)
     (* if `directorySector` is zero then use the root directory, regardless of its actual sector location *)
     (* format: "file1   extfile2   ext", etc. *)
