@@ -415,13 +415,13 @@ MODULE RYFS;
         END;
     END;
 
-    (* `buffer` is a pointer to an 11 byte block of memory *)
+    (* `buffer` is a pointer to an 8 byte block of memory *)
     (* the buffer will NOT be null-terminated automatically *)
     PROCEDURE ryfs_get_dir_name(buffer: POINTER TO CHAR; struct: POINTER TO ROMFile;);
     BEGIN
         read_sector(struct^.firstSector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
         IF GETSHORT(PTROF(TEMP_SECTOR_BUF) + 2) # 05952H THEN RETURN(); END;
-        copy_memory_bytes(PTROF(TEMP_SECTOR_BUF) + 6, buffer, 11);
+        copy_memory_bytes(PTROF(TEMP_SECTOR_BUF) + 6, buffer, 8);
     END;
 
     (* `buffer` is a pointer to a 341 byte block of memory *)
