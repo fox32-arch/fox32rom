@@ -420,7 +420,7 @@ MODULE RYFS;
     PROCEDURE ryfs_get_dir_name(buffer: POINTER TO CHAR; struct: POINTER TO ROMFile;);
     BEGIN
         read_sector(struct^.firstSector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
-        IF GETSHORT(PTROF(TEMP_SECTOR_BUF)) # 0AAFFH THEN RETURN(); END;
+        IF GETSHORT(PTROF(TEMP_SECTOR_BUF) + 2) # 05952H THEN RETURN(); END;
         copy_memory_bytes(PTROF(TEMP_SECTOR_BUF) + 6, buffer, 11);
     END;
 
