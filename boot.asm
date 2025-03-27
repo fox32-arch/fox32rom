@@ -1,47 +1,28 @@
 ; disk booting routines
 
-; load the boot sector of disk 0 to 0x00000800 and jump to it
+; load the boot sector of a disk to 0x00000800 and jump to it if it's valid
 ; inputs:
-; none
+; r0: disk ID
 ; outputs:
 ; none (returns if disk 0 is not bootable)
 start_boot_process:
+    push r0
+
     ; read sector 0 to 0x800
+    mov r1, r0
     mov r0, 0
-    mov r1, 0
     mov r2, 0x00000800
     call read_sector
 
     ; check for the bootable magic bytes
     cmp [0x000009FC], 0x523C334C
+    ifnz pop r0
     ifnz ret
 
     ; now clean up and jump to the loaded binary
     call boot_cleanup
+    pop r0                ; disk ID
     mov rsp, SYSTEM_STACK ; reset stack pointer
-    mov r0, 0             ; booting from disk id 0
-    jmp 0x00000800
-
-; load the boot sector of the romdisk and jump to it
-; inputs:
-; none
-; outputs:
-; none (returns if romdisk is not bootable)
-start_boot_process_from_romdisk:
-    ; read sector 0 to 0x800
-    mov r0, 0
-    mov r1, 4
-    mov r2, 0x00000800
-    call read_sector
-
-    ; check for the bootable magic bytes
-    cmp [0x000009FC], 0x523C334C
-    ifnz ret
-
-    ; now clean up and jump to the loaded binary
-    call boot_cleanup
-    mov rsp, SYSTEM_STACK ; reset stack pointer
-    mov r0, 4             ; booting from disk id 4
     jmp 0x00000800
 
 ; clean up the system's state before jumping to the loaded binary

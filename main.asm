@@ -150,14 +150,29 @@ event_loop:
 
     ; no event handling here
 
-    ; check if a disk is inserted as disk 0
-    ; if port 0x8000100n returns a non-zero value, then a disk is inserted as disk n
-    in r0, 0x80001000
+    ; check if a bootable disk is inserted
+    mov r31, 4
+    mov r1, 0x80001000
+check_boot:
+    in r0, r1
+    inc r1
     cmp r0, 0
-    ifnz call start_boot_process
-
+    ifz loop check_boot
+    mov r0, r1
+    dec r0
+    and r0, 0xFF
+    push r1
+    call start_boot_process
+    pop r1
+    loop check_boot
     call is_romdisk_available
-    ifz call start_boot_process_from_romdisk
+    push r1
+    ifz mov r0, 4
+    ifz call start_boot_process
+    call is_ramdisk_formatted
+    ifz mov r0, 5
+    ifz call start_boot_process
+    pop r1
 
     jmp event_loop
 
