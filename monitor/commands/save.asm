@@ -1,13 +1,13 @@
-; load command
+; save command
 
-monitor_shell_load_command_string: data.strz "load"
+monitor_shell_save_command_string: data.strz "save"
 
-monitor_shell_load_command:
+monitor_shell_save_command:
     call monitor_shell_parse_arguments
 
     ; r0: pointer to disk id string
-    ; r1: pointer to source sector number string
-    ; r2: pointer to destination address string
+    ; r1: pointer to destination sector number string
+    ; r2: pointer to source address string
     ; r3: pointer to number of sectors string
 
     push r3
@@ -30,8 +30,8 @@ monitor_shell_load_command:
     mov r13, r0
 
     ; r10: disk id
-    ; r11: source sector number
-    ; r12: destination address
+    ; r11: destination sector number
+    ; r12: source address
     ; r13: number of sectors
 
     mov r31, r13
@@ -40,10 +40,10 @@ monitor_shell_load_command:
     mov r0, r11
     mov r1, r10
     mov r2, r12
-monitor_shell_load_command_loop:
-    call read_sector
+monitor_shell_save_command_loop:
+    call write_sector
     inc r0
     add r2, 512
-    loop monitor_shell_load_command_loop
+    loop monitor_shell_save_command_loop
 
     ret

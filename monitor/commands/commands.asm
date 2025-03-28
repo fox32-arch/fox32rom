@@ -46,6 +46,8 @@ monitor_shell_command_table:
     data.32 monitor_shell_load_command
     data.32 monitor_shell_reg_command_string
     data.32 monitor_shell_reg_command
+    data.32 monitor_shell_save_command_string
+    data.32 monitor_shell_save_command
     data.32 monitor_shell_set8_command_string
     data.32 monitor_shell_set8_command
     data.32 monitor_shell_set16_command_string
@@ -64,4 +66,5 @@ monitor_shell_invalid_command_string: data.str "invalid command" data.8 10 data.
     #include "monitor/commands/list.asm"
     #include "monitor/commands/load.asm"
     #include "monitor/commands/reg.asm"
+    #include "monitor/commands/save.asm"
     #include "monitor/commands/set.asm"
