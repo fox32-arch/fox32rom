@@ -143,6 +143,7 @@ draw_bottom_bar_loop:
     call is_ramdisk_formatted
     ifnz mov r0, 5
     ifnz mov r1, 16384 ; 8 MiB = 16384 sectors
+    ifnz mov r2, ramdisk_name
     ifnz call ryfs_format
 
 event_loop:
@@ -333,6 +334,7 @@ romdisk_image_end:
     data.32 is_ramdisk_formatted
     data.32 ryfs_get_dir_name
     data.32 ryfs_get_parent_dir
+    data.32 ryfs_create_dir
 
     ; memory copy/compare jump table
     org.pad 0xF0046000
@@ -399,6 +401,8 @@ const MENU_POSITION_Y:      0x02156186 ; 2 bytes
 const FONT_PTR: 0x0215618A ; 4 bytes, contains address of the current font data
 ; ---
 const MENU_FRAMEBUFFER:     0x0215618E ; max 640x480x4 = end address at 0x0228218E
+
+ramdisk_name: data.strz "ramdisk"
 
 bottom_bar_str_0: data.strz "FOX"
 bottom_bar_str_1: data.strz "32"

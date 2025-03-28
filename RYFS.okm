@@ -144,6 +144,40 @@ MODULE RYFS;
         RETURN(ryfs_open(fileName, diskId, struct, directorySector));
     END;
 
+    PROCEDURE ryfs_create_dir(directoryName: POINTER TO CHAR; diskId: INT; struct: POINTER TO ROMFile; directorySector: INT;): INT;
+    VAR sector: INT;
+        i: INT;
+    BEGIN
+        sector := ryfs_open(directoryName, diskId, struct, directorySector);
+        IF sector # 0 THEN
+            RETURN(sector);
+        END;
+        sector := ryfs_create(directoryName, diskId, struct, 506, directorySector);
+        IF sector = 0 THEN
+            RETURN(0);
+        END;
+        read_sector(sector, diskId, PTROF(TEMP_SECTOR_BUF));
+        PUTCHAR(PTROF(TEMP_SECTOR_BUF) + 1, 0AAH); (* directory marker *)
+        PUTCHAR(PTROF(TEMP_SECTOR_BUF) + 2, 82); (* 'R' *)
+        PUTCHAR(PTROF(TEMP_SECTOR_BUF) + 3, 89); (* 'Y' *)
+        PUTSHORT(PTROF(TEMP_SECTOR_BUF) + 4, directorySector); (* parent directory sector *)
+
+        (* copy directory name using ' ' as the terminator *)
+        i := 0;
+        WHILE i <| 8 DO
+            IF directoryName[i] # 32 THEN
+                PUTCHAR(PTROF(TEMP_SECTOR_BUF) + 6 + i, directoryName[i]);
+            END;
+            i := i + 1;
+        END;
+
+        PUTCHAR(PTROF(TEMP_SECTOR_BUF) + 14, 0); (* null terminator *)
+        PUTCHAR(PTROF(TEMP_SECTOR_BUF) + 15, 0); (* alignment *)
+        write_sector(sector, diskId, PTROF(TEMP_SECTOR_BUF));
+
+        RETURN(sector);
+    END;
+
     PROCEDURE ryfs_delete(struct: POINTER TO ROMFile;);
     VAR i: INT;
         j: INT;
@@ -193,7 +227,7 @@ MODULE RYFS;
         END;
     END;
 
-    PROCEDURE ryfs_format(diskId: INT; diskSizeInSectors: INT;);
+    PROCEDURE ryfs_format(diskId: INT; diskSizeInSectors: INT; directoryName: POINTER TO CHAR;);
     VAR i: INT;
         bitmapSectors: CHAR;
     BEGIN
@@ -217,7 +251,7 @@ MODULE RYFS;
         PUTSHORT(PTROF(TEMP_SECTOR_BUF) + 4, diskSizeInSectors);
 
         (* write directory label *)
-        copy_string("ramdisk", PTROF(TEMP_SECTOR_BUF) + 6);
+        copy_string(directoryName, PTROF(TEMP_SECTOR_BUF) + 6);
 
         (* write the directory sector out to disk *)
         write_sector(ROOT_DIRECTORY, diskId, PTROF(TEMP_SECTOR_BUF));
