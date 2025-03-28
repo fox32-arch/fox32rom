@@ -164,7 +164,8 @@ check_boot:
     push r1
     call start_boot_process
     pop r1
-    loop check_boot
+    cmp r31, 0
+    ifnz loop check_boot
     call is_romdisk_available
     push r1
     ifz mov r0, 4
