@@ -1,5 +1,5 @@
-FOX32ASM = ../fox32asm/target/release/fox32asm
-OKAMERON = $(CURDIR)/meta/okameron/okameron.lua
+FOX32ASM ?= fox32asm
+OKAMERON ?= $(CURDIR)/meta/okameron/okameron.lua
 
 all: fox32.rom
 
