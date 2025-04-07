@@ -22,10 +22,10 @@ jobs:
           workflow: fox32asm-unstable.yml
           workflow_conclusion: success
 
-      - name: Install lua5.4
+      - name: Install lua5.4, unzip, vim
         run: |
           sudo apt update
-          sudo apt install -y lua5.4 unzip
+          sudo apt install -y lua5.4 unzip vim
 
       - name: Build
         run: |
@@ -38,6 +38,12 @@ jobs:
         with:
           name: fox32.rom
           path: fox32.rom
+
+      - name: Upload fox32rom.h
+        uses: actions/upload-artifact@v4
+        with:
+          name: fox32rom.h
+          path: fox32rom.h
 
       - name: Upload fox32rom.def
         uses: actions/upload-artifact@v4
