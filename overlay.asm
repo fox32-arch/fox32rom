@@ -276,14 +276,18 @@ draw_format_str_to_overlay:
 draw_str_to_overlay:
     push r0
     push r6
+    push r7
     mov r6, r0
+    mov r7, [FONT_PTR]
+    movz.16 r7, [r7] ; font width
 draw_str_to_overlay_loop:
     movz.8 r0, [r6]
     call draw_font_tile_to_overlay
     inc r6
-    add r1, 8
+    add r1, r7
     cmp.8 [r6], 0x00
     ifnz jmp draw_str_to_overlay_loop
+    pop r7
     pop r6
     pop r0
     ret

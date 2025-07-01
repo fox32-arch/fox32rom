@@ -156,14 +156,18 @@ draw_format_str_to_background:
 draw_str_to_background:
     push r0
     push r5
+    push r6
     mov r5, r0
+    mov r6, [FONT_PTR]
+    movz.16 r6, [r6] ; font width
 draw_str_to_background_loop:
     movz.8 r0, [r5]
     call draw_font_tile_to_background
     inc r5
-    add r1, 8
+    add r1, r6
     cmp.8 [r5], 0x00
     ifnz jmp draw_str_to_background_loop
+    pop r6
     pop r5
     pop r0
     ret
