@@ -17,6 +17,8 @@ string_to_int_loop:
 
     cmp r2, 0
     ifz jmp string_to_int_end
+    cmp r2, ' '
+    ifz jmp string_to_int_end
 
     ; if (digit >= '0' && digit <= '9') {
     ;     digit -= '0';
@@ -60,4 +62,3 @@ string_to_int_end:
     pop r3
     pop r2
     ret
-
