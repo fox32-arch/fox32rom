@@ -23,6 +23,10 @@ monitor_shell_event_loop:
 monitor_shell_key_down_event:
     mov r0, r1
 
+    ; ignore the control key
+    cmp.8 r0, CTRL
+    ifz ret
+
     cmp.8 r0, LSHIFT
     ifz jmp shift_pressed
     cmp.8 r0, RSHIFT
@@ -46,9 +50,11 @@ monitor_shell_key_down_event:
 
     ; then, add it to the text buffer and print it to the screen
     call scancode_to_ascii
+    cmp.8 r0, 0
+    ifz jmp monitor_shell_key_down_event_no_push
     call print_character_to_monitor
     call monitor_shell_push_character
-
+monitor_shell_key_down_event_no_push:
     ; finally, print the cursor and redraw the line
     mov r0, '_'
     call print_character_to_monitor
