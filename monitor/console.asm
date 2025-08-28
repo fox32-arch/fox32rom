@@ -23,6 +23,7 @@ print_string_to_monitor_loop:
 ; r0: value
 ; outputs:
 print_hex_word_to_monitor:
+    push r0
     push r10
     push r11
     push r12
@@ -45,6 +46,7 @@ print_hex_word_to_monitor_loop:
     pop r12
     pop r11
     pop r10
+    pop r0
     ret
 
 ; print a hex byte to the monitor
@@ -52,6 +54,7 @@ print_hex_word_to_monitor_loop:
 ; r0: value
 ; outputs:
 print_hex_byte_to_monitor:
+    push r0
     push r10
     push r11
     push r12
@@ -74,6 +77,7 @@ print_hex_byte_to_monitor_loop:
     pop r12
     pop r11
     pop r10
+    pop r0
     ret
 
 ; print a hex digit to the monitor
