@@ -15,6 +15,10 @@ shift_released:                           jmp [0xF0040028]
 caps_pressed:                             jmp [0xF004002C]
 poweroff:                                 jmp [0xF0040030]
 get_rom_api_version:                      jmp [0xF0040034]
+print_string_to_monitor:                  jmp [0xF0040038]
+print_character_to_monitor:               jmp [0xF004003C]
+print_hex_byte_to_monitor:                jmp [0xF0040040]
+print_hex_word_to_monitor:                jmp [0xF0040044]
 
 ; generic drawing jump table
 draw_str_generic:                         jmp [0xF0041000]

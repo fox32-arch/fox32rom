@@ -259,6 +259,10 @@ romdisk_image_end:
     data.32 caps_pressed
     data.32 poweroff
     data.32 get_rom_api_version
+    data.32 print_string_to_monitor
+    data.32 print_character_to_monitor
+    data.32 print_hex_byte_to_monitor
+    data.32 print_hex_word_to_monitor
 
     ; generic drawing jump table
     org.pad 0xF0041000
