@@ -22,6 +22,27 @@ monitor_shell_parse_command_loop:
     cmp [r2], 0
     ifnz jmp monitor_shell_parse_command_loop
 
+    ; loop over the table of *user* commands
+    ; data.32 NAME_STR_PTR, data.32 FUNC_PTR, data.32 HELP_STR_PTR
+    mov r2, [MONITOR_USER_CMD_PTR]
+    cmp [r2], 0x00444D43 ; "CMD",0
+    ifnz rjmp monitor_shell_parse_command_error
+    inc r2, 4
+monitor_shell_parse_user_command_loop:
+    mov r1, [r2]
+    call compare_string
+    ifnz rjmp monitor_shell_parse_user_command_loop_next
+    ; if the string matches, parse args and jump to the address in the table
+    mov r10, [r2+4]
+    call monitor_shell_parse_arguments
+    jmp r10
+monitor_shell_parse_user_command_loop_next:
+    ; otherwise, move to the next entry
+    add r2, 12
+    ; if the entry is zero, then we have reached the end of the table
+    cmp [r2], 0
+    ifnz jmp monitor_shell_parse_user_command_loop
+monitor_shell_parse_command_error:
     ; invalid command
     mov r0, monitor_shell_invalid_command_string
     call print_string_to_monitor

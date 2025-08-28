@@ -48,6 +48,9 @@ entry_seed_done:
     mov [0x00000000], 0x00000000
     mov.16 [0x00000004], 0xA000
 
+    ; ensure any previous user monitor commands are invalidated
+    mov [MONITOR_USER_CMD_PTR], 0x00000000 ; (addr 0 doesn't contain "CMD",0)
+
     ; set the interrupt vector for interrupt 0xFF - vsync
     mov [0x000003FC], system_vsync_handler
 

@@ -115,7 +115,7 @@ monitor_shell_parse_line:
     mov r0, MONITOR_SHELL_TEXT_BUF_BOTTOM
     mov r1, ' '
     call monitor_shell_tokenize
-    mov [MONTIOR_SHELL_ARGS_PTR], r0
+    mov [MONITOR_SHELL_ARGS_PTR], r0
 
     call monitor_shell_parse_command
 
@@ -231,6 +231,6 @@ monitor_shell_clear_buffer:
 const MONITOR_SHELL_TEXT_BUF_TOP:    0x03ED4000
 const MONITOR_SHELL_TEXT_BUF_BOTTOM: 0x03ED3FE0 ; 32 characters
 const MONITOR_SHELL_TEXT_BUF_PTR:    0x03ED3FDC ; 4 bytes - pointer to the current input character
-const MONTIOR_SHELL_ARGS_PTR:        0x03ED36C5 ; 4 bytes - pointer to the beginning of the command arguments
+const MONITOR_SHELL_ARGS_PTR:        0x03ED36C5 ; 4 bytes - pointer to the beginning of the command arguments
 
 monitor_shell_prompt: data.strz "> _"
