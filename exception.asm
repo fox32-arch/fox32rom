@@ -26,19 +26,26 @@ system_invalid_op_handler:
     jmp system_breakpoint_handler
 system_invalid_op_str: data.str "Invalid opcode" data.8 10 data.8 0
 
-; called if a page fault occurs
+; called if a bus error or page fault occurs
 ; does not return, calls panic
-system_page_fault_handler:
+system_bus_error_handler:
     push r0
 
-    mov r0, system_page_fault_str
+    mov r0, system_bus_error_str_0
     call debug_print
+
+    mov r0, system_bus_error_str_1
     call print_string_to_monitor
+    mov r0, [rsp+4]
+    call print_hex_word_to_monitor
+    mov r0, 10
+    call print_character_to_monitor
 
     pop r0
     pop r1
     jmp system_breakpoint_handler
-system_page_fault_str: data.str "Page fault at virtual address r1" data.8 10 data.8 0
+system_bus_error_str_0: data.str "Bus error" data.8 10 data.8 0
+system_bus_error_str_1: data.strz "Bus error while accessing address "
 
 ; called upon execution of a `brk` instruction
 ; ensure the stack has at least 128 bytes of free space before triggering this exception!!
@@ -83,7 +90,7 @@ system_breakpoint_handler:
     push r0
 
     ; modify the saved rsp value to reflect the value of rsp before the
-    ; interrupt occured
+    ; interrupt occurred
     ; resp (4) + rfp (4) + flags (1) + return address (4) = 13 bytes
     add [rsp+128], 13
 

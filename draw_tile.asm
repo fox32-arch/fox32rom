@@ -1,9 +1,5 @@
 ; generic tile drawing routines
 
-const TILEMAP_POINTER: 0x01FFFFF0
-const TILEMAP_WIDTH: 0x01FFFFF4
-const TILEMAP_HEIGHT: 0x01FFFFF8
-
 ; set the current tilemap
 ; inputs:
 ; r0: pointer to tilemap data

@@ -21,8 +21,10 @@ start_boot_process:
 
     ; now clean up and jump to the loaded binary
     call boot_cleanup
-    pop r0                ; disk ID
-    mov rsp, SYSTEM_STACK ; reset stack pointer
+    pop r0                    ; disk ID
+    mov r1, [RAM_SIZE]        ; total memory
+    mov r2, [RESERVED_START]  ; usable memory
+    mov rsp, [RESERVED_START] ; reset stack pointer
     jmp 0x00000800
 
 ; clean up the system's state before jumping to the loaded binary
@@ -34,9 +36,6 @@ boot_cleanup:
     ; clear the background
     mov r0, BACKGROUND_COLOR
     call fill_background
-
-    ; disable the blinking disk icon
-    call cleanup_icon
 
     movz.8 r0, 0
     movz.8 r1, 0

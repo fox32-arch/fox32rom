@@ -13,8 +13,6 @@ system_vsync_handler:
 
     call mouse_update
     call keyboard_update
-    cmp.8 [UPDATE_ICON], 0
-    ifnz call icon_update
     ; check if monitor should be started
     cmp r0, 0
     ifnz jmp system_vsync_handler_breakpoint

@@ -292,9 +292,4 @@ monitor_breakpoint_instr_modified_str:
 monitor_breakpoint_at_str:
     data.strz " at "
 
-; breakpoint table; contains the addresses of breakpoints
-; zero indicates an unused entry
-const MONITOR_BREAKPOINT_TABLE:     0x03ED367D ; 64 bytes
-const MONITOR_SAVED_INSTR_TABLE:    0x03ED365D ; 32 bytes
-
 const MONITOR_BREAKPOINT_BRK_INSTR: 0xA000

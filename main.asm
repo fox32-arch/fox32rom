@@ -3,26 +3,63 @@
     org 0xF0000000
 
 const FOX32ROM_VERSION_MAJOR: 0
-const FOX32ROM_VERSION_MINOR: 9
+const FOX32ROM_VERSION_MINOR: 10
 const FOX32ROM_VERSION_PATCH: 0
 
 const FOX32ROM_API_VERSION: 4
 
-const SYSTEM_STACK:     0x01FFF800
 const BACKGROUND_COLOR: 0xFF674764
 const TEXT_COLOR:       0xFFFFFFFF
 
     ; initialization code
 entry:
-    ; disable the MMU
+    ; disable interrupts and the MMU
+    icl
     mcl
 
-    ; set the stack pointer
-    mov rsp, SYSTEM_STACK
-
-    ; disable audio playback
-    mov r0, 0x80000600
+    ; disable all audio channels
+    mov r0, 0x80000605
+    mov r31, 8
+audio_disable_loop:
     out r0, 0
+    add r0, 0x10
+    loop audio_disable_loop
+
+    ; disable all overlays
+    mov r0, 0x80000300
+    mov r31, 0x1F
+disable_all_overlays_loop:
+    out r0, 0
+    inc r0
+    loop disable_all_overlays_loop
+
+    ; find top of memory
+    mov rsp, 0x00001000
+    mov [0x00000408], memory_top_ex
+    mov [0x0000040C], memory_top_ex
+    mov r0, 0
+    mov r1, 0xDEADBEEF
+memory_top_loop:
+    mov [r0], r1
+    cmp [r0], r1
+    ifnz jmp memory_top_ex
+    not r1
+    add r0, 0x0100
+    jmp memory_top_loop
+memory_top_ex:
+    sub r0, 0x0100
+    mov [RAM_SIZE], r0
+    mov [RESERVED_START], r0
+
+    ; initialize reserved memory
+    mov rsp, 0x00001000
+    mov r0, data_table
+    call reserve_space_from_table
+
+    ; if total memory is greater than 8 MiB, reserve space for the ramdisk
+    cmp [RAM_SIZE], 0x00800000
+    ifgt mov r0, data_table_ramdisk
+    ifgt call reserve_space_from_table
 
     ; set the default font
     mov r0, standard_font
@@ -39,8 +76,8 @@ entry_seed_loop:
 entry_seed_done:
     mov [RANDOM_STATE], r0
 
-    ; set the stack pointer again to pop the return address and flags off the stack
-    mov rsp, SYSTEM_STACK
+    ; stack starts right below reserved memory
+    mov rsp, [RESERVED_START]
 
     ; poke two `nop.8`s and a `brk` at address 0 to catch jmps/calls to 0.
     ;   there is currently a known issue with certain fox32os programs (Fetcher in particular?) where any
@@ -60,11 +97,11 @@ entry_seed_done:
     ; set the exception vector for exception 0x01 - invalid opcode
     mov [0x00000404], system_invalid_op_handler
 
-    ; set the exception vector for exception 0x02 - page fault read
-    mov [0x00000408], system_page_fault_handler
+    ; set the exception vector for exception 0x02 - bus error (read)
+    mov [0x00000408], system_bus_error_handler
 
-    ; set the exception vector for exception 0x03 - page fault write
-    mov [0x0000040C], system_page_fault_handler
+    ; set the exception vector for exception 0x03 - bus error (write)
+    mov [0x0000040C], system_bus_error_handler
 
     ; set the exception vector for exception 0x04 - breakpoint
     mov [0x00000410], system_breakpoint_handler
@@ -77,75 +114,34 @@ entry_seed_done:
     mov.8 [MONITOR_CONSOLE_Y], 28
     ; initialize the breakpoint table
     call monitor_breakpoint_init
+    ; clear the console text buffer
+    call clear_monitor_console
 
     ; enable interrupts
     ise
-
-    ; disable all overlays
-    mov r31, 0x1F
-    mov r0, 0x80000300
-disable_all_overlays_loop:
-    out r0, 0
-    inc r0
-    loop disable_all_overlays_loop
 
     call enable_cursor
 
     mov r0, BACKGROUND_COLOR
     call fill_background
 
-    ; draw the bottom bar
-    mov r0, bottom_bar_str_0
-    mov r1, 8
-    mov r2, 448
+    mov r0, bottom_bar_str
+    mov r1, 16
+    mov r2, 464
     mov r3, TEXT_COLOR
-    mov r4, 0x00000000
-    call draw_str_to_background
-    mov r0, bottom_bar_patterns
-    mov r1, 1
-    mov r2, 16
-    call set_tilemap
-    mov r1, 0
-    mov r2, 464
-    mov r31, 640
-draw_bottom_bar_loop:
-    mov r4, r31
-    rem r4, 2
-    cmp r4, 0
-    ifz mov r0, 0
-    ifnz mov r0, 1
-    call draw_tile_to_background
-    inc r1
-    loop draw_bottom_bar_loop
-    mov r0, 10
-    mov r1, 464
-    mov r2, 20
-    mov r3, 16
-    mov r4, 0xFFFFFFFF
-    call draw_filled_rectangle_to_background
-    mov r0, bottom_bar_str_1
-    mov r1, 12
-    mov r2, 464
-    mov r3, 0xFF000000
-    mov r4, 0xFFFFFFFF
-    call draw_str_to_background
-    mov r0, bottom_bar_str_2
-    mov r1, 480
-    mov r2, 464
-    mov r3, 0xFF000000
-    mov r4, 0xFFFFFFFF
+    mov r4, BACKGROUND_COLOR
     mov r10, FOX32ROM_VERSION_MAJOR
     mov r11, FOX32ROM_VERSION_MINOR
     mov r12, FOX32ROM_VERSION_PATCH
     call draw_format_str_to_background
 
-    mov r0, disk_icon_q
-    call change_icon
-    call setup_icon
-
+    ; if the ramdisk memory wasn't reserved, don't format
+    cmp [RAMDISK_START], 0
+    ifz jmp event_loop
+    ; otherwise, format if not already formatted
     call is_ramdisk_formatted
     ifnz mov r0, 5
-    ifnz mov r1, 16384 ; 8 MiB = 16384 sectors
+    ifnz mov r1, RAMDISK_SIZE_SECTORS
     ifnz mov r2, ramdisk_name
     ifnz call ryfs_format
 
@@ -179,6 +175,16 @@ check_boot:
     ifz call start_boot_process
     pop r1
 
+    mov r0, bottom_bar_str_no_disk
+    mov r1, 16
+    mov r2, 464
+    mov r3, TEXT_COLOR
+    mov r4, BACKGROUND_COLOR
+    mov r10, FOX32ROM_VERSION_MAJOR
+    mov r11, FOX32ROM_VERSION_MINOR
+    mov r12, FOX32ROM_VERSION_PATCH
+    call draw_format_str_to_background
+
     jmp event_loop
 
 get_rom_version:
@@ -198,11 +204,10 @@ poweroff:
 poweroff_wait:
     jmp poweroff_wait
 
-    ; code
-    #include "audio.asm"
     #include "background.asm"
     #include "boot.asm"
     #include "cursor.asm"
+    #include "data.asm"
     #include "debug.asm"
     #include "disk.asm"
     #include "draw_pixel.asm"
@@ -211,7 +216,6 @@ poweroff_wait:
     #include "draw_tile.asm"
     #include "event.asm"
     #include "exception.asm"
-    #include "icon.asm"
     #include "integer.asm"
     #include "keyboard.asm"
     #include "memory.asm"
@@ -227,21 +231,10 @@ poweroff_wait:
 
     #include "okameron.asm"
 
-
-; TODO: convert these icons to 1 bit bitmaps and move
-;       them down to the data section at 0xF004F000,
-;       once 1 bit drawing routines are implemented
-disk_icon:
-    #include_bin "font/disk1.raw"
-disk_icon_q:
-    #include_bin "font/disk2.raw"
-
     org.pad 0xF000F000
 romdisk_image:
     #include_bin_optional "romdisk.img"
 romdisk_image_end:
-
-    ; data
 
     ; system jump table
     org.pad 0xF0040000
@@ -359,8 +352,7 @@ romdisk_image_end:
 
     ; audio jump table
     org.pad 0xF0048000
-    data.32 play_audio
-    data.32 stop_audio
+    ; TODO: updated audio code
 
     ; random number jump table
     org.pad 0xF0049000
@@ -379,77 +371,16 @@ standard_font_data:
 mouse_cursor:
     #include_bin "font/cursor2.raw"
 
-; icon overlay struct:
-const ICON_WIDTH:           32
-const ICON_HEIGHT:          32
-const ICON_POSITION_X:      304
-const ICON_POSITION_Y:      224
-const ICON_FRAMEBUFFER_PTR: 0x0212C000
+const CURSOR_WIDTH:  8
+const CURSOR_HEIGHT: 12
 
-; cursor overlay struct:
-const CURSOR_WIDTH:           8
-const CURSOR_HEIGHT:          12
-const CURSOR_FRAMEBUFFER_PTR: 0x0214C000
-
-; menu bar overlay struct:
-const MENU_BAR_WIDTH:           640
-const MENU_BAR_HEIGHT:          16
-const MENU_BAR_POSITION_X:      0
-const MENU_BAR_POSITION_Y:      0
-const MENU_BAR_FRAMEBUFFER_PTR: 0x0214C180
-
-; menu overlay struct:
-; this struct must be writable, so these are hard-coded addresses in ram
-const MENU_WIDTH:           0x02156180 ; 2 bytes
-const MENU_HEIGHT:          0x02156182 ; 2 bytes
-const MENU_POSITION_X:      0x02156184 ; 2 bytes
-const MENU_POSITION_Y:      0x02156186 ; 2 bytes
-; --- reusing unused memory here
-const FONT_PTR: 0x0215618A ; 4 bytes, contains address of the current font data
-; ---
-const MENU_FRAMEBUFFER:     0x0215618E ; max 640x480x4 = end address at 0x0228218E
+const MENU_BAR_WIDTH:  640
+const MENU_BAR_HEIGHT: 16
 
 ramdisk_name: data.strz "ramdisk"
 
-bottom_bar_str_0: data.strz "FOX"
-bottom_bar_str_1: data.strz "32"
-bottom_bar_str_2: data.strz " ROM version %u.%u.%u "
-bottom_bar_patterns:
-    ; 1x16 tile
-    data.32 0xFF674764
-    data.32 0xFFFFFFFF
-    data.32 0xFF674764
-    data.32 0xFFFFFFFF
-    data.32 0xFF674764
-    data.32 0xFFFFFFFF
-    data.32 0xFF674764
-    data.32 0xFFFFFFFF
-    data.32 0xFF674764
-    data.32 0xFFFFFFFF
-    data.32 0xFF674764
-    data.32 0xFFFFFFFF
-    data.32 0xFF674764
-    data.32 0xFFFFFFFF
-    data.32 0xFF674764
-    data.32 0xFFFFFFFF
-
-    ; 1x16 tile
-    data.32 0xFFFFFFFF
-    data.32 0xFF674764
-    data.32 0xFFFFFFFF
-    data.32 0xFF674764
-    data.32 0xFFFFFFFF
-    data.32 0xFF674764
-    data.32 0xFFFFFFFF
-    data.32 0xFF674764
-    data.32 0xFFFFFFFF
-    data.32 0xFF674764
-    data.32 0xFFFFFFFF
-    data.32 0xFF674764
-    data.32 0xFFFFFFFF
-    data.32 0xFF674764
-    data.32 0xFFFFFFFF
-    data.32 0xFF674764
+bottom_bar_str: data.strz "fox32 - ROM version %u.%u.%u - F12 for monitor"
+bottom_bar_str_no_disk: data.strz "fox32 - ROM version %u.%u.%u - no bootable disk found - F12 for monitor"
 
     ; pad out to 512 KiB
     org.pad 0xF0080000

@@ -1,8 +1,6 @@
 ; random number generation routines
 ; by lua :3 - 2022 https://foxgirl.dev/
 
-const RANDOM_STATE: 0x0228218E ; 4 bytes
-
 ; generate a random number
 ; inputs:
 ; none

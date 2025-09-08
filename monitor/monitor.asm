@@ -4,7 +4,7 @@
 invoke_monitor:
     ; return if we're already in the monitor
     cmp [0x000003FC], monitor_vsync_handler
-    ifz jmp invoke_monitor_aleady_in_monitor
+    ifz jmp invoke_monitor_already_in_monitor
 
     ; set the vsync handler to our own and reenable interrupts
     mov [MONITOR_OLD_VSYNC_HANDLER], [0x000003FC]
@@ -28,7 +28,7 @@ invoke_monitor:
     mov.16 r1, MONITOR_WIDTH
     out r0, r1
     mov r0, 0x8000021F ; overlay 31: framebuffer pointer
-    mov r1, MONITOR_FRAMEBUFFER_PTR
+    mov r1, [MONITOR_FRAMEBUFFER_PTR]
     out r0, r1
 
     mov r0, MONITOR_BACKGROUND_COLOR
@@ -78,7 +78,8 @@ exit_monitor_and_jump:
 
     jmp [MONITOR_OLD_RSP]
 
-invoke_monitor_aleady_in_monitor:
+invoke_monitor_already_in_monitor:
+    ise
     call redraw_monitor_console
     ret
 
@@ -91,16 +92,9 @@ info_str: data.str "fox32rom monitor" data.8 0x00
     #include "monitor/shell.asm"
     #include "monitor/vsync.asm"
 
-const MONITOR_OLD_RSP:           0x03ED36BD ; 4 bytes
-const MONITOR_OLD_VSYNC_HANDLER: 0x03ED36C1 ; 4 bytes
-
-; points to "CMD",0,<command table (see commands.asm)>
-const MONITOR_USER_CMD_PTR: 0x00000008 ; 4 bytes
-
 const MONITOR_BACKGROUND_COLOR: 0xFF000000
 
-const MONITOR_WIDTH:           640
-const MONITOR_HEIGHT:          480
-const MONITOR_POSITION_X:      0
-const MONITOR_POSITION_Y:      0
-const MONITOR_FRAMEBUFFER_PTR: 0x03ED4000
+const MONITOR_WIDTH:      640
+const MONITOR_HEIGHT:     480
+const MONITOR_POSITION_X: 0
+const MONITOR_POSITION_Y: 0

@@ -237,9 +237,4 @@ monitor_shell_clear_buffer:
     pop r0
     ret
 
-const MONITOR_SHELL_TEXT_BUF_TOP:    0x03ED4000
-const MONITOR_SHELL_TEXT_BUF_BOTTOM: 0x03ED3FE0 ; 32 characters
-const MONITOR_SHELL_TEXT_BUF_PTR:    0x03ED3FDC ; 4 bytes - pointer to the current input character
-const MONITOR_SHELL_ARGS_PTR:        0x03ED36C5 ; 4 bytes - pointer to the beginning of the command arguments
-
 monitor_shell_prompt: data.strz "> _"

@@ -15,9 +15,9 @@ enable_menu_bar:
 
     ; set properties of overlay 30
     mov r0, 0x8000001E ; overlay 30: position
-    mov.16 r1, MENU_BAR_POSITION_Y
+    mov.16 r1, 0
     sla r1, 16
-    mov.16 r1, MENU_BAR_POSITION_X
+    mov.16 r1, 0
     out r0, r1
     mov r0, 0x8000011E ; overlay 30: size
     mov.16 r1, MENU_BAR_HEIGHT
@@ -25,7 +25,7 @@ enable_menu_bar:
     mov.16 r1, MENU_BAR_WIDTH
     out r0, r1
     mov r0, 0x8000021E ; overlay 30: framebuffer pointer
-    mov r1, MENU_BAR_FRAMEBUFFER_PTR
+    mov r1, [MENU_BAR_FRAMEBUFFER_PTR]
     out r0, r1
 
     ; enable overlay 30 (menu bar)

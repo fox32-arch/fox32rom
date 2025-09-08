@@ -131,7 +131,7 @@ print_character_to_monitor:
     movz.8 r2, [MONITOR_CONSOLE_Y]
     mul r2, MONITOR_CONSOLE_X_SIZE
     add r1, r2
-    add r1, MONITOR_CONSOLE_TEXT_BUF
+    add r1, [MONITOR_CONSOLE_TEXT_BUF_PTR]
 
     ; ...and print!!
     mov.8 [r1], r0
@@ -173,11 +173,11 @@ scroll_monitor_console:
     push r31
 
     ; source
-    mov r0, MONITOR_CONSOLE_TEXT_BUF
+    mov r0, [MONITOR_CONSOLE_TEXT_BUF_PTR]
     add r0, MONITOR_CONSOLE_X_SIZE
 
     ; destination
-    mov r1, MONITOR_CONSOLE_TEXT_BUF
+    mov r1, [MONITOR_CONSOLE_TEXT_BUF_PTR]
 
     ; size
     mov r2, MONITOR_CONSOLE_X_SIZE
@@ -190,7 +190,7 @@ scroll_monitor_console:
     mov.8 [MONITOR_CONSOLE_Y], 28
 
     ; clear the last line
-    mov r0, MONITOR_CONSOLE_TEXT_BUF
+    mov r0, [MONITOR_CONSOLE_TEXT_BUF_PTR]
     add r0, 2240 ; 80 * 28
     mov r31, MONITOR_CONSOLE_X_SIZE
 scroll_monitor_console_clear_loop:
@@ -219,7 +219,7 @@ redraw_monitor_console:
     push r6
     push r31
 
-    mov r0, MONITOR_CONSOLE_TEXT_BUF
+    mov r0, [MONITOR_CONSOLE_TEXT_BUF_PTR]
     mov r1, 0
     mov r2, 16
     mov r3, TEXT_COLOR
@@ -271,7 +271,7 @@ redraw_monitor_console_line:
 
     movz.8 r0, [MONITOR_CONSOLE_Y]
     mul r0, MONITOR_CONSOLE_X_SIZE
-    add r0, MONITOR_CONSOLE_TEXT_BUF
+    add r0, [MONITOR_CONSOLE_TEXT_BUF_PTR]
 
     movz.8 r1, [MONITOR_CONSOLE_Y]
     mov r2, 16
@@ -305,8 +305,21 @@ redraw_monitor_console_line_loop_x:
     pop r0
     ret
 
-const MONITOR_CONSOLE_X:        0x03ED3FDB ; 1 byte
-const MONITOR_CONSOLE_Y:        0x03ED3FDA ; 1 byte
-const MONITOR_CONSOLE_TEXT_BUF: 0x03ED36CA ; 2320 bytes (80x29)
-const MONITOR_CONSOLE_X_SIZE:   80
-const MONITOR_CONSOLE_Y_SIZE:   29
+clear_monitor_console:
+    push r0
+    push r31
+
+    mov r0, [MONITOR_CONSOLE_TEXT_BUF_PTR]
+    mov r31, MONITOR_CONSOLE_SIZE
+clear_monitor_console_loop:
+    mov.8 [r0], 0
+    inc r0
+    loop clear_monitor_console_loop
+
+    pop r31
+    pop r0
+    ret
+
+const MONITOR_CONSOLE_X_SIZE: 80
+const MONITOR_CONSOLE_Y_SIZE: 29
+const MONITOR_CONSOLE_SIZE: 2320

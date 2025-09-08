@@ -6,7 +6,7 @@ enable_cursor:
     push r31
 
     ; write the cursor bitmap to the overlay framebuffer
-    mov r0, CURSOR_FRAMEBUFFER_PTR
+    mov r0, [CURSOR_FRAMEBUFFER_PTR]
     mov r1, mouse_cursor
     mov r31, 96 ; 8x12
 enable_cursor_loop:
@@ -22,7 +22,7 @@ enable_cursor_loop:
     mov.16 r1, CURSOR_WIDTH
     out r0, r1
     mov r0, 0x8000021F ; overlay 31: framebuffer pointer
-    mov r1, CURSOR_FRAMEBUFFER_PTR
+    mov r1, [CURSOR_FRAMEBUFFER_PTR]
     out r0, r1
 
     ; enable overlay 31 (cursor)

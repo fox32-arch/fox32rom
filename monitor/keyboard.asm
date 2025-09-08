@@ -96,5 +96,3 @@ scancode_table_caps:
     data.8 0 data.8 0 data.8 0 data.8 0
     data.8 0 data.8 0 data.8 0 data.8 0
     data.8 0 data.8 0 data.8 0
-
-const MODIFIER_BITMAP: 0x03ED36C9 ; 1 byte

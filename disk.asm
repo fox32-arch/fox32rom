@@ -1,7 +1,7 @@
 ; disk routines
 
-const TEMP_SECTOR_BUF: 0x01FFF808
-const RAMDISK_START: 0x03800000
+const RAMDISK_SIZE_SECTORS:  2048 ; 1 MiB = 16384 sectors
+const RAMDISK_SIZE_BYTES: 1048576
 
 ; read a sector into the specified memory buffer
 ; inputs:
@@ -70,7 +70,7 @@ read_ramdisk_sector:
 
     ; source pointer
     mul r0, 512
-    add r0, RAMDISK_START
+    add r0, [RAMDISK_START]
 
     ; destination pointer
     mov r1, r2
@@ -108,7 +108,7 @@ is_romdisk_available:
 is_ramdisk_formatted:
     push r0
 
-    mov r0, RAMDISK_START
+    mov r0, [RAMDISK_START]
     add r0, 514
     cmp.16 [r0], 0x5952
 
@@ -155,7 +155,7 @@ write_ramdisk_sector:
     ; destination pointer
     mov r1, r0
     mul r1, 512
-    add r1, RAMDISK_START
+    add r1, [RAMDISK_START]
 
     ; source pointer
     mov r0, r2

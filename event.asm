@@ -38,10 +38,7 @@ get_next_event: jmp event_next
 ; implementation
 ; this is my child - lua
 
-const EVENT_SIZE:          32
-const EVENT_TEMP:          0x01FFFBDA
-const EVENT_QUEUE_POINTER: 0x01FFFBFA
-const EVENT_QUEUE_BOTTOM:  0x01FFFBFE
+const EVENT_SIZE: 32
 
 event_wait:
     call event__init
@@ -50,14 +47,14 @@ event_wait_0:
     ise
     halt
 
-    cmp [EVENT_QUEUE_POINTER], EVENT_QUEUE_BOTTOM
+    cmp [EVENT_QUEUE_POINTER], [EVENT_QUEUE_BOTTOM]
     ifz jmp event_wait_0
     jmp event_next_0
 
 event_next:
     call event__init
 
-    cmp [EVENT_QUEUE_POINTER], EVENT_QUEUE_BOTTOM
+    cmp [EVENT_QUEUE_POINTER], [EVENT_QUEUE_BOTTOM]
     ifz jmp event__empty
 
 event_next_0:
@@ -65,12 +62,12 @@ event_next_0:
     push r8
     push r9
 
-    mov r8, EVENT_QUEUE_BOTTOM
+    mov r8, [EVENT_QUEUE_BOTTOM]
     call event__load
-    mov r8, EVENT_TEMP
+    mov r8, [EVENT_TEMP]
     call event__store
 
-    mov r9, EVENT_QUEUE_BOTTOM
+    mov r9, [EVENT_QUEUE_BOTTOM]
 
 event_next_1:
     add r9, EVENT_SIZE
@@ -88,7 +85,7 @@ event_next_1:
     jmp event_next_1
 
 event_next_2:
-    mov r8, EVENT_TEMP
+    mov r8, [EVENT_TEMP]
     call event__load
 
     sub [EVENT_QUEUE_POINTER], EVENT_SIZE
@@ -112,7 +109,7 @@ event_new:
 
 event__init:
     cmp [EVENT_QUEUE_POINTER], 0
-    ifz mov [EVENT_QUEUE_POINTER], EVENT_QUEUE_BOTTOM
+    ifz mov [EVENT_QUEUE_POINTER], [EVENT_QUEUE_BOTTOM]
     ret
 
 event__empty:

@@ -107,8 +107,6 @@ string_length:                            jmp [0xF0046018]
 string_to_int:                            jmp [0xF0047000]
 
 ; audio jump table
-play_audio:                               jmp [0xF0048000]
-stop_audio:                               jmp [0xF0048004]
 
 ; random number jump table
 random:                                   jmp [0xF0049000]

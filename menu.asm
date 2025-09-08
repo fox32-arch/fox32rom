@@ -84,7 +84,7 @@ draw_menu_items_calculate_x_skip:
     mov.16 r1, [MENU_WIDTH]
     out r0, r1
     mov r0, 0x8000021D ; overlay 29: framebuffer pointer
-    mov r1, MENU_FRAMEBUFFER
+    mov r1, [MENU_FRAMEBUFFER]
     out r0, r1
     mov r0, 0x8000031D
     out r0, 1
