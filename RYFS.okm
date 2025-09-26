@@ -215,7 +215,7 @@ MODULE RYFS;
         WHILE i <| sizeInSectors DO
             read_sector(sector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
             nextSector := GETSHORT(PTROF(TEMP_SECTOR_BUF) + 2);
-            ryfs_mark_free(sector);
+            ryfs_mark_free(sector, struct^.diskId);
             j := 0;
             WHILE j <| 512 DO
                 PUTCHAR(PTROF(TEMP_SECTOR_BUF) + j, 0);
