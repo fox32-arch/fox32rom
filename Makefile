@@ -1,9 +1,14 @@
-FOX32ASM ?= fox32asm
 OKAMERON ?= $(CURDIR)/meta/okameron/okameron.lua
 LUA ?= lua
 XXD ?= xxd
 INSTALL ?= install -D
 PREFIX ?= /usr/local
+
+ifeq (, $(shell which fox32asm))
+FOX32ASM ?= ../fox32asm/target/release/fox32asm
+else
+FOX32ASM ?= fox32asm
+endif
 
 all: fox32.rom fox32rom.h
 
