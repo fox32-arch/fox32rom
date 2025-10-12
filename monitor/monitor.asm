@@ -36,12 +36,14 @@ invoke_monitor:
     call fill_overlay
 
     mov r0, info_str
-    mov r1, 256
+    mov r1, 16
     mov r2, 0
     mov r3, TEXT_COLOR
     mov r4, 0x00000000
     mov r5, 31
-    call draw_str_to_overlay
+    mov r10, [rsp+145] ; `rip` register from exception
+    mov r11, [rsp+132] ; `rsp` register from exception
+    call draw_format_str_to_overlay
 
     mov r0, 0
     mov r1, 15
@@ -73,17 +75,14 @@ exit_monitor_and_jump:
     ; reset the cursor
     call enable_cursor
 
-    ; save the jump address in a temporary location
-    mov [MONITOR_OLD_RSP], r0
-
-    jmp [MONITOR_OLD_RSP]
+    jmp r0
 
 invoke_monitor_already_in_monitor:
     ise
     call redraw_monitor_console
     ret
 
-info_str: data.str "fox32rom monitor" data.8 0x00
+info_str: data.strz "fox32rom monitor program | rip: 0x%x, rsp: 0x%x"
 
     #include "monitor/breakpoint.asm"
     #include "monitor/commands/commands.asm"
@@ -92,7 +91,7 @@ info_str: data.str "fox32rom monitor" data.8 0x00
     #include "monitor/shell.asm"
     #include "monitor/vsync.asm"
 
-const MONITOR_BACKGROUND_COLOR: 0xFF000000
+const MONITOR_BACKGROUND_COLOR: 0xFF674764
 
 const MONITOR_WIDTH:      640
 const MONITOR_HEIGHT:     480
