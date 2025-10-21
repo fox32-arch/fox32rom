@@ -33,6 +33,9 @@ disable_all_overlays_loop:
     inc r0
     loop disable_all_overlays_loop
 
+    cmp [WARMBOOT_STATE], 0x6D726177 ; "warm" in little endian
+    ifz jmp warm_boot
+
     ; find top of memory
     mov rsp, 0x00001000
     mov [0x00000408], memory_top_ex
@@ -61,6 +64,8 @@ memory_top_ex:
     ifgt mov r0, data_table_ramdisk
     ifgt call reserve_space_from_table
 
+    mov [WARMBOOT_STATE], 0x6D726177
+warm_boot:
     ; set the default font
     mov r0, standard_font
     call set_font

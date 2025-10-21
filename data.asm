@@ -24,15 +24,16 @@ const MONITOR_SHELL_ARGS_PTR:        0x00000268 ; 4 bytes (pointer to the beginn
 const MONITOR_CONSOLE_X:             0x0000026C ; 1 byte, actual address
 const MONITOR_CONSOLE_Y:             0x0000026D ; 1 byte, actual address
 const MONITOR_CONSOLE_TEXT_BUF_PTR:  0x00000270 ; 4 bytes (pointer to 2320 bytes (80x29))
-const MONITOR_BREAKPOINT_TABLE:      0x00000274 ; 64 bytes, actual address (contains the addresses of breakpoints)
-const MONITOR_SAVED_INSTR_TABLE:     0x000002B4 ; 32 bytes, actual address
-const MODIFIER_BITMAP:               0x000002D4 ; 1 byte, actual address (contains keyboard modifiers)
-const MONITOR_OLD_RSP:               0x000002D8 ; 4 bytes, actual address
-const MONITOR_OLD_VSYNC_HANDLER:     0x000002DC ; 4 bytes, actual address
-const TILEMAP_POINTER:               0x000002E0 ; 4 bytes, actual address
-const TILEMAP_WIDTH:                 0x000002E4 ; 4 bytes, actual address
-const TILEMAP_HEIGHT:                0x000002E8 ; 4 bytes, actual address
-const RANDOM_STATE:                  0x000002EC ; 4 bytes, actual address
+const MONITOR_BREAKPOINT_TABLE:      0x00000274 ; 128 bytes, actual address (contains the addresses of breakpoints)
+const MONITOR_SAVED_INSTR_TABLE:     0x000002F4 ; 64 bytes, actual address
+const MODIFIER_BITMAP:               0x00000334 ; 1 byte, actual address (contains keyboard modifiers)
+const MONITOR_OLD_RSP:               0x00000338 ; 4 bytes, actual address
+const MONITOR_OLD_VSYNC_HANDLER:     0x0000033C ; 4 bytes, actual address
+const TILEMAP_POINTER:               0x00000340 ; 4 bytes, actual address
+const TILEMAP_WIDTH:                 0x00000344 ; 4 bytes, actual address
+const TILEMAP_HEIGHT:                0x00000348 ; 4 bytes, actual address
+const RANDOM_STATE:                  0x0000034C ; 4 bytes, actual address
+const WARMBOOT_STATE:                0x00000350 ; 4 bytes, actual address ("warm" in little endian if memory already initialized)
 
 data_table:
     ; data.32 <address> data.32 <size of data it points to>
