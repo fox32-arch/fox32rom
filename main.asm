@@ -50,7 +50,6 @@ memory_top_loop:
     add r0, 0x0100
     jmp memory_top_loop
 memory_top_ex:
-    sub r0, 0x0100
     mov [RAM_SIZE], r0
     mov [RESERVED_START], r0
 
