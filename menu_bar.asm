@@ -1,8 +1,8 @@
 ; menu bar routines
 
-const MENU_BAR_BACKGROUND_COLOR: 0xFF3F3F3F
-const MENU_BAR_SELECTED_COLOR:   0xFFFFFFFF
-const MENU_BAR_UNSELECTED_COLOR: 0xFF3F3F3F
+const MENU_BAR_BACKGROUND_COLOR: 0xFFFFFFFF
+const MENU_BAR_SELECTED_COLOR:   0xFF444444
+const MENU_BAR_UNSELECTED_COLOR: 0xFFFFFFFF
 
 ; enable menu bar
 ; inputs:
@@ -76,6 +76,29 @@ clear_menu_bar_loop:
     call draw_font_tile_to_overlay
     add r1, 8
     loop clear_menu_bar_loop
+
+    call get_tilemap
+    push r0
+    push r1
+    push r2
+
+    mov r0, menu_bar_corners
+    mov r1, 4
+    mov r2, 5
+    call set_tilemap
+    mov r0, 0
+    mov r1, 0
+    mov r2, 0
+    mov r3, 30
+    call draw_tile_to_overlay
+    mov r0, 1
+    mov r1, 636 ; 640 - 4
+    call draw_tile_to_overlay
+
+    pop r2
+    pop r1
+    pop r0
+    call set_tilemap
 
     pop r31
     pop r5
@@ -242,6 +265,19 @@ menu_bar_click_event_end:
     pop r1
     pop r0
     ret
+
+menu_bar_corners:
+    data.32 0xFF000000                data.32 0xFF000000                data.32 0xFF000000                data.32 0xFF000000
+    data.32 0xFF000000                data.32 0xFF000000                data.32 MENU_BAR_BACKGROUND_COLOR data.32 MENU_BAR_BACKGROUND_COLOR
+    data.32 0xFF000000                data.32 MENU_BAR_BACKGROUND_COLOR data.32 MENU_BAR_BACKGROUND_COLOR data.32 MENU_BAR_BACKGROUND_COLOR
+    data.32 0xFF000000                data.32 MENU_BAR_BACKGROUND_COLOR data.32 MENU_BAR_BACKGROUND_COLOR data.32 MENU_BAR_BACKGROUND_COLOR
+    data.32 MENU_BAR_BACKGROUND_COLOR data.32 MENU_BAR_BACKGROUND_COLOR data.32 MENU_BAR_BACKGROUND_COLOR data.32 MENU_BAR_BACKGROUND_COLOR
+
+    data.32 0xFF000000                data.32 0xFF000000                data.32 0xFF000000                data.32 0xFF000000
+    data.32 MENU_BAR_BACKGROUND_COLOR data.32 MENU_BAR_BACKGROUND_COLOR data.32 0xFF000000                data.32 0xFF000000
+    data.32 MENU_BAR_BACKGROUND_COLOR data.32 MENU_BAR_BACKGROUND_COLOR data.32 MENU_BAR_BACKGROUND_COLOR data.32 0xFF000000
+    data.32 MENU_BAR_BACKGROUND_COLOR data.32 MENU_BAR_BACKGROUND_COLOR data.32 MENU_BAR_BACKGROUND_COLOR data.32 0xFF000000
+    data.32 MENU_BAR_BACKGROUND_COLOR data.32 MENU_BAR_BACKGROUND_COLOR data.32 MENU_BAR_BACKGROUND_COLOR data.32 MENU_BAR_BACKGROUND_COLOR
 
 ;menu_items_root:
 ;    data.8 3                                                      ; number of menus
