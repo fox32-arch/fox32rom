@@ -192,7 +192,9 @@ menu_update_event:
     push r7
     push r8
     push r9
+    push r31
 
+    mov r31, 1
     mov r8, r1                    ; r8: pointer to menu bar root struct
     mov r9, r2                    ; r9: selected root menu item
     mov r10, r3                   ; r10: hovering menu item (or 0xFFFFFFFF for none)
@@ -203,13 +205,17 @@ menu_update_event:
     cmp r0, 0
     ifz jmp menu_update_event_end_no_add
 
-    ; get the current mouse position and check if the menu overlay covers that position
-    ; if the mouse is not in the menu, then there is nothing to do
+    ; get the current mouse position and check if the menu or menu bar overlay covers that position
+    ; if the mouse is not in the menu, then close the menu
     call get_mouse_position
     mov r2, 29
     call check_if_enabled_overlay_covers_position
-    ifnz jmp menu_update_event_end_add
-
+    ifz jmp menu_update_event_continue
+    mov r2, 30
+    call check_if_enabled_overlay_covers_position
+    ifz jmp menu_update_event_continue
+    jmp menu_update_event_end_check
+menu_update_event_continue:
     ; make the mouse position relative to the menu overlay
     mov r2, 29
     call make_coordinates_relative_to_overlay
@@ -225,19 +231,12 @@ menu_update_event:
     mov r0, r8
     call draw_menu_items
 menu_update_event_no_redraw:
-    ; check the mouse held bit
-    ; this is kinda hacky but it works
+    ; do nothing until the mouse button is released
     call get_mouse_button
     bts r0, 2
-    ifnz jmp menu_update_event_clicked
-
-    jmp menu_update_event_end_add
-menu_update_event_clicked:
-    ; wait until the mouse button is released
-    ; this is extremely hacky
-    call get_mouse_button
-    bts r0, 2
-    ifnz jmp menu_update_event_clicked
+    ifnz jmp menu_update_event_end_add
+    ; recalculate the mouse position one more time
+    loop menu_update_event_continue
 
     ; add an EVENT_TYPE_MENU_CLICK event
     mov r1, r8                    ; event parameter 0: pointer to menu bar root struct
@@ -249,7 +248,7 @@ menu_update_event_clicked:
     mov r7, 0
     mov r0, EVENT_TYPE_MENU_CLICK
     call new_event
-
+menu_update_event_end_add_ack:
     ; add an EVENT_TYPE_MENU_ACK event
     mov r1, 0
     mov r2, 0
@@ -261,6 +260,13 @@ menu_update_event_clicked:
     mov r0, EVENT_TYPE_MENU_ACK
     call new_event
     jmp menu_update_event_end_no_add
+menu_update_event_end_check:
+    ; check the mouse held bit
+    call get_mouse_button
+    bts r0, 2
+    ifz jmp menu_update_event_end_add
+    ; the user released the mouse button, close it!
+    jmp menu_update_event_end_add_ack
 menu_update_event_end_add:
     ; readd the event_type_menu_update event to the event queue
     mov r1, r8                    ; event parameter 0: pointer to menu bar root struct
@@ -273,6 +279,7 @@ menu_update_event_end_add:
     mov r0, EVENT_TYPE_MENU_UPDATE
     call new_event
 menu_update_event_end_no_add:
+    pop r31
     pop r9
     pop r8
     pop r7
