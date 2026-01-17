@@ -200,7 +200,7 @@ menu_update_event:
     mov r10, r3                   ; r10: hovering menu item (or 0xFFFFFFFF for none)
 
     ; check if the menu overlay is enabled
-    ; if the menu was closed then exit without readding the update event to the event queue
+    ; if the menu was closed then exit without re-adding the update event to the event queue
     in r0, 0x8000031D
     cmp r0, 0
     ifz jmp menu_update_event_end_no_add
@@ -208,10 +208,10 @@ menu_update_event:
     ; get the current mouse position and check if the menu or menu bar overlay covers that position
     ; if the mouse is not in the menu, then close the menu
     call get_mouse_position
-    mov r2, 29
+    mov r2, 29 ; menu
     call check_if_enabled_overlay_covers_position
     ifz jmp menu_update_event_continue
-    mov r2, 30
+    mov r2, 30 ; menu bar
     call check_if_enabled_overlay_covers_position
     ifz jmp menu_update_event_continue
     jmp menu_update_event_end_check
@@ -236,7 +236,11 @@ menu_update_event_no_redraw:
     bts r0, 2
     ifnz jmp menu_update_event_end_add
     ; recalculate the mouse position one more time
-    loop menu_update_event_continue
+    ; if we're in the menu bar, don't send a click event
+    call get_mouse_position
+    mov r2, 30 ; menu bar
+    call check_if_enabled_overlay_covers_position
+    ifz jmp menu_update_event_end_add_ack
 
     ; add an EVENT_TYPE_MENU_CLICK event
     mov r1, r8                    ; event parameter 0: pointer to menu bar root struct
@@ -268,7 +272,7 @@ menu_update_event_end_check:
     ; the user released the mouse button, close it!
     jmp menu_update_event_end_add_ack
 menu_update_event_end_add:
-    ; readd the event_type_menu_update event to the event queue
+    ; re-add the event_type_menu_update event to the event queue
     mov r1, r8                    ; event parameter 0: pointer to menu bar root struct
     mov r2, r9                    ; event parameter 1: selected root menu item
     mov r3, r10                   ; event parameter 2: hovering menu item (or 0xFFFFFFFF for none)
