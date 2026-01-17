@@ -192,9 +192,7 @@ menu_update_event:
     push r7
     push r8
     push r9
-    push r31
 
-    mov r31, 1
     mov r8, r1                    ; r8: pointer to menu bar root struct
     mov r9, r2                    ; r9: selected root menu item
     mov r10, r3                   ; r10: hovering menu item (or 0xFFFFFFFF for none)
@@ -283,7 +281,6 @@ menu_update_event_end_add:
     mov r0, EVENT_TYPE_MENU_UPDATE
     call new_event
 menu_update_event_end_no_add:
-    pop r31
     pop r9
     pop r8
     pop r7
