@@ -4,6 +4,7 @@ const MENU_SELECTED_BACKGROUND_COLOR:   0xFF444444
 const MENU_SELECTED_TEXT_COLOR:         0xFFFFFFFF
 const MENU_UNSELECTED_BACKGROUND_COLOR: 0xFFFFFFFF
 const MENU_UNSELECTED_TEXT_COLOR:       0xFF000000
+const MENU_SEPARATOR_COLOR:             0xFFCCCCCC
 
 ; draw menu items
 ; inputs:
@@ -89,41 +90,37 @@ draw_menu_items_calculate_x_skip:
     mov r0, 0x8000031D
     out r0, 1
 
-    ; draw empty menu
-    mov r6, r31                   ; outer loop counter
-    movz.8 r0, ' '
-    mov r1, 0
-    mov r2, 0
-    mov r5, 29
-draw_empty_menu_loop:
-    mov r7, r8                    ; inner loop counter
-    cmp r30, r29
-    ;ifz mov r3, MENU_UNSELECTED_BACKGROUND_COLOR
-    ifz mov r4, MENU_SELECTED_BACKGROUND_COLOR
-    ;ifnz mov r3, MENU_SELECTED_BACKGROUND_COLOR
-    ifnz mov r4, MENU_UNSELECTED_BACKGROUND_COLOR
-draw_empty_menu_line_loop:
-    call draw_font_tile_to_overlay
-    add r1, 8
-    dec r7
-    ifnz jmp draw_empty_menu_line_loop
-    mov r1, 0
-    add r2, 16
-    inc r29
-    dec r6
-    ifnz jmp draw_empty_menu_loop
     mov r29, 0                    ; counter of how many menu items drawn so far
     pop r0
 
     ; draw menu text
     add r0, 3                     ; point to start of menu items text
     mov r2, 0                     ; Y = 0
+    mov r5, 29                    ; menu overlay
 draw_menu_text_loop:
     cmp r30, r29
     ifz mov r3, MENU_SELECTED_TEXT_COLOR
     ifz mov r4, MENU_SELECTED_BACKGROUND_COLOR
     ifnz mov r3, MENU_UNSELECTED_TEXT_COLOR
     ifnz mov r4, MENU_UNSELECTED_BACKGROUND_COLOR
+
+    ; check text length
+    mov r1, r0
+    dec r1                        ; point to length byte of this menu item
+    cmp.8 [r1], 0                 ; if the length is zero, draw a separator line
+    ifz jmp draw_menu_separator
+
+    ; draw empty space
+    push r0
+    mov r7, r8
+    movz.8 r0, ' '
+    mov r1, 0
+draw_menu_clear_loop:
+    call draw_font_tile_to_overlay
+    add r1, 8
+    dec r7
+    ifnz jmp draw_menu_clear_loop
+    pop r0
 
     mov r1, 0                     ; X = 0
     call draw_str_to_overlay      ; draw menu item text
@@ -137,7 +134,46 @@ draw_menu_text_loop:
     add r2, 16                    ; add 16 to Y
     inc r29
     loop draw_menu_text_loop
+    jmp draw_menu_items_end
+draw_menu_separator:
+    push r0
+    push r1
+    push r2
+    push r3
+    push r4
 
+    ; draw empty space
+    push r0
+    mov r7, r8
+    movz.8 r0, ' '
+    mov r1, 0
+    mov r3, MENU_UNSELECTED_TEXT_COLOR
+    mov r4, MENU_UNSELECTED_BACKGROUND_COLOR
+draw_menu_separator_clear_loop:
+    call draw_font_tile_to_overlay
+    add r1, 8
+    dec r7
+    ifnz jmp draw_menu_separator_clear_loop
+    pop r0
+
+    mov r0, 2                     ; X = 2
+    mov r1, r2                    ; Y = current text Y counter
+    add r1, 8                     ; move down 8 pixels
+    movz.16 r2, [MENU_WIDTH]
+    sub r2, 4
+    mov r3, 1                     ; 1 pixel tall
+    mov r4, MENU_SEPARATOR_COLOR
+    call draw_filled_rectangle_to_overlay
+    pop r4
+    pop r3
+    pop r2
+    pop r1
+    pop r0
+    inc r0
+    add r2, 16                    ; add 16 to Y
+    inc r29
+    loop draw_menu_text_loop
+draw_menu_items_end:
     pop r31
     pop r30
     pop r29
