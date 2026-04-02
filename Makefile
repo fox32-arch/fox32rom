@@ -24,8 +24,8 @@ fox32rom.h: fox32.rom
 	$(XXD) -i $^ | sed s/fox32_rom/fox32rom/ > $@
 
 install: fox32.rom fox32rom.h
-	$(INSTALL) -m644 fox32.rom /usr/local/libexec/fox32.rom
-	$(INSTALL) -m644 fox32rom.h /usr/local/include/fox32rom.h
+	$(INSTALL) -m644 fox32.rom $(DESTDIR)/usr/local/libexec/fox32.rom
+	$(INSTALL) -m644 fox32rom.h $(DESTDIR)/usr/local/include/fox32rom.h
 
 clean:
 	$(RM) fox32.rom fox32rom.h
