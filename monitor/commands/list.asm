@@ -1,6 +1,7 @@
 ; list command
 
 monitor_shell_list_command_string: data.strz "list"
+monitor_shell_list_command_string_2: data.strz "l"
 
 monitor_shell_list_command:
     mov r0, monitor_shell_list_text

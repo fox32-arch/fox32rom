@@ -1,6 +1,7 @@
 ; reg command
 
 monitor_shell_reg_command_string: data.strz "reg"
+monitor_shell_reg_command_string_2: data.strz "r"
 
 monitor_shell_reg_command:
     push r0

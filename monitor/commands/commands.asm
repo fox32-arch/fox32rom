@@ -57,23 +57,37 @@ monitor_shell_command_table:
     data.32 monitor_shell_brkrm_command
     data.32 monitor_shell_exit_command_string
     data.32 monitor_shell_exit_command
+    data.32 monitor_shell_exit_command_string_2
+    data.32 monitor_shell_exit_command
     data.32 monitor_shell_help_command_string
     data.32 monitor_shell_help_command
     data.32 monitor_shell_jump_command_string
     data.32 monitor_shell_jump_command
+    data.32 monitor_shell_jump_command_string_2
+    data.32 monitor_shell_jump_command
     data.32 monitor_shell_list_command_string
+    data.32 monitor_shell_list_command
+    data.32 monitor_shell_list_command_string_2
     data.32 monitor_shell_list_command
     data.32 monitor_shell_load_command_string
     data.32 monitor_shell_load_command
     data.32 monitor_shell_reg_command_string
     data.32 monitor_shell_reg_command
+    data.32 monitor_shell_reg_command_string_2
+    data.32 monitor_shell_reg_command
     data.32 monitor_shell_save_command_string
     data.32 monitor_shell_save_command
     data.32 monitor_shell_set8_command_string
     data.32 monitor_shell_set8_command
+    data.32 monitor_shell_set8_command_string_2
+    data.32 monitor_shell_set8_command
     data.32 monitor_shell_set16_command_string
     data.32 monitor_shell_set16_command
+    data.32 monitor_shell_set16_command_string_2
+    data.32 monitor_shell_set16_command
     data.32 monitor_shell_set32_command_string
+    data.32 monitor_shell_set32_command
+    data.32 monitor_shell_set32_command_string_2
     data.32 monitor_shell_set32_command
     data.32 0 data.32 0
 monitor_shell_invalid_command_string: data.str "invalid command" data.8 10 data.8 0
