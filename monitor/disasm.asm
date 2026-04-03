@@ -117,6 +117,12 @@ monitor_disassemble_print_source:
     ifz call monitor_disassemble_oper_imm
     cmp r9, 3
     ifz call monitor_disassemble_oper_immptr
+
+    ; special case for `inc` and `dec`
+    cmp.8 [r4], 0x11 ; inc
+    ifz call monitor_disassemble_print_inc_dec
+    cmp.8 [r4], 0x31 ; dec
+    ifz call monitor_disassemble_print_inc_dec
 monitor_disassemble_loop_end:
     push r0
     mov r0, 10
@@ -218,6 +224,21 @@ monitor_disassemble_oper_imm_add_size:
     ret
 monitor_disassemble_oper_immptr_add_size:
     inc r6, 4 ; immptr operand takes 4 bytes
+    ret
+
+monitor_disassemble_print_inc_dec:
+    mov r9, r8
+    and r9, 0b00001100
+    srl r9, 2
+    push r0
+    mov r0, ','
+    call print_character_to_monitor
+    mov r0, ' '
+    call print_character_to_monitor
+    mov r0, 1
+    sla r0, r9
+    call print_dec_to_monitor
+    pop r0
     ret
 
 print_register:
