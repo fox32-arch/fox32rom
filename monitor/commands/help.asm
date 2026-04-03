@@ -35,6 +35,7 @@ monitor_shell_help_text:
     data.str "brk      | add breakpoint $1 (optional) at address $0;" data.8 10
     data.str "         | list breakpoints if no arguments provided" data.8 10
     data.str "brkrm    | remove breakpoint $0" data.8 10
+    data.str "(d)isasm | disassemble $1 instructions at address $0" data.8 10
     data.str "e(x)it   | exit the monitor" data.8 10
     data.str "help     | display this help text" data.8 10
     data.str "(j)ump   | jump to address $0" data.8 10

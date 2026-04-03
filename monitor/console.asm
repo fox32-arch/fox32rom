@@ -4,6 +4,7 @@
 ; inputs:
 ; r0: pointer to null-terminated string
 ; outputs:
+; none
 print_string_to_monitor:
     push r0
     push r3
@@ -22,6 +23,7 @@ print_string_to_monitor_loop:
 ; inputs:
 ; r0: value
 ; outputs:
+; none
 print_hex_word_to_monitor:
     push r0
     push r10
@@ -53,6 +55,7 @@ print_hex_word_to_monitor_loop:
 ; inputs:
 ; r0: value
 ; outputs:
+; none
 print_hex_byte_to_monitor:
     push r0
     push r10
@@ -94,6 +97,43 @@ print_hex_digit_to_monitor:
     add r0, r1
     call print_character_to_monitor
     pop r1
+    pop r0
+    ret
+
+; print a decimal value to the monitor
+; inputs:
+; r0: value
+; outputs:
+; none
+print_dec_to_monitor:
+    push r0
+    push r10                 ; r10: original stack pointer
+    push r11                 ; temp 1
+    push r12                 ; temp 2
+    push r13                 ; temp 3
+    mov r10, rsp
+    mov r12, r0
+
+    push.8 0x00              ; end the string with a terminator
+print_dec_to_monitor_loop:
+    push r12
+    div r12, 10              ; quotient goes into r12
+    pop r13
+    rem r13, 10              ; remainder goes into r13
+    mov r11, r13
+    add r11, '0'
+    push.8 r11
+    cmp r12, 0
+    ifnz jmp print_dec_to_monitor_loop
+print_dec_to_monitor_print:
+    mov r0, rsp              ; point to start of string in the stack
+    call print_string_to_monitor
+
+    mov rsp, r10
+    pop r13
+    pop r12
+    pop r11
+    pop r10
     pop r0
     ret
 

@@ -55,6 +55,10 @@ monitor_shell_command_table:
     data.32 monitor_shell_brk_command
     data.32 monitor_shell_brkrm_command_string
     data.32 monitor_shell_brkrm_command
+    data.32 monitor_shell_disasm_command_string
+    data.32 monitor_shell_disasm_command
+    data.32 monitor_shell_disasm_command_string_2
+    data.32 monitor_shell_disasm_command
     data.32 monitor_shell_exit_command_string
     data.32 monitor_shell_exit_command
     data.32 monitor_shell_exit_command_string_2
@@ -95,6 +99,7 @@ monitor_shell_invalid_command_string: data.str "invalid command" data.8 10 data.
     ; all commands
     #include "monitor/commands/brk.asm"
     #include "monitor/commands/brkrm.asm"
+    #include "monitor/commands/disasm.asm"
     #include "monitor/commands/exit.asm"
     #include "monitor/commands/help.asm"
     #include "monitor/commands/jump.asm"
