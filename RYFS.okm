@@ -157,10 +157,15 @@ MODULE RYFS;
             RETURN(0);
         END;
         read_sector(sector, diskId, PTROF(TEMP_SECTOR_BUF));
-        PUTCHAR(PTROF(TEMP_SECTOR_BUF) + 1, 0AAH); (* directory marker *)
-        PUTCHAR(PTROF(TEMP_SECTOR_BUF) + 2, 82); (* 'R' *)
-        PUTCHAR(PTROF(TEMP_SECTOR_BUF) + 3, 89); (* 'Y' *)
+        PUTCHAR(PTROF(TEMP_SECTOR_BUF) + 1, 0AAH);             (* directory marker *)
+        PUTCHAR(PTROF(TEMP_SECTOR_BUF) + 2, 82);               (* 'R' *)
+        PUTCHAR(PTROF(TEMP_SECTOR_BUF) + 3, 89);               (* 'Y' *)
         PUTSHORT(PTROF(TEMP_SECTOR_BUF) + 4, directorySector); (* parent directory sector *)
+
+        (* directory entry pointing to parent dir *)
+        PUTSHORT(PTROF(TEMP_SECTOR_BUF) + 16, directorySector);  (* sector *)
+        PUTSHORT(PTROF(TEMP_SECTOR_BUF) + 18, 1);                (* size *)
+        copy_string("^       dir", PTROF(TEMP_SECTOR_BUF) + 20); (* name *)
 
         (* copy directory name using ' ' as the terminator *)
         i := 0;
