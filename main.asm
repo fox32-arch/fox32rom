@@ -1,6 +1,7 @@
     ; entry point
     ; fox32 starts here on reset
     org 0xF0000000
+    opton
 
 const FOX32ROM_VERSION_MAJOR: 0
 const FOX32ROM_VERSION_MINOR: 10
