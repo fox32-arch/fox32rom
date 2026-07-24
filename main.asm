@@ -3,9 +3,10 @@
     org 0xF0000000
     opton
 
+; set to x.y.99999 for unreleased versions
 const FOX32ROM_VERSION_MAJOR: 0
 const FOX32ROM_VERSION_MINOR: 10
-const FOX32ROM_VERSION_PATCH: 0
+const FOX32ROM_VERSION_PATCH: 99999
 
 const FOX32ROM_API_VERSION: 4
 
