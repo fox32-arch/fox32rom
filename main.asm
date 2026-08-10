@@ -60,8 +60,8 @@ memory_top_ex:
     mov r0, data_table
     call reserve_space_from_table
 
-    ; if total memory is greater than 8 MiB, reserve space for the ramdisk
-    cmp [RAM_SIZE], 0x00800000
+    ; if total memory is greater than 16 MiB, reserve space for the ramdisk
+    cmp [RAM_SIZE], 0x01000000
     ifgt mov r0, data_table_ramdisk
     ifgt call reserve_space_from_table
 
@@ -94,6 +94,9 @@ entry_seed_done:
     ; ensure any previous user monitor commands are invalidated
     mov [MONITOR_USER_CMD_PTR], 0x00000000 ; (addr 0 doesn't contain "CMD",0)
 
+    ; set the interrupt vector for interrupt 0xF7 - disk
+    mov [0x000003DC], system_disk_interrupt_handler
+
     ; set the interrupt vector for interrupt 0xFF - vsync
     mov [0x000003FC], system_vsync_handler
 
@@ -122,6 +125,13 @@ entry_seed_done:
     call monitor_breakpoint_init
     ; clear the console text buffer
     call clear_monitor_console
+
+    ; set the default disk callbacks
+    mov r0, default_disk_data_wait_callback
+    call set_disk_data_wait_callback
+    mov r0, default_disk_data_ready_callback
+    call set_disk_data_ready_callback
+    mov.8 [DISK_DATA_WAIT_STATE], 0
 
     ; enable interrupts
     ise
@@ -341,6 +351,9 @@ romdisk_image_end:
     data.32 ryfs_get_dir_name
     data.32 ryfs_get_parent_dir
     data.32 ryfs_create_dir
+    data.32 set_disk_data_wait_callback
+    data.32 set_disk_data_ready_callback
+    data.32 wait_sector
 
     ; memory copy/compare jump table
     org.pad 0xF0046000
