@@ -13,6 +13,7 @@ start_boot_process:
     mov r0, 0
     mov r2, 0x00000800
     call read_sector
+    call yield_disk
 
     ; check for the bootable magic bytes
     cmp [0x000009FC], 0x523C334C

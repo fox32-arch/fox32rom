@@ -9,15 +9,18 @@ system_disk_interrupt_handler:
     reti
 
 ; set the callback routine to call when waiting for data from a disk
+; operating systems should override this callback to yield to the next task
 ; inputs:
 ; r0: pointer to routine
 ; outputs:
 ; none
-set_disk_data_wait_callback:
-    mov [DISK_DATA_WAIT_CALLBACK], r0
+set_disk_data_yield_callback:
+    mov [DISK_DATA_YIELD_CALLBACK], r0
     ret
 
 ; set the callback routine to call when data from disk is fully read into memory
+; IMPORTANT: if setting a custom callback, ensure your callback jumps to
+;            `default_disk_data_ready_callback` at the end!
 ; inputs:
 ; r0: pointer to routine
 ; outputs:
@@ -26,14 +29,24 @@ set_disk_data_ready_callback:
     mov [DISK_DATA_READY_CALLBACK], r0
     ret
 
-; call [DISK_DATA_WAIT_CALLBACK], which should point to
-; code which waits for [DISK_DATA_READY_CALLBACK] to be called
+; spin in a loop until the disk reports the data is ready
 ; inputs:
 ; none
 ; outputs:
 ; none
 wait_sector:
-    jmp [DISK_DATA_WAIT_CALLBACK]
+    jmp default_disk_data_yield_callback
+
+; call [DISK_DATA_YIELD_CALLBACK], which should point to
+; code to run when a disk is not yet ready. operating systems
+; should override this callback to yield to the next task.
+; IMPORTANT: the called code must return back here!
+; inputs:
+; none
+; outputs:
+; none
+yield_disk:
+    jmp [DISK_DATA_YIELD_CALLBACK]
 
 ; read a sector into the specified memory buffer
 ; NOTE: data is not fully read into memory until [DISK_DATA_READY_CALLBACK] is called
@@ -49,10 +62,12 @@ read_sector:
     cmp.8 r1, 5
     ifz jmp read_ramdisk_sector
 
+    call yield_disk
+
     push r3
     push r4
 
-    mov.8 [DISK_DATA_WAIT_STATE], 0
+    inc.8 [DISK_OP_IN_PROGRESS]
 
     mov r3, 0x80002000       ; command to set the location of the buffer
     mov r4, 0x80003000       ; command to read a sector from a disk into the buffer
@@ -86,7 +101,8 @@ read_romdisk_sector:
     mov r2, 512
 
     call copy_memory_bytes
-    call [DISK_DATA_READY_CALLBACK]
+
+    mov.8 [DISK_OP_COMPLETED], 1
 
     pop r2
     pop r1
@@ -115,7 +131,8 @@ read_ramdisk_sector:
     mov r2, 512
 
     call copy_memory_bytes
-    call [DISK_DATA_READY_CALLBACK]
+
+    mov.8 [DISK_OP_COMPLETED], 1
 
     pop r2
     pop r1
@@ -165,10 +182,12 @@ write_sector:
     cmp.8 r1, 5
     ifz jmp write_ramdisk_sector
 
+    call yield_disk
+
     push r3
     push r4
 
-    mov.8 [DISK_DATA_WAIT_STATE], 0
+    inc.8 [DISK_OP_IN_PROGRESS]
 
     mov r3, 0x80002000       ; command to set the location of the buffer
     mov r4, 0x80004000       ; command to write a sector to a disk from the buffer
@@ -203,23 +222,25 @@ write_ramdisk_sector:
     mov r2, 512
 
     call copy_memory_bytes
-    call [DISK_DATA_READY_CALLBACK]
+
+    mov.8 [DISK_OP_COMPLETED], 1
 
     pop r2
     pop r1
     pop r0
     ret
 
-; default disk wait behavior: spin in a loop until the disk reports the data is ready
-default_disk_data_wait_callback:
-    cmp.8 [DISK_DATA_WAIT_STATE], 0
-    ifnz rjmp.8 default_disk_data_wait_callback_ready
-    rjmp.8 default_disk_data_wait_callback
-default_disk_data_wait_callback_ready:
-    mov.8 [DISK_DATA_WAIT_STATE], 0
-    ret
+; default disk yield behavior: spin in a loop until the disk reports the data is ready
+default_disk_data_yield_callback:
+    cmp.8 [DISK_OP_COMPLETED], 0
+    ifnz mov.8 [DISK_OP_COMPLETED], 0
+    ifnz ret
+    cmp.8 [DISK_OP_IN_PROGRESS], 0
+    ifz ret ; no operation in progress, bail out
+    rjmp default_disk_data_yield_callback
 
-; default disk ready behavior: set [DISK_DATA_WAIT_STATE] to a non-zero value
+; default disk ready behavior: set [DISK_OP_COMPLETED] to non-zero and decrement [DISK_OP_IN_PROGRESS]
 default_disk_data_ready_callback:
-    mov.8 [DISK_DATA_WAIT_STATE], 1
+    mov.8 [DISK_OP_COMPLETED], 1
+    dec.8 [DISK_OP_IN_PROGRESS]
     ret

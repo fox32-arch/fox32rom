@@ -34,9 +34,10 @@ const TILEMAP_WIDTH:                 0x00000344 ; 4 bytes, actual address
 const TILEMAP_HEIGHT:                0x00000348 ; 4 bytes, actual address
 const RANDOM_STATE:                  0x0000034C ; 4 bytes, actual address
 const WARMBOOT_STATE:                0x00000350 ; 4 bytes, actual address ("warm" in little endian if memory already initialized)
-const DISK_DATA_WAIT_CALLBACK:       0x00000354 ; 4 bytes, actual address (contains address to call while waiting for disk)
-const DISK_DATA_READY_CALLBACK:      0x00000358 ; 4 bytes, actual address (contains address to call when disk int fired)
-const DISK_DATA_WAIT_STATE:          0x0000035C ; 1 byte, actual address
+const DISK_DATA_READY_CALLBACK:      0x00000354 ; 4 bytes, actual address (contains address to call when disk int fired)
+const DISK_DATA_YIELD_CALLBACK:      0x00000358 ; 4 bytes, actual address (contains address to call when trying to access disk but it isn't ready)
+const DISK_OP_IN_PROGRESS:           0x0000035C ; 1 byte, actual address (non-zero if a disk operation has started and not yet finished)
+const DISK_OP_COMPLETED:             0x0000035D ; 1 byte, actual address (non-zero if a disk operation has completed)
 
 data_table:
     ; data.32 <address> data.32 <size of data it points to>

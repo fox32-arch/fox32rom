@@ -17,7 +17,7 @@ MODULE RYFS;
     EXTERN PROCEDURE check_disk: INT;
     EXTERN PROCEDURE read_sector: INT;
     EXTERN PROCEDURE write_sector: INT;
-    EXTERN PROCEDURE wait_sector: INT;
+    EXTERN PROCEDURE yield_disk: INT;
     EXTERN PROCEDURE copy_memory_bytes: INT;
     EXTERN PROCEDURE copy_string: INT;
     EXTERN PROCEDURE compare_memory_bytes_wrapper: INT;
@@ -47,7 +47,7 @@ MODULE RYFS;
 
         (* read the directory sector into the temporary buffer *)
         read_sector(directorySector, diskId, PTROF(TEMP_SECTOR_BUF));
-        wait_sector();
+        yield_disk();
 
         (* look for the requested file name in the directory entries *)
         (* 20 is the offset of the first firectory entry's file name *)
@@ -95,7 +95,7 @@ MODULE RYFS;
 
         (* read the directory sector from disk *)
         read_sector(directorySector, diskId, PTROF(TEMP_SECTOR_BUF));
-        wait_sector();
+        yield_disk();
 
         (* write first file sector number *)
         PUTSHORT(PTROF(TEMP_SECTOR_BUF) + firstFreeEntry, firstFreeSector);
@@ -110,14 +110,14 @@ MODULE RYFS;
 
         (* write the directory sector back out to disk *)
         write_sector(directorySector, diskId, PTROF(TEMP_SECTOR_BUF));
-        wait_sector();
+        yield_disk();
 
         sector := 0;
         WHILE sector <| sizeInSectors DO
             nextFreeSector := ryfs_find_free_sector(diskId, PTROF(TEMP_SECTOR_BUF));
             ryfs_mark_used(nextFreeSector, PTROF(TEMP_SECTOR_BUF));
             read_sector(nextFreeSector, diskId, PTROF(TEMP_SECTOR_BUF));
-            wait_sector();
+            yield_disk();
 
             (* file magic byte and alignment *)
             PUTCHAR(PTROF(TEMP_SECTOR_BUF), 0FFH);
@@ -142,7 +142,7 @@ MODULE RYFS;
 
             (* write the sector out to disk *)
             write_sector(nextFreeSector, diskId, PTROF(TEMP_SECTOR_BUF));
-            wait_sector();
+            yield_disk();
 
             sector := sector + 1;
         END;
@@ -164,7 +164,7 @@ MODULE RYFS;
             RETURN(0);
         END;
         read_sector(sector, diskId, PTROF(TEMP_SECTOR_BUF));
-        wait_sector();
+        yield_disk();
         PUTCHAR(PTROF(TEMP_SECTOR_BUF) + 1, 0AAH);             (* directory marker *)
         PUTCHAR(PTROF(TEMP_SECTOR_BUF) + 2, 82);               (* 'R' *)
         PUTCHAR(PTROF(TEMP_SECTOR_BUF) + 3, 89);               (* 'Y' *)
@@ -187,7 +187,7 @@ MODULE RYFS;
         PUTCHAR(PTROF(TEMP_SECTOR_BUF) + 14, 0); (* null terminator *)
         PUTCHAR(PTROF(TEMP_SECTOR_BUF) + 15, 0); (* alignment *)
         write_sector(sector, diskId, PTROF(TEMP_SECTOR_BUF));
-        wait_sector();
+        yield_disk();
 
         RETURN(sector);
     END;
@@ -202,7 +202,7 @@ MODULE RYFS;
     BEGIN
         (* read the directory sector from disk *)
         read_sector(struct^.directorySector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
-        wait_sector();
+        yield_disk();
 
         (* reverse-find the directory sector entry from the passed struct *)
         i := 1;
@@ -226,12 +226,12 @@ MODULE RYFS;
             j := j + 1;
         END;
         write_sector(struct^.directorySector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
-        wait_sector();
+        yield_disk();
 
         i := 0;
         WHILE i <| sizeInSectors DO
             read_sector(sector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
-            wait_sector();
+            yield_disk();
             nextSector := GETSHORT(PTROF(TEMP_SECTOR_BUF) + 2);
             ryfs_mark_free(sector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
             j := 0;
@@ -240,7 +240,7 @@ MODULE RYFS;
                 j := j + 1;
             END;
             write_sector(sector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
-            wait_sector();
+            yield_disk();
             sector := nextSector;
             i := i + 1;
         END;
@@ -275,7 +275,7 @@ MODULE RYFS;
 
         (* write the directory sector out to disk *)
         write_sector(ROOT_DIRECTORY, diskId, PTROF(TEMP_SECTOR_BUF));
-        wait_sector();
+        yield_disk();
 
         (* clear the sector data *)
         i := 0;
@@ -288,7 +288,7 @@ MODULE RYFS;
         i := 0;
         WHILE i <| bitmapSectors DO
             write_sector(i + ROOT_DIRECTORY + 1, diskId, PTROF(TEMP_SECTOR_BUF));
-            wait_sector();
+            yield_disk();
             i := i + 1;
         END;
 
@@ -339,7 +339,7 @@ MODULE RYFS;
             startSector := thisSector;
         ELSE WHILE sectorsToTraverse DO
             read_sector(thisSector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
-            wait_sector();
+            yield_disk();
             startSector := thisSector;
             thisSector := GETSHORT(PTROF(TEMP_SECTOR_BUF) + 2);
             sectorsToTraverse := sectorsToTraverse - 1;
@@ -350,7 +350,7 @@ MODULE RYFS;
         WHILE sectorsToLoad DO
             (* load the working sector into the temporary buffer *)
             read_sector(thisSector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
-            wait_sector();
+            yield_disk();
 
             bytesToLoad := 506 - modulo;
 
@@ -402,7 +402,7 @@ MODULE RYFS;
             startSector := thisSector;
         ELSE WHILE sectorsToTraverse DO
             read_sector(thisSector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
-            wait_sector();
+            yield_disk();
             startSector := thisSector;
             thisSector := GETSHORT(PTROF(TEMP_SECTOR_BUF) + 2);
             sectorsToTraverse := sectorsToTraverse - 1;
@@ -424,14 +424,14 @@ MODULE RYFS;
 
             (* load the working sector into the temporary buffer *)
             read_sector(thisSector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
-            wait_sector();
+            yield_disk();
 
             (* copy from the caller's buffer to the temporary buffer *)
             copy_memory_bytes(source, PTROF(TEMP_SECTOR_BUF) + 6 + modulo, bytesToLoad);
 
             (* write the sector back out to disk *)
             write_sector(thisSector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
-            wait_sector();
+            yield_disk();
 
             (* point to the next linked sector *)
             thisSector := GETSHORT(PTROF(TEMP_SECTOR_BUF) + 2);
@@ -466,7 +466,7 @@ MODULE RYFS;
 
         WHILE 1 DO
             read_sector(nextSector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
-            wait_sector();
+            yield_disk();
             IF GETSHORT(PTROF(TEMP_SECTOR_BUF)) = 0AAFFH THEN
                 RETURN(506);
             END;
@@ -486,7 +486,7 @@ MODULE RYFS;
     VAR TEMP_SECTOR_BUF: ARRAY 512 OF CHAR;
     BEGIN
         read_sector(struct^.firstSector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
-        wait_sector();
+        yield_disk();
         IF GETSHORT(PTROF(TEMP_SECTOR_BUF) + 2) # 05952H THEN RETURN(); END;
         copy_memory_bytes(PTROF(TEMP_SECTOR_BUF) + 6, buffer, 8);
     END;
@@ -496,7 +496,7 @@ MODULE RYFS;
         TEMP_SECTOR_BUF: ARRAY 512 OF CHAR;
     BEGIN
         read_sector(struct^.firstSector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
-        wait_sector();
+        yield_disk();
         IF GETINT(PTROF(TEMP_SECTOR_BUF)) # 05952AAFFH THEN RETURN(1); END;
         sector := GETSHORT(PTROF(TEMP_SECTOR_BUF) + 4);
         RETURN(sector);
@@ -520,7 +520,7 @@ MODULE RYFS;
 
         (* load directory sector into temp buffer *)
         read_sector(directorySector, diskId, PTROF(TEMP_SECTOR_BUF));
-        wait_sector();
+        yield_disk();
 
         i := 31;
         bufferOffset := 0;
@@ -561,7 +561,7 @@ MODULE RYFS;
 
         IF sizeInSectorsAfter # sizeInSectorsBefore THEN
             read_sector(struct^.directorySector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
-            wait_sector();
+            yield_disk();
             (* reverse-find the directory sector entry from the passed struct *)
             i := 1;
             WHILE i <| 32 DO
@@ -573,7 +573,7 @@ MODULE RYFS;
                 i := i + 1;
             END;
             write_sector(struct^.directorySector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
-            wait_sector();
+            yield_disk();
         END;
 
         (* get the number of sectors to traverse before we reach the end *)
@@ -587,7 +587,7 @@ MODULE RYFS;
         oldThisSector := thisSector;
         WHILE sectorsToTraverse DO
             read_sector(thisSector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
-            wait_sector();
+            yield_disk();
             oldThisSector := thisSector;
             thisSector := GETSHORT(PTROF(TEMP_SECTOR_BUF) + 2);
             sectorsToTraverse := sectorsToTraverse - 1;
@@ -600,7 +600,7 @@ MODULE RYFS;
 
             (* re-read the previously-last sector back into the buffer *)
             read_sector(oldThisSector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
-            wait_sector();
+            yield_disk();
 
             (* link the newly-found sector to the end of the file *)
             PUTSHORT(PTROF(TEMP_SECTOR_BUF) + 2, temp);
@@ -610,7 +610,7 @@ MODULE RYFS;
 
             (* write out the changes to disk *)
             write_sector(oldThisSector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
-            wait_sector();
+            yield_disk();
 
             (* mark the sector as used *)
             ryfs_mark_used(temp, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
@@ -628,7 +628,7 @@ MODULE RYFS;
 
             (* write out the changes to disk *)
             write_sector(temp, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
-            wait_sector();
+            yield_disk();
 
             (* return the new sector *)
             RETURN(temp);
@@ -636,7 +636,7 @@ MODULE RYFS;
             (* at this point the last file sector is loaded into the buffer, add to the size *)
             PUTSHORT(PTROF(TEMP_SECTOR_BUF) + 4, sizeInBytesAfter MOD 506);
             write_sector(oldThisSector, struct^.diskId, PTROF(TEMP_SECTOR_BUF));
-            wait_sector();
+            yield_disk();
 
             (* return the old sector *)
             RETURN(oldThisSector);
@@ -666,13 +666,13 @@ MODULE RYFS;
         firstFreeSector: INT;
     BEGIN
         read_sector(ROOT_DIRECTORY, diskId, TEMP_SECTOR_BUF);
-        wait_sector();
+        yield_disk();
         totalBitmapSectors := GETCHAR(TEMP_SECTOR_BUF);
         bitmapSector := 0;
         WHILE bitmapSector <| totalBitmapSectors DO
             bitmapByte := 0;
             read_sector(bitmapSector + 2, diskId, TEMP_SECTOR_BUF);
-            wait_sector();
+            yield_disk();
             WHILE bitmapByte <| 512 DO
                 firstClearBit := ryfs_find_first_clear_in_byte(GETCHAR(TEMP_SECTOR_BUF + bitmapByte));
                 IF firstClearBit # 0FFH THEN
@@ -693,7 +693,7 @@ MODULE RYFS;
         offset: INT;
     BEGIN
         read_sector(directorySector, diskId, TEMP_SECTOR_BUF);
-        wait_sector();
+        yield_disk();
         i := 0;
         offset := 16; (* point to first entry *)
         WHILE i <| 30 DO
@@ -734,12 +734,12 @@ MODULE RYFS;
         bitmapBit := sector MOD 8;
 
         read_sector(bitmapSector, diskId, TEMP_SECTOR_BUF);
-        wait_sector();
+        yield_disk();
         bitmap := GETCHAR(TEMP_SECTOR_BUF + bitmapByte);
         bitmap := bitmap OR LSH(1, bitmapBit);
         PUTCHAR(TEMP_SECTOR_BUF + bitmapByte, bitmap);
         write_sector(bitmapSector, diskId, TEMP_SECTOR_BUF);
-        wait_sector();
+        yield_disk();
     END;
 
     (* clobbers sector buffer!! *)
@@ -754,11 +754,11 @@ MODULE RYFS;
         bitmapBit := sector MOD 8;
 
         read_sector(bitmapSector, diskId, TEMP_SECTOR_BUF);
-        wait_sector();
+        yield_disk();
         bitmap := GETCHAR(TEMP_SECTOR_BUF + bitmapByte);
         bitmap := bitmap & (LSH(1, bitmapBit))~;
         PUTCHAR(TEMP_SECTOR_BUF + bitmapByte, bitmap);
         write_sector(bitmapSector, diskId, TEMP_SECTOR_BUF);
-        wait_sector();
+        yield_disk();
     END;
 END.

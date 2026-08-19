@@ -127,11 +127,12 @@ entry_seed_done:
     call clear_monitor_console
 
     ; set the default disk callbacks
-    mov r0, default_disk_data_wait_callback
-    call set_disk_data_wait_callback
+    mov r0, default_disk_data_yield_callback
+    call set_disk_data_yield_callback
     mov r0, default_disk_data_ready_callback
     call set_disk_data_ready_callback
-    mov.8 [DISK_DATA_WAIT_STATE], 0
+    mov.8 [DISK_OP_IN_PROGRESS], 0
+    mov.8 [DISK_OP_COMPLETED], 0
 
     ; enable interrupts
     ise
@@ -351,9 +352,10 @@ romdisk_image_end:
     data.32 ryfs_get_dir_name
     data.32 ryfs_get_parent_dir
     data.32 ryfs_create_dir
-    data.32 set_disk_data_wait_callback
+    data.32 set_disk_data_yield_callback
     data.32 set_disk_data_ready_callback
     data.32 wait_sector
+    data.32 default_disk_data_ready_callback
 
     ; memory copy/compare jump table
     org.pad 0xF0046000
