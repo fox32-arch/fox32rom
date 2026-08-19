@@ -355,7 +355,12 @@ romdisk_image_end:
     data.32 set_disk_data_yield_callback
     data.32 set_disk_data_ready_callback
     data.32 wait_sector
+    data.32 default_disk_data_yield_callback
     data.32 default_disk_data_ready_callback
+    data.32 set_disk_op_completed
+    data.32 set_disk_op_in_progress
+    data.32 get_disk_op_completed
+    data.32 get_disk_op_in_progress
 
     ; memory copy/compare jump table
     org.pad 0xF0046000

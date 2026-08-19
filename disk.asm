@@ -230,6 +230,42 @@ write_ramdisk_sector:
     pop r0
     ret
 
+; set the completion state of the disk
+; inputs:
+; r0: non-zero if disk operation finished
+; outputs:
+; none
+set_disk_op_completed:
+    mov [DISK_OP_COMPLETED], r0
+    ret
+
+; get the completion state of the disk
+; inputs:
+; none
+; outputs:
+; r0: non-zero if disk operation finished
+get_disk_op_completed:
+    mov r0, [DISK_OP_COMPLETED]
+    ret
+
+; set the current state of the disk
+; inputs:
+; r0: non-zero if a disk operation is in progress
+; outputs:
+; none
+set_disk_op_in_progress:
+    mov [DISK_OP_IN_PROGRESS], r0
+    ret
+
+; get the current state of the disk
+; inputs:
+; none
+; outputs:
+; r0: [DISK_OP_IN_PROGRESS]
+get_disk_op_in_progress:
+    mov r0, [DISK_OP_IN_PROGRESS]
+    ret
+
 ; default disk yield behavior: spin in a loop until the disk reports the data is ready
 default_disk_data_yield_callback:
     cmp.8 [DISK_OP_COMPLETED], 0
