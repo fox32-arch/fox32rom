@@ -1,4 +1,5 @@
-# fox32rom
+# fox32rom has moved to Codeberg! [https://codeberg.org/fox32-arch](https://codeberg.org/fox32-arch)
+This repository will no longer be updated.
 
 **fox32rom** is the boot ROM for **fox32**, containing many commonly-used routines.
 
